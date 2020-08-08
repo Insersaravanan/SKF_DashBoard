@@ -1,0 +1,106 @@
+﻿@{
+    ViewData["Title"] = "Application-Configuration";
+    Layout = "~/Views/Shared/_ObserverLayout.cshtml";
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<link href="~/lib/angucomplete/antocomplete-alt.css" rel="stylesheet" />
+<div ng-controller="skfCtrl" class="lookup content-wrapper">
+    <div class="container-fluid" id="lookup">
+        <div class="row heading-wrapper">
+            <div class="col-md-3 heading">
+                <h4 class="page-header text-primary">{{isEdit?"Edit Application Configuration":isSearch?"Search Application Configuration":"Create Application Configuration"}}</h4>
+            </div>
+            <div class="col-md-9 menu-button">
+                <a ng-disabled="isCreate" ng-click="isCreate || createToggle()" title="Create"><i class="fa fa-plus icon-filter"></i>Create</a>
+                <a ng-disabled="isSearch" ng-click="isSearch || searchToggle()" title="Search"><i class="fa fa-search-plus icon-filter"></i><span>Search</span></a>
+                <span class="Pipe"></span>
+                <a ng-disabled="readOnlyPage || userForm.$invalid || isSearch" ng-click="readOnlyPage || userForm.$invalid || isSearch || save()" ng-show="isCreate || isSearch" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-disabled="readOnlyPage || userForm.$invalid" ng-click="readOnlyPage || userForm.$invalid || update()" ng-show="isEdit" title="Update"><i class="fa fa-save icon-filter"></i><span>Update</span></a>
+                <a ng-disabled="isEdit" ng-click="isEdit || clearOut()" ng-show="isCreate || isEdit" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+                <a ng-show="isSearch" ng-click="clear()" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+            </div>
+        </div>
+        <div class="row search-form" ng-hide="isEdit || isCreate">
+            <div class="col-md-10 col-sm-10">
+                <div class="col-md-3 col-sm-6 input-field">
+                    <label class="control-label">Status</label>
+                    <select type="text" ng-model="c_active" class="form-control search-input">
+                        <option value="All">All</option>
+                        <option value="Y">Active</option>
+                        <option value="N">In Active</option>
+                    </select>
+                </div>
+            </div>
+            <div class="buttons create filter-button col-md-2  col-sm-2">
+                <button ng-disabled="readOnlyPage" ng-click="loadData()" class="btn btn-info"><i class="fa fa-binoculars icon-filter"></i>Go</button>
+            </div>
+        </div>
+        <form name="userForm" novalidate>
+            <div class="row create-form" ng-show="isEdit || isCreate">
+                <div class="col-md-12">
+                    <div class="col-md-3 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.AppConfigCode.$invalid && !userForm.AppConfigCode.$pristine }">
+                        <label class="control-label">App Config Code*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" required ng-model="AppConfig.AppConfigCode" name="AppConfigCode" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.AppConfigName.$invalid && !userForm.AppConfigName.$pristine }">
+                        <label class="control-label">App Config Name*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" required ng-model="AppConfig.AppConfigName" name="AppConfigName" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.AppConfigValue.$invalid && !userForm.AppConfigValue.$pristine }">
+                        <label class="control-label">App Config Value*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" required ng-model="AppConfig.AppConfigValue" name="AppConfigValue" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                   <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Descriptions</label>
+                        <div>
+                            <textarea ng-disabled="readOnlyPage" class="form-control" ng-model="AppConfig.Descriptions" name="Descriptions"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field" ng-show="isEdit">
+                        <label class="control-label">Active</label>
+                        <div>
+                            <select ng-disabled="readOnlyPage" class="form-control" ng-model="AppConfig.Active" name="Active">
+                                <option value="Y">Active</option>
+                                <option value="N">In Active</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="table-responsive">
+            <div class="grid data">
+                <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angucomplete/angucomplete-alt.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+    <environment include="Development">
+        <script src="~/js/applicationconfiguration/index.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/applicationconfiguration/index.min.js" asp-append-version="true"></script>
+    </environment>
+}
+

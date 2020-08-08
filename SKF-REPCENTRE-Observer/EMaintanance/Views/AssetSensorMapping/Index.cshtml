@@ -1,0 +1,406 @@
+﻿
+@{
+    ViewData["Title"] = "Asset Sensor Mapping";
+    Layout = "~/Views/Shared/_ObserverLayout.cshtml";
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<link href="~/lib/angucomplete/antocomplete-alt.css" rel="stylesheet" />
+
+<div ng-controller="skfCtrl" class="asset-sensor-mapping content-wrapper">
+    <div class="container-fluid" id="Taxonomy">
+        <div class="row heading-wrapper">
+            <div class="col-md-3 heading assetMappingHeader">
+                <h4 class="page-header text-primary">Asset - Sensor Mapping</h4>
+            </div>
+            <div class="col-md-9 menu-button">
+            </div>
+        </div>
+        <div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-3 tree-wrapper">
+                        <span class="tree-filter">Search: <input class="search-filter" type="text" ng-model="search"><i class="fa fa-close search" ng-click="search = ''"></i> </span>
+                        <div class="tree-hierarchy">
+                            <span ng-if="data[0].IsOClientMapped === 'True'" class="expand-icon" ng-click="expandTree()"><i ng-class="{'fa fa-plus-square': !isExpand, 'fa fa-minus-square': isExpand}"></i>{{isExpand ?"&nbsp;Collapse All" : "&nbsp;Expand All"}}</span>
+                            <span ng-if="data[0].IsOClientMapped === 'false'"><i class="fa fa-minus-square"></i> &nbsp;Collapse All</span>
+                            <ul ng-repeat="h in data | filter:search" class="tree-structure">
+                                <li>
+                                    <i class="fa tree-icons" ng-if=" h.PlantArea && h.IsOClientMapped == 'True'" ng-click="ToggleFilter(h)" ng-class="{'fa fa-plus-square-o': h.Toggle, 'fa fa-minus-square-o': !h.Toggle}"></i>
+                                    <span>
+                                        <i class="fa fa-user-circle-o icon-filter tree-icons"></i>&nbsp;{{h.ClientSiteName}}  &nbsp;
+                                        <a ng-if="h.IsOClientMapped == 'false'" tooltip-append-to-body="true" uib-tooltip="Observer client node not mapped!" class="fa fa-exclamation-triangle icon-filter not-mapped-icon"></a>
+                                    </span>
+                                    <ul ng-if="h.IsOClientMapped == 'True'" ng-repeat="i in h.PlantArea | filter:search" class="child" ng-hide="h.Toggle">
+                                        <li>
+                                            &nbsp;<i class="fa tree-icons" ng-if="i.Equipments" ng-click="ToggleFilter(i)" ng-class="{'fa fa-plus-square-o': i.Toggle, 'fa fa-minus-square-o': !i.Toggle}"></i>
+                                            <span>
+                                                <i class="fa fa-map-marker icon-filter"></i>
+                                                &nbsp;{{i.PlantAreaName}}
+                                            </span>
+                                            <ul ng-repeat="j in i.Equipments | filter:search" class="child" ng-hide="i.Toggle">
+                                                <li>
+                                                    <i class="fa tree-icons" ng-if="j.Units" ng-click="ToggleFilter(j)" ng-class="{'fa fa-plus-square-o': j.Toggle, 'fa fa-minus-square-o': !j.Toggle}"></i>
+                                                    <span>
+                                                        <i class="fa fa-superpowers icon-filter"></i>
+                                                        {{j.EquipmentName}}
+                                                    </span>
+                                                    <ul ng-repeat="k in j.Units| filter:search" class="child" id="unit-child" ng-hide="j.Toggle">
+                                                        <li>
+                                                            <span>
+                                                                &nbsp; <i class="fa tree-icons" ng-if="k.IntermediateUnit ||k.DriveUnit || k.DrivenUnit" ng-click="ToggleFilter(k)" ng-class="{'fa fa-plus-square-o': k.Toggle, 'fa fa-minus-square-o': !k.Toggle}"></i>
+                                                                <i class="fa tree-icons" ng-class="{'fa fa-cog': k.UnitType=='DR', 'fa fa-cogs': k.UnitType == 'IN','fa fa-modx': k.UnitType =='DN'}"></i>
+                                                                {{k.UnitName}}&nbsp;<span ng-class="{noAssetCount:k.AssetCount == 0}" class="asset-count">{{k.AssetCount}}</span>
+                                                            </span>
+                                                            <ul ng-repeat="l in k.DriveUnit| filter:search" class="child" ng-hide="k.Toggle">
+                                                                <li>
+                                                                    &nbsp;
+                                                                    <span ng-class="{'selected-asset-type':l.UnitId == selectedUnitId}">
+                                                                        <i class="fa fa-wrench icon-filter"></i>
+                                                                        <span class="tree-asset-link" ng-click="ShowAsset(k.UnitType, l.UnitId,l.IsOAssetMapped,h.ClientSiteName,i.PlantAreaName,j.EquipmentName,h.ClientSiteId,i.PlantAreaId)">&nbsp;{{l.IdentificationName}}</span>
+                                                                        <a ng-if="l.IsOAssetMapped == 'false'" tooltip-append-to-body="true" uib-tooltip="Sensor not mapped !" class="fa fa-exclamation-triangle icon-filter not-mapped-icon"></a>
+                                                                    </span>
+                                                                </li>
+                                                            </ul>
+                                                            <ul ng-repeat="l in k.IntermediateUnit| filter:search" class="child" ng-hide="k.Toggle">
+                                                                <li>
+                                                                    &nbsp;
+                                                                    <span ng-class="{'selected-asset-type':l.UnitId == selectedUnitId}">
+                                                                        <i class="fa fa-wrench icon-filter"></i>
+                                                                        <span class="tree-asset-link" ng-click="ShowAsset(k.UnitType, l.UnitId,l.IsOAssetMapped,h.ClientSiteName,i.PlantAreaName,j.EquipmentName,h.ClientSiteId,i.PlantAreaId)">&nbsp;{{l.IdentificationName}}</span>
+                                                                        &nbsp; <a ng-if="l.IsOAssetMapped == 'false'" tooltip-append-to-body="true" uib-tooltip="Sensor not mapped !" class="fa fa-exclamation-triangle icon-filter not-mapped-icon"></a>
+                                                                    </span>
+                                                                </li>
+                                                            </ul>
+                                                            <ul ng-repeat="l in k.DrivenUnit| filter:search" class="child" ng-hide="k.Toggle">
+                                                                <li>
+                                                                    &nbsp;
+                                                                    <span ng-class="{'selected-asset-type':l.UnitId == selectedUnitId}">
+                                                                        <i class="fa fa-wrench icon-filter"></i>
+                                                                        <span class="tree-asset-link" ng-click="ShowAsset(k.UnitType, l.UnitId, l.IsOAssetMapped,h.ClientSiteName,i.PlantAreaName,j.EquipmentName,h.ClientSiteId,i.PlantAreaId)">&nbsp;{{l.IdentificationName}}</span>
+                                                                        &nbsp;  <a ng-if="l.IsOAssetMapped == 'false'" tooltip-append-to-body="true" uib-tooltip="Sensor not mapped !" class="fa fa-exclamation-triangle icon-filter not-mapped-icon"></a>
+                                                                    </span>
+                                                                </li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-9 sensor-detail" ng-hide="!isAsset">
+                        <div class="row heading-wrapper">
+                            <div class="col-md-6 heading">
+                                <h4 class="page-header text-primary"><span class="unit-type">{{selectedUnitType}}</span> - {{SensorDetail.IdentificationName}}</h4>
+                            </div>
+                            <div class="col-md-6 menu-button">
+                                <a ng-if="SensorDetail.ObserverNodeId" ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i>Save</a>
+                                <a ng-click="cancel()" title="Cancel"><i class="fa fa-close icon-filter"></i>Cancel</a>
+                            </div>
+                        </div>
+                        <div class="asset-unmapped" ng-if="!SensorDetail.ObserverNodeId">
+                            <div class="menu-button">
+                                <h4><i class="fa fa-exclamation-triangle icon-filter not-mapped-icon" tooltip-append-to-body="true" uib-tooltip="Sensor not mapped !"></i> &nbsp;<strong>{{SensorDetail.IdentificationName}}</strong> has not been mapped with observer node !</h4>
+                                <a ng-click="assetMapping(SensorDetail)" title="Asset Mapping"><i class="fa fa-link icon-filter"></i><span>Click here to map with Observer Node</span></a>
+                                @*<a ng-click="cancel()" title="Cancel"><i class="fa fa-close icon-filter"></i>Cancel</a>*@
+                            </div>
+                        </div>
+                        <div class="asset-details" ng-if="SensorDetail.ObserverNodeId">
+                            <div class="col-md-12">
+                                <label class="control-label">
+                                    <strong>Emaintenance Path: </strong>
+                                </label>
+                                @*<span>{{SensorDetail.UnitPath}}</span>*@
+                            <span>{{EMaintClientName}}\{{EMaintPlantArea}}\{{EMaintEquipment}}\{{SensorDetail.IdentificationName}}</span>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="control-label">
+                                    <strong>Observer Path:</strong>
+                                </label>
+                                <span>{{SensorDetail.ObserverNodePath}}</span>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="control-label">
+                                    <strong> Asset Type: </strong>
+                                </label>
+                                <span ng-switch="SensorDetail.UnitType">
+                                    <span ng-switch-when="DR">
+                                        Drive Unit
+                                    </span>
+                                    <span ng-switch-when="IN">
+                                        Intermediate Unit
+                                    </span>
+                                    <span ng-switch-when="DN">
+                                        Driven Unit
+                                    </span>
+                                </span>
+                            </div>
+                            @*<div ng-if="SensorDetail.ObserverNodeId" class="col-md-12">
+                    <label class="control-label">
+                        <strong>Sensor/Node Plotting Image:</strong>
+                    </label>
+                    <a ng-click="PlottingImage()"><i class="fa fa-link"></i>&nbsp;Link to view image</a>
+                </div>*@
+                        </div>
+                        <div ng-if="SensorDetail.ObserverNodeId" class="popup-user-role shaft-intermediate shaft-wrapper">
+                            <div class="col-md-12 col-sm-12 input-field" ng-repeat="val in SensorDetail.Shaft | orderBy : ShaftOrder">
+                                <h3 class="accordion">
+                                    <a ng-click="showAcc(val.ShaftOrder)"> {{val.ShaftName}} </a>
+                                </h3>
+                                <div class="accordion-content" ng-show="showMode{{val.ShaftOrder}}">
+                                    <div class="col-md-12 col-sm-6 non-drive-end input-field" ng-repeat="i in val.DriveEnd">
+                                        <h5>Drive End</h5>
+                                        <div class="col-md-6 col-sm-6 input-field">
+                                            <label class="control-label">Node/Sensor*</label>
+                                            <ui-select style="width: 800px;" ng-model="Sensor.IdNode" theme="bootstrap" ng-disabled="readOnlyPage" on-select="SaveSensor($select.selected, val.ShaftOrder, i.ShaftSide)">
+                                                <ui-select-match placeholder="Select Sensor...">{{$select.selected.NodeName}}</ui-select-match>
+                                                <ui-select-choices repeat="observer.NodeType as observer in ObserverSensorDDL | propsFilter: {NodeName: $select.search}">
+                                                    <div ng-bind-html="observer.NodeName | highlight: $select.search"></div>
+                                                    <strong>
+                                                        <small style="font-size:11px; white-space: normal;">
+                                                            Path: {{observer.NodePath}}
+                                                        </small>
+                                                    </strong>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </div>
+                                        <div class="table-responsive col-md-12 col-sm-12">
+                                            <table>
+                                                <tr style="background:#ccc">
+                                                    <th style="width:5%">S.No</th>
+                                                    <th style="width:20%">Sensor Name*</th>
+                                                    <th style="width:15%">Title*</th>
+                                                    <th style="width:14%">Sensor Orientation</th>
+                                                    <th style="width:14%">Warning Threshold*</th>
+                                                    <th style="width:14%">Alarm Threshold*</th>
+                                                    <th style="width:14%">EU Name*</th>
+                                                    <th style="width:5%">Action</th>
+                                                </tr>
+                                                <tr ng-repeat="j in i.Sensors">
+                                                    <td style="width:5%">{{$index + 1}} </td>
+                                                    <td tooltip-class="customClass" tooltip-append-to-body="true" uib-tooltip="Sensor Path - {{j.NodePath}}"style="width:20%;cursor:pointer;">
+                                                        <input ng-class="{'invalid-sensor':!j.NodeName && isSensorInvalid}" type="text" class="form-control" ng-model="j.NodeName" name="NodeName" />
+                                                    </td>
+                                                    <td style="width:19%">
+                                                        <input ng-class="{'invalid-sensor':!j.SensorTitle && isSensorInvalid}" type="text" class="form-control" ng-model="j.SensorTitle" name="NodeTitle" />
+                                                    </td>
+                                                    <td style="width:14%">
+                                                        <select ng-model="j.SensorOrientationid" class="form-control search-input" name="SpeedType"
+                                                                ng-options="value.LookupId as value.LValue for (key, value) in SensorOrientationDDL"></select>
+                                                    </td>
+                                                    <td style="width:14%">
+                                                        <input ng-class="{'invalid-sensor':!j.Warning && isSensorInvalid}" type="number" class="form-control" ng-model="j.Warning" name="WarningThreshold" />
+                                                    </td>
+                                                    <td style="width:14%">
+                                                        <input ng-class="{'invalid-sensor':!j.Alarm && isSensorInvalid}" type="number" class="form-control" ng-model="j.Alarm" name="AlarmThreshold" />
+                                                    </td>
+                                                    <td style="width:9%">
+                                                        <select ng-class="{'invalid-sensor':!j.EUnitId && isSensorInvalid}" ng-model="j.EUnitId" class="form-control search-input" name="EUnit"
+                                                                ng-options="value.EUnitId as value.EUName for (key, value) in EUnitDDL"></select>
+                                                    </td>
+                                                    <td style="width:5%">
+                                                        <label class="ui-grid-cell-contents">
+                                                            <a class="expand-icon" title="Remove" ng-click="DirtyValues(i.ShaftSide, val.ShaftOrder, j)">
+                                                                <i class="fa fa-trash"></i>
+                                                            </a>
+                                                        </label>
+                                                    </td>
+                                                </tr>
+                                                <tr ng-show="!i.Sensors.length">
+                                                    <td colspan="8">No Records Found</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-12 col-sm-6 non-drive-end input-field" ng-repeat="i in val.NonDriveEnd">
+                                        <h5>Non Drive End</h5>
+                                        <div class="col-md-6 col-sm-6 input-field">
+                                            <label class="control-label">Node/Sensor*</label>
+                                            <ui-select style="width: 800px;" ng-model="Sensor.IdNode" theme="bootstrap" ng-disabled="readOnlyPage" on-select="SaveSensor($select.selected, val.ShaftOrder, i.ShaftSide)">
+                                                <ui-select-match placeholder="Select Sensor...">{{$select.selected.NodeName}}</ui-select-match>
+                                                <ui-select-choices repeat="observer.NodeType as observer in ObserverSensorDDL | propsFilter: {NodeName: $select.search}">
+                                                    <div ng-bind-html="observer.NodeName | highlight: $select.search"></div>
+                                                    <strong>
+                                                        <small style="font-size:11px; white-space: normal;">
+                                                            Path: {{observer.NodePath}}
+                                                        </small>
+                                                    </strong>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </div>
+                                        <div class="table-responsive col-md-12 col-sm-12">
+                                            <table>
+                                                <tr style="background:#ccc">
+                                                    <th style="width:5%">S.No</th>
+                                                    <th style="width:20%">Sensor Name*</th>
+                                                    <th style="width:15%">Title*</th>
+                                                    <th style="width:14%">Sensor Orientation</th>
+                                                    <th style="width:14%">Warning Threshold*</th>
+                                                    <th style="width:14%">Alarm Threshold*</th>
+                                                    <th style="width:14%">EU Name*</th>
+                                                    <th style="width:5%">Action</th>
+                                                </tr>
+                                                <tr ng-repeat="j in i.Sensors">
+                                                    <td style="width:5%">{{$index + 1}} </td>
+                                                    <td tooltip-class="customClass" tooltip-append-to-body="true" uib-tooltip="Sensor Path - {{j.NodePath}}" style="width:20%;cursor:pointer">
+                                                        <input ng-class="{'invalid-sensor':!j.NodeName && isSensorInvalid}" type="text" class="form-control" ng-model="j.NodeName" name="WarningThreshold" />
+                                                    </td>
+                                                    <td style="width:19%">
+                                                        <input ng-class="{'invalid-sensor':!j.SensorTitle && isSensorInvalid}" type="text" class="form-control" ng-model="j.SensorTitle" name="NodeTitle" />
+                                                    </td>
+                                                    <td style="width:14%">
+                                                        <select ng-model="j.SensorOrientationid" class="form-control search-input" name="SpeedType"
+                                                                ng-options="value.LookupId as value.LValue for (key, value) in SensorOrientationDDL"></select>
+                                                    </td>
+                                                    <td style="width:14%">
+                                                        <input ng-class="{'invalid-sensor':!j.Warning && isSensorInvalid}" type="number" class="form-control" ng-model="j.Warning" name="WarningThreshold" />
+                                                    </td>
+                                                    <td style="width:14%">
+                                                        <input ng-class="{'invalid-sensor':!j.Alarm && isSensorInvalid}" type="number" class="form-control" ng-model="j.Alarm" name="AlarmThreshold" />
+                                                    </td>
+                                                    <td style="width:9%">
+                                                        <select ng-class="{'invalid-sensor':!j.EUnitId && isSensorInvalid}" ng-model="j.EUnitId" class="form-control search-input" name="EUnit"
+                                                                ng-options="value.EUnitId as value.EUName for (key, value) in EUnitDDL"></select>
+                                                    </td>
+                                                    <td style="width:5%"><label class="ui-grid-cell-contents"><a class="expand-icon" title="Remove" ng-click="DirtyValues(i.ShaftSide, val.ShaftOrder, j)"><i class="fa fa-trash"></i></a></label></td>
+                                                </tr>
+                                                <tr ng-show="!i.Sensors.length">
+                                                    <td colspan="8">No Records Found</td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        @*<div class="col-md-12">
+                <label class="control-label">
+                    Asset Image:
+                </label>
+                <a ng-click="newFile(SensorDetail)"><i class="fa fa-lock"></i>&nbsp; Link to add and view existing image</a>
+            </div>*@
+                    </div>
+                    <div class="col-md-9" ng-hide="isAsset ||data[0].IsOClientMapped == 'false'"">
+                        <div class="col-md-12 heading">
+                            <h4 class="no-record text-primary ng-binding">  <i class="fa fa-exclamation-triangle no-record-icon"></i> No Records Selected</h4>
+                        </div>
+                    </div>
+                    <div class="asset-unmapped" ng-if="data[0].IsOClientMapped == 'false'">
+                        <div class="menu-button">
+                            <h4><i class="fa fa-exclamation-triangle icon-filter not-mapped-icon" tooltip-append-to-body="true" uib-tooltip="Observer client node not mapped"></i> &nbsp;Observer client node not mapped !</h4>
+                            <a ng-click="clientMapping(data[0])" title="Client Mapping"><i class="fa fa-link icon-filter"></i><span>Click here to map with Client!</span></a>
+                            @*<a ng-click="cancel()" title="Cancel"><i class="fa fa-close icon-filter"></i>Cancel</a>*@
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/ng-template" id="skfAssetMappingSensorModal.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Asset Mapping</span>
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary">&nbsp;&nbsp;<strong>{{selectedAssetTye}}</strong> - {{EMaintAssetName}}</h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="saveMapping()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="well">
+                <ui-select autofocus="true" ng-model="Selected" theme="bootstrap" ng-disabled="readOnlyPage" style="width: 800px;" title="Choose a Asset" on-select="save($select.selected)" required>
+                    <ui-select-match placeholder="Select ...">
+                        {{$select.selected.NodeName}}
+                    </ui-select-match>
+                    <ui-select-choices repeat="assetObsr.NodeName as assetObsr in AssetsDDL | propsFilter: {NodeName: $select.search} | limitTo: 100">
+                        <div ng-bind-html="assetObsr.NodeName | highlight: $select.search"></div>
+                        <strong>
+                            <small style="font-size:11px; white-space: normal;">
+                                Path: {{assetObsr.NodePath}}
+                            </small>
+                        </strong>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>
+
+
+<script type="text/ng-template" id="skfClientMappingSensorModal.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Client / Mapping</span>
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary"><span class="unit-type">EMaintenance Client</span> -{{ClientName}} </h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <form name="userForm" novalidate>
+                <div class="row create-form">
+                    <div class="col-md-12">
+                        <div class="col-md-3 col-sm-5 input-field">
+                            <label class="control-label">Observer Database Account*</label>
+                            <ui-select ng-model="ClientMapping.ObserverDBId" theme="bootstrap" ng-disabled="readOnlyPage" style="width: 800px;" on-select="SaveODb($select.selected)">
+                                <ui-select-match placeholder="Select Database...">{{$select.selected.Name}}</ui-select-match>
+                                <ui-select-choices repeat="observer.Id as observer in ObserverdbDDL | propsFilter: {Name: $select.search}">
+                                    <div ng-bind-html="observer.Name | highlight: $select.search"></div>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                        <div class="col-md-6 col-sm-7 input-field">
+                            <label class="control-label">Client Name (Observer)*</label>
+                            <ui-select ng-model="ClientMapping.ObserverNodeId" theme="bootstrap" ng-disabled="readOnlyPage" style="width:1200px;" on-select="SaveOClient($select.selected)">
+                                <ui-select-match placeholder="Select Client...">{{$select.selected.NodeName}}</ui-select-match>
+                                <ui-select-choices repeat="OClient.IDNode as OClient in ObserverClientDDL | propsFilter: {NodeName: $select.search}">
+                                    <div ng-bind-html="OClient.NodeName | highlight: $select.search"></div>
+                                    <strong>
+                                        <small style="font-size:11px; white-space: normal;">
+                                            Path: {{OClient.NodePath}}
+                                        </small>
+                                    </strong>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>
+
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angucomplete/angucomplete-alt.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+
+    <environment include="Development">
+        <script src="~/js/assetsensormapping/index.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/assetsensormapping/index.min.js" asp-append-version="true"></script>
+    </environment>
+}

@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewData["Title"] = "User Guide";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<div ng-controller="skfCtrl" class="content-wrapper">
+    <div class="container-fluid" id="userguide">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-2 helpdesk-link">
+                    <h4 class="label-pdf">User Guide</h4>
+                    <div ng-repeat="file in DocumentationDDL">
+                        <div class="attched-pdf" ng-class="{active : {{$index}} === docindex}">
+                            <a class="pdf-doc" ng-click="ViewDocument(file.LookupCode, $index)">{{file.LValue}}</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-10 pdf-right">
+                    <iframe class="pdf-view" ng-src={{document}} type='application/pdf' style="width: 100%; height:460px; border: none;"></iframe>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+    <environment include="Development">
+        <script src="~/js/userguide/index.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/userguide/index.min.js" asp-append-version="true"></script>
+    </environment>
+}

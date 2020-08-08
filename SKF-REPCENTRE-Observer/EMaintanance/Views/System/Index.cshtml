@@ -1,0 +1,186 @@
+﻿@{
+    ViewData["Title"] = "System";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<div ng-controller="skfCtrl" class="system content-wrapper">
+    <div class="container-fluid" id="system">
+        <div class="row heading-wrapper">
+            <div class="col-md-3 heading">
+                <h4 class="page-header text-primary">{{isEdit?"Edit System":"Create System"}}</h4>
+            </div>
+            <div class="col-md-9 menu-button">
+                <a ng-disabled="isCreate" ng-click="isCreate || createToggle()" title="Create"><i class="fa fa-plus icon-filter"></i>Create</a>
+                <span class="Pipe"></span>
+                @*<span class="rds-buttons">
+                        <span class="dropdown" ng-show="isCreate">
+                            <a ng-disabled="readOnlyPage || userForm.$invalid" ng-click="readOnlyPage || userForm.$invalid  || save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                            <a class="dropdown-toggle arrow" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+                            <span class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" ng-disabled="readOnlyPage || userForm.$invalid" ng-click="readOnlyPage || userForm.$invalid  || save('goto')">Save & Goto Equipment</a>
+                            </span>
+                        </span>
+                    </span>*@
+                <a ng-disabled="readOnlyPage || userForm.$invalid" ng-click="readOnlyPage || userForm.$invalid  || save()" ng-show="isCreate" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-disabled="readOnlyPage || userForm.$invalid" ng-click="readOnlyPage || userForm.$invalid || update()" ng-show="isEdit" title="Update"><i class="fa fa-save icon-filter"></i><span>Update</span></a>
+                <a ng-disabled="isEdit" ng-click="isEdit || clearOut()" ng-show="isCreate || isEdit" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+                <a ng-show="isSearch" ng-click="clearValue()" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+            </div>
+
+        </div>
+        <form name="userForm" novalidate>
+            <div class="row create-form" ng-show="isEdit || isCreate">
+                <div class="col-md-12">
+                    @*<div class="col-md-2 col-sm-3 input-field" ng-class="{ 'has-error' : userForm.PlantAreaCode.$invalid && !userForm.PlantAreaCode.$pristine }">
+                            <label class="control-label">Plant Code*</label>
+                            <div>
+                                <input ng-disabled="readOnlyPage" class="form-control" required ng-model="Plant.PlantAreaCode" name="PlantAreaCode" />
+                                <span class="text-danger"></span>
+                            </div>
+                        </div>*@
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Plant*</label>
+                        @*<select ng-model="equipment.PlantAreaId" ng-disabled="readOnlyPage" class="form-control search-input" required name="Plant"
+                            ng-options="value.PlantAreaId as value.PlantAreaName for (key, value) in PlantDDL"></select>*@
+                        <ui-select ng-model="System.PlantAreaId" theme="bootstrap" ng-disabled="readOnlyPage" style="width: 800px;" on-select="loadArea(System.PlantAreaId, 'create')">
+                            <ui-select-match placeholder="Select ...">{{$select.selected.PlantAreaName}}</ui-select-match>
+                            <ui-select-choices repeat="area.PlantAreaId as area in PlantDDL | propsFilter: {PlantAreaName: $select.search} | limitTo: 50" null-option="defaultplant" loose-null>
+                                <div ng-bind-html="area.PlantAreaName | highlight: $select.search"></div>
+
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Area*</label>
+                        @*<select ng-model="equipment.PlantAreaId" ng-disabled="readOnlyPage" class="form-control search-input" required name="Plant"
+                            ng-options="value.PlantAreaId as value.PlantAreaName for (key, value) in PlantDDL"></select>*@
+                        <ui-select ng-model="System.AreaId" theme="bootstrap" ng-disabled="readOnlyPage" style="width: 800px;">
+                            <ui-select-match placeholder="Select ...">{{$select.selected.AreaName}}</ui-select-match>
+                            <ui-select-choices repeat="system.AreaId as system in AreaDDL | propsFilter: {AreaName: $select.search} | limitTo: 50" null-option="defaultarea" loose-null>
+                                <div ng-bind-html="system.AreaName | highlight: $select.search"></div>
+
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                     <div class="col-md-2 col-sm-3 input-field" ng-class="{ 'has-error' : userForm.SystemName.$invalid && !userForm.SystemName.$pristine }">
+                        <label class="control-label">System Name*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" required ng-model="System.SystemName" name="AreaName" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>                    <div class="col-md-2 col-sm-4 input-field" ng-show="isEdit">
+                        <label class="control-label">Status*</label>
+                        <div>
+                            <select ng-disabled="readOnlyPage" class="form-control" ng-model="System.Active" name="Active">
+                                <option value="Y">Active</option>
+                                <option value="N">In Active</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Description</label>
+                        <div>
+                            <textarea ng-disabled="readOnlyPage" class="form-control" ng-model="System.Descriptions" name="Descriptions"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="table-responsive">
+            <div class="grid data">
+                <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+    <script src="~/lib/angular/ui-grid/import/xlsx.full.min.js"></script>
+    <script src="~/lib/angular/ui-grid/import/ods.js"></script>
+    <environment include="Development">
+        <script src="~/js/import/index.js" asp-append-version="true"></script>
+        <script src="~/js/system/index.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/import/index.min.js" asp-append-version="true"></script>
+        <script src="~/js/system/index.min.js" asp-append-version="true"></script>
+    </environment>
+}
+<script type="text/ng-template" id="skfMultiLanguageModal.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <span class="model-breadcrumb">System / Multilingual</span>
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary">{{SystemName}} </h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive">
+                <div class="grid data">
+                    <div id="uiGrid" ui-grid="gridOpts2" class="grid" ui-grid-edit ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>
+
+@*<script type="text/ng-template" id="skfClonePopupModal.html">
+    <div class="popup-product clone">
+        <div class="modal-header">
+            <span class="model-breadcrumb">System</span>
+            <div class="col-lg-5 col-md-5 col-sm-12 heading">
+                <h4 class="page-header text-primary">Clone {{SystemName}} </h4>
+            </div>
+            <div class="col-lg-7 col-md-7 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="clone()" ng-show="isClone" ng-disabled="userForm.$invalid ||readOnlyPage" title="Save"><i class="fa fa-save icon-filter"></i><span>Clone</span></a>
+                <a ng-click="save()" ng-show="!isClone" ng-disabled="userForm.$invalid ||readOnlyPage" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close">
+    <i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="row search-form">
+            <form name="userForm" novalidate>
+                <div class="col-md-3 col-sm-6 input-field" ng-show="isClone" ng-class="{ 'has-error' : userForm.CloneCount.$invalid && !userForm.CloneCount.$pristine }">
+                    <label class="control-label">Clone Count*</label>
+                    <div>
+                        <input type="number" min="1" class="form-control" required ng-model="CloneCount" name="CloneCount" />
+                        <span class="text-danger"></span>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <table ng-show="!isClone">
+            <tr>
+                <th>S.no</th>
+                <th>Area Name</th>
+            </tr>
+            <tr ng-repeat="p in SystemCloneDDL">
+                <td>
+                    <input class="form-control" value="{{$index + 1}}" name="SystemName" />
+                </td>
+                <td class="edit-content">
+                    <input class="form-control" ng-model="p.SystemName" name="SystemName" />
+                </td>
+            </tr>
+        </table>
+    </div>
+</script>*@
+

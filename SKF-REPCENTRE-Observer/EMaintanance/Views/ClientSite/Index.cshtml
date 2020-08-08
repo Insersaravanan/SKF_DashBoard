@@ -1,0 +1,514 @@
+﻿@{
+    ViewData["Title"] = "Client";
+    Layout = "~/Views/Shared/_ObserverLayout.cshtml";
+   
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<link href="~/lib/angucomplete/antocomplete-alt.css" rel="stylesheet" />
+<div ng-controller="skfCtrl" class="clientsite content-wrapper">
+    <div class="container-fluid" id="Taxonomy">
+        <div class="row heading-wrapper">
+            <div class="col-md-3 heading">
+                <h4 class="page-header text-primary">{{isEdit?"Edit Client":"Create Client"}}</h4>
+            </div>
+            <div class="col-md-9 menu-button">
+                <a ng-disabled="isCreate" ng-click="isCreate || createToggle()" title="Create"><i class="fa fa-plus icon-filter"></i>Create</a>
+                @*<a ng-disabled="isSearch" ng-click="isSearch || searchToggle()" title="Search"><i class="fa fa-search-plus icon-filter"></i><span>Search</span></a>*@
+                <span class="Pipe"></span>
+                <span class="rds-buttons">
+                    <span class="dropdown" ng-show="isCreate">
+                        <a ng-disabled="readOnlyPage || userForm.$invalid" ng-click="readOnlyPage || userForm.$invalid || save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                        <a class="dropdown-toggle arrow" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+                        <span class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" ng-disabled="readOnlyPage || userForm.$invalid" ng-click="readOnlyPage || userForm.$invalid || save('goto')">Save & Go Next</a>
+                        </span>
+                    </span>
+                </span>
+                @*<a ng-disabled="readOnlyPage || userForm.$invalid || isSearch" ng-click="readOnlyPage || userForm.$invalid || isSearch || save()" ng-show="isCreate || isSearch" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>*@
+                <a ng-disabled="readOnlyPage || userForm.$invalid" ng-click="readOnlyPage || userForm.$invalid || update()" ng-show="isEdit" title="Update"><i class="fa fa-save icon-filter"></i><span>Update</span></a>
+                <a ng-disabled="isEdit" ng-click="isEdit || clearOut()" ng-show="isCreate || isEdit" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+                @*<a ng-show="isSearch" ng-click="clearValue()" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>*@
+            </div>
+        </div>
+        @*<div class="row search-form" ng-hide="isEdit || isCreate">
+                <div class="col-md-10 col-sm-10">
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Client Site Status</label>
+                        <div>
+                            <select ng-model="S_ClientSite.LookupId" class="form-control search-input" name="ClientSiteStatus">
+                                <option value="">-- ALL --</option>
+                                <option ng-repeat="p in ClientStatusDDL" value="{{p.LookupId}}">{{p.LValue}}</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="buttons create filter-button col-md-2  col-sm-2">
+                    <button ng-disabled="readOnlyPage" ng-click="loadData()" class="btn btn-info"><i class="fa fa-binoculars icon-filter"></i>Go</button>
+                </div>
+            </div>*@
+        <form name="userForm" novalidate>
+            <div class="row create-form" ng-show="isEdit || isCreate">
+                <div class="col-md-12">
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Industry*</label>
+                        @*<select ng-model="ClientSite.IndustryId" class="form-control search-input" required name="Industry"
+                            ng-options="value.IndustryId as value.IndustryName for (key, value) in IndustryDDL"></select>*@
+
+                        <ui-select ng-model="ClientSite.IndustryId" theme="bootstrap" ng-disabled="readOnlyPage" style="width: 800px;">
+                            <ui-select-match placeholder="Select Industry...">{{$select.selected.IndustryName}}</ui-select-match>
+                            <ui-select-choices repeat="industry.IndustryId as industry in IndustryDDL | propsFilter: {IndustryName: $select.search,SectorName: $select.search,SegmentName: $select.search}">
+                                <div ng-bind-html="industry.IndustryName | highlight: $select.search"></div>
+                                <small>
+                                    {{industry.SectorName}} - {{industry.SegmentName}}
+                                </small>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Country*</label>
+                        <select ng-model="ClientSite.CountryId" class="form-control search-input" required name="country" ng-change="loadCostCentre(ClientSite.CountryId)"
+                                ng-options="value.CountryId as value.CountryName for (key, value) in CountryDDL"></select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Branch*</label>
+                        <select ng-model="ClientSite.CostCentreId" class="form-control search-input" required name="CostCentre"
+                                ng-options="value.CostCentreId as value.CostCentreName for (key, value) in CostCentreDDL"></select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">
+                            Client Group &nbsp;&nbsp;&nbsp;
+                            <a ng-click="newClient()" tooltip-append-to-body="true" uib-tooltip="Click here to create new client" tooltip-class="customClass" class="mouse-pointer"><i class="fa fa-plus-square"></i></a>
+                        </label>
+                        <select ng-model="ClientSite.ClientId" class="form-control search-input" name="Client" ng-options="value.ClientId as value.ClientName for (key, value) in ClientDDL"></select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.InternalRefId.$invalid && !userForm.InternalRefId.$pristine }">
+                        <label class="control-label">Internal Reference Number (COH)</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" ng-model="ClientSite.InternalRefId" name="InternalRefId" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Client Name*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" required ng-model="ClientSite.SiteName" name="SiteName" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Email Id </label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" ng-model="ClientSite.Email" name="email" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Siebel Id*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" required class="form-control" ng-model="ClientSite.SiebelId" name="Siebel" />
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">State*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" required ng-model="ClientSite.StateName" name="StateName" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">City</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" ng-model="ClientSite.City" name="City" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Phone</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" ng-model="ClientSite.Phone" name="Phone" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field" ng-show="isEdit">
+                        <label class="control-label">Client Status*</label>
+                        <select ng-model="ClientSite.LookupId" class="form-control search-input" name="ClientSiteStatus"
+                                ng-options="value.LookupId as value.LValue for (key, value) in ClientStatusDDL"></select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Address1</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" ng-model="ClientSite.Address1" name="Address1" />
+                            <span class="text-danger"></span>
+
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Address2 </label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" ng-model="ClientSite.Address2" name="Address2" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-6 input-field">
+                        <label class="control-label">PO Box</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" ng-model="ClientSite.POBox" name="POBox" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-1 col-sm-6 input-field">
+                        <label class="control-label">Zip</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" ng-model="ClientSite.Zip" name="Zip" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-1 col-sm-6 input-field rds">
+                        <label class="control-label">Client Logo</label>
+                        <div>
+                            <input type="file" id="files" class="uploadfile" ng-model="imgUpload" name="files" accept="image/x-png,image/jpeg" onchange="angular.element(this).scope().uploadImageStart()" />
+                            <label>
+                                <i class="fa fa-file-image-o  icon-filter"></i>
+                                <img id="blah" src="#" ng-show="validFormat" alt="" class="upload-img" />
+                                <img src="{{Logo}}" ng-show="Logo.length > 0 && !validFormat" class="upload-img">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-6 input-field client-anlytcs">
+                        <label><input type="checkbox" ng-model="ClientSite.ExcludeFromAnalytics" name="ExcludeFromAnalytics" ng-true-value="1" ng-false-value="0">Exclude from analytics</label>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="table-responsive">
+            <div class="grid data">
+                <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angucomplete/angucomplete-alt.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+    <environment include="Development">
+        <script src="~/js/clientsite/index.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/clientsite/index.min.js" asp-append-version="true"></script>
+    </environment>
+}
+<script type="text/ng-template" id="skfMultiLanguageModal.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Client / Multilingual</span>
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary">{{SiteName}} </h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive">
+                <div class="grid data">
+                    <div id="uiGrid" ui-grid="gridOpts2" class="grid" ui-grid-cellnav ui-grid-edit ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfClientModal.html">
+    <div class="popup-product">
+        @*<div class="modal-header">
+                <div class="col-lg-9 col-md-9 col-sm-9">
+                    <h4 class="text-primary">Client - Create</h4>
+                </div>
+            </div>*@
+        <div class="modal-header">
+            <span class="model-breadcrumb">Client Group - Create</span>
+            @*<div class="col-lg-8 col-md-8 col-sm-12 heading">
+                    <h4 class="page-header text-primary">{{sitename}} </h4>
+                </div>*@
+            <div class="col-lg-12 col-md-12 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save('goto')" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Cancel"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <form name="skfForm" id="skfForm" novalidate>
+                <div class="row">
+                    <div class="col-md-10 col-sm-10 input-field" ng-class="{ 'has-error' : userForm.ClientName.$invalid && !userForm.ClientName.$pristine }">
+                        <label class="control-label">Client Group Name*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" required ng-model="Client.ClientName" name="ClientName" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    @*<div class="col-md-3 col-sm-6 input-field">
+                            <label class="control-label">Client Status</label>
+                            <div>
+                                <select ng-model="Client.ClientStatus" class="form-control search-input" name="ClientStatus"
+                                        ng-options="value.LookupId as value.LValue for (key, value) in ClientDDL"></select>
+                            </div>
+                        </div>*@
+                </div>
+            </form>
+        </div>
+        @*<div class="modal-footer">
+                <div class="col-lg-3 col-md-3 col-sm-3 create-button">
+                    <button ng-click="save('goto')" class="btn btn-info"><i class="fa fa-save icon-filter"></i>Save</button>
+                    <button ng-click="cancel()" class="btn btn-info"><i class="fa fa-close icon-filter"></i>Close</button>
+                </div>
+            </div>*@
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfConditionCodeMapModal.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Client /Condition Code Mapping </span>
+            <div class="col-lg-7 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary">{{sitename}} </h4>
+            </div>
+            <div class="col-lg-5 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="save('next')" title="Save and Go Next"><i class="fa fa-save icon-filter"></i><span>Save and Go Next</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive">
+                <div class="grid data">
+                    <div id="uiGrid" ui-grid="gridOpts3" class="grid" ui-grid-edit ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="col-lg-7 col-md-8 col-sm-12 heading">
+            </div>
+            <div class="col-lg-5 col-md-4 col-sm-12 create-button  menu-button">
+                <a ng-click="Next('next')" title="Next"><i class="fa fa-forward icon-filter"></i><span>Next</span></a>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfConditionCodeLagModal.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Condition Code Mapping  / Language</span>
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary">{{conditionName}} </h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive">
+                <div class="grid data">
+                    <div id="uiGrid" ui-grid="gridOpts2" class="grid" ui-grid-edit ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfConfigurationModal.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Configuration</span>
+            <div class="col-lg-7 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary">{{sitename}} </h4>
+            </div>
+            <div class="col-lg-5 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="save('next')" title="Save and Go Next"><i class="fa fa-save icon-filter"></i><span>Save and Go Next</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive">
+                <div class="grid data">
+                    <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-cellnav ui-grid-edit ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="col-lg-7 col-md-8 col-sm-12 heading">
+            </div>
+            <div class="col-lg-5 col-md-4 col-sm-12 create-button  menu-button">
+                <a ng-click="Next('next')" title="Next"><i class="fa fa-forward icon-filter"></i><span>Next</span></a>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfUsersiteAccess.html">
+    <div class="popup-user-role">
+        <div class="modal-header">
+            <span class="model-breadcrumb">User / UserSite Access</span>
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary">{{sitename}} </h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                <a ng-click="AddUser()" title="New User"><i class="fa fa-plus icon-filter"></i><span>New User</span></a>
+                <span class="Pipe"></span>
+                <a ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body user-siteaccess">
+            <div class="row">
+                <div class="panel-body user-siteaccess">
+                    <div ng-init="accordion=1">
+                        <h3 class="accordion" ng-class="{active:accordion==1}">
+                            <a ng-click="accordion = 1">Planner</a>
+                        </h3>
+                        <div class="accordion-content" ng-show="accordion==1">
+                            <div class="well user-siteaccess">
+                                <ui-select multiple ng-model="intern.selectedPlanner" theme="bootstrap" ng-disabled="readOnlyPage" close-on-select="false" style="width: 800px;" title="Choose a planner">
+                                    <ui-select-match placeholder="Select User...">{{$item.UserName}}</ui-select-match>
+                                    <ui-select-choices repeat="planner in PlannerDDL | propsFilter: {UserName: $select.search} | limitTo: 50">
+                                        <div ng-bind-html="planner.UserName | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </div>
+                        <h3 class="accordion" ng-class="{active:accordion==2}">
+                            <a ng-click="accordion = 2">DataCollector</a>
+                        </h3>
+                        <div class="accordion-content" ng-show="accordion==2">
+                            <div class="well  user-siteaccess">
+                                <ui-select multiple ng-model="intern.selectedDataCollector" theme="bootstrap" ng-disabled="readOnlyPage" close-on-select="false" style="width: 800px;" title="Choose a data collector">
+                                    <ui-select-match placeholder="Select User...">{{$item.UserName}}</ui-select-match>
+                                    <ui-select-choices repeat="dc in DataCollectorDDL | propsFilter: {UserName: $select.search} | limitTo: 50">
+                                        <div ng-bind-html="dc.UserName | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </div>
+                        <h3 class="accordion" ng-class="{active:accordion==3}">
+                            <a ng-click="accordion = 3">Analyst </a>
+                        </h3>
+                        <div class="accordion-content" ng-show="accordion==3">
+                            <div class="well user-siteaccess">
+                                <ui-select multiple ng-model="intern.selectedAnalyst" theme="bootstrap" ng-disabled="readOnlyPage" close-on-select="false" style="width: 800px;" title="Choose a analyst">
+                                    <ui-select-match placeholder="Select User...">{{$item.UserName}}</ui-select-match>
+                                    <ui-select-choices repeat="analyst in AnalystDDL | propsFilter: {UserName: $select.search} | limitTo: 50">
+                                        <div ng-bind-html="analyst.UserName | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </div>
+                        <h3 class="accordion" ng-class="{active:accordion==4}">
+                            <a ng-click="accordion = 4">Reviewer</a>
+                        </h3>
+                        <div class="accordion-content" ng-show="accordion==4">
+                            <div class="well  user-siteaccess">
+                                <ui-select multiple ng-model="intern.selectedReviewer" theme="bootstrap" ng-disabled="readOnlyPage" close-on-select="false" style="width: 800px;" title="Choose a reviewer">
+                                    <ui-select-match placeholder="Select User..">{{$item.UserName}}</ui-select-match>
+                                    <ui-select-choices repeat="Reviewer in ReviewerDDL | propsFilter: {UserName: $select.search,CountryName: $select.search} | limitTo: 50">
+                                        <div ng-bind-html="Reviewer.UserName | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="table-responsive">
+                            <div class="grid data">
+                                <div id="uiGrid" ui-grid="gridOpts2" class="grid" ui-grid-cellnav ui-grid-edit ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfAddUser.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <span class="model-breadcrumb">User - Create</span>
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary">{{sitename}} </h4>
+            </div>
+            <div class="col-lg-4 col-md-12 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save('goto')" ng-disabled="userForm.$invalid" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <form name="userForm" id="userForm" novalidate>
+                <div class="row">
+                    <div class="col-md-3 col-sm-10 input-field" ng-class="{ 'has-error' : userForm.User.$invalid && !userForm.User.$pristine }">
+                        <label class="control-label">User Name/Email*</label>
+                        <div>
+                            <input type="email" ng-disabled="readOnlyPage" class="form-control" required ng-model="User.UserName" ng-blur="validateDomain()" name="User" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-10 input-field" ng-class="{ 'has-error' : userForm.FirstName.$invalid && !userForm.FirstName.$pristine }">
+                        <label class="control-label">First Name*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" required ng-model="User.FirstName" name="FirstName" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-10 input-field" ng-class="{ 'has-error' : userForm.LastName.$invalid && !userForm.LastName.$pristine }">
+                        <label class="control-label">Last Name*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" required ng-model="User.LastName" name="LastName" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-10 input-field" ng-class="{ 'has-error' : userForm.Mobile.$invalid && !userForm.Mobile.$pristine }">
+                        <label class="control-label">Mobile*</label>
+                        <div>
+                            <input class="form-control" required ng-model="User.Mobile" minlength="8" maxlength="16" size="16" name="Mobile" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-10 input-field">
+                        <label class="control-label">Role Group*</label>
+                        <div>
+                            <div class="well user-siteaccess">
+                                <ui-select multiple ng-model="User.RoleGroupId" theme="bootstrap" ng-disabled="readOnlyPage" close-on-select="false" style="width: 800px;" title="Choose a RoleGroup">
+                                    <ui-select-match placeholder="Select RoleGroup..">{{$item.RoleGroupName}}</ui-select-match>
+                                    <ui-select-choices repeat="role in RoleGroupDDL | propsFilter: {RoleGroupName: $select.search} | limitTo: 50">
+                                        <div ng-bind-html="role.RoleGroupName | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</script>

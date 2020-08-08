@@ -1,0 +1,111 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\SSK\\SKF\\Source Backup\\REP-Online-Dashboard-18-07-2020\\REP-Online-Dashboard-30-04-2020\\Observer-Dashboard-30-04-2020\\EMaintanance\\EMaintanance.csproj": {}
+  },
+  "projects": {
+    "C:\\SSK\\SKF\\Source Backup\\REP-Online-Dashboard-18-07-2020\\REP-Online-Dashboard-30-04-2020\\Observer-Dashboard-30-04-2020\\EMaintanance\\EMaintanance.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\SSK\\SKF\\Source Backup\\REP-Online-Dashboard-18-07-2020\\REP-Online-Dashboard-30-04-2020\\Observer-Dashboard-30-04-2020\\EMaintanance\\EMaintanance.csproj",
+        "projectName": "EMaintanance",
+        "projectPath": "C:\\SSK\\SKF\\Source Backup\\REP-Online-Dashboard-18-07-2020\\REP-Online-Dashboard-30-04-2020\\Observer-Dashboard-30-04-2020\\EMaintanance\\EMaintanance.csproj",
+        "packagesPath": "C:\\Users\\TK\\.nuget\\packages\\",
+        "outputPath": "C:\\SSK\\SKF\\Source Backup\\REP-Online-Dashboard-18-07-2020\\REP-Online-Dashboard-30-04-2020\\Observer-Dashboard-30-04-2020\\EMaintanance\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\TK\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp2.1"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp2.1": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netcoreapp2.1": {
+          "dependencies": {
+            "AWSSDK.Core": {
+              "target": "Package",
+              "version": "[3.3.29.12, )"
+            },
+            "AlanJuden.MvcReportViewer.NetCore": {
+              "target": "Package",
+              "version": "[1.0.10, )"
+            },
+            "BuildBundlerMinifier": {
+              "target": "Package",
+              "version": "[2.8.391, )"
+            },
+            "Dapper": {
+              "target": "Package",
+              "version": "[1.50.5, )"
+            },
+            "Microsoft.AspNetCore.App": {
+              "target": "Package",
+              "version": "[2.1.0, )"
+            },
+            "Microsoft.NETCore.App": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.1.0, )",
+              "autoReferenced": true
+            },
+            "Microsoft.TeamFoundationServer.Client": {
+              "target": "Package",
+              "version": "[16.143.0-preview, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.1.0, )"
+            },
+            "Stimulsoft.Dashboards.Web.NetCore": {
+              "target": "Package",
+              "version": "[2019.3.4, )"
+            },
+            "Stimulsoft.Reports.Web.NetCore": {
+              "target": "Package",
+              "version": "[2019.3.4, )"
+            },
+            "System.ServiceModel.Http": {
+              "target": "Package",
+              "version": "[4.5.3, )"
+            },
+            "bootstrap": {
+              "target": "Package",
+              "version": "[4.1.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.201\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,1702 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<StiSerializer version="1.02" type="Net" application="StiReport">
+  <Culture>en-US</Culture>
+  <Dictionary Ref="1" type="Dictionary" isKey="true">
+    <BusinessObjects isList="true" count="0" />
+    <Databases isList="true" count="1">
+      <C2Maintenance Ref="2" type="Stimulsoft.Report.Dictionary.StiSqlDatabase" isKey="true">
+        <Alias>C2Maintenance</Alias>
+        <ConnectionStringEncrypted />
+        <Name>C2Maintenance</Name>
+      </C2Maintenance>
+    </Databases>
+    <DataSources isList="true" count="3">
+      <EAppRptEquipmentConditionMonitoring Ref="3" type="Stimulsoft.Report.Dictionary.StiSqlSource" isKey="true">
+        <Alias>EAppRptEquipmentConditionMonitoring</Alias>
+        <Columns isList="true" count="19">
+          <value>PlantAreaId,System.Int32</value>
+          <value>ClientSiteId,System.Int32</value>
+          <value>PlantAreaName,System.String</value>
+          <value>JobEquipmentId,System.Int64</value>
+          <value>EquipmentId,System.Int32</value>
+          <value>EquipmentName,System.String</value>
+          <value>ReportBy,System.String</value>
+          <value>EmailId,System.String</value>
+          <value>ReviewerName,System.String</value>
+          <value>DataCollectionDate,System.DateTime</value>
+          <value>ReportDate,System.DateTime</value>
+          <value>ConditionCode,System.Int32</value>
+          <value>ConditionName,System.String</value>
+          <value>Comment,System.String</value>
+          <value>ServiceName,System.String</value>
+          <value>ServiceId,System.Int32</value>
+          <value>AreaName,System.String</value>
+          <value>SystemName,System.String</value>
+          <value>LanguageId,System.Int32</value>
+        </Columns>
+        <CommandTimeout>30</CommandTimeout>
+        <Dictionary isRef="1" />
+        <Key>f5aabc8323ec4bd5a5e3d0e6e2eee191</Key>
+        <Name>EAppRptEquipmentConditionMonitoring</Name>
+        <NameInSource>C2Maintenance</NameInSource>
+        <Parameters isList="true" count="2">
+          <value>_x0040_JobEquipmentId,,0,0</value>
+          <value>_x0040_LanguageId,,8,0</value>
+        </Parameters>
+        <SqlCommand>EAppRptEquipmentConditionMonitoring</SqlCommand>
+        <Type>StoredProcedure</Type>
+      </EAppRptEquipmentConditionMonitoring>
+      <EAppRptEquipmentConditionHistory Ref="4" type="Stimulsoft.Report.Dictionary.StiSqlSource" isKey="true">
+        <Alias>EAppRptEquipmentConditionHistory</Alias>
+        <Columns isList="true" count="4">
+          <value>RConditionDate,System.DateTime</value>
+          <value>RConditionId,System.Int32</value>
+          <value>RConditionCode,System.Int32</value>
+          <value>RConditionName,System.String</value>
+        </Columns>
+        <CommandTimeout>30</CommandTimeout>
+        <Dictionary isRef="1" />
+        <Key>af0c6d07f3484ceb888b71135dc9ab14</Key>
+        <Name>EAppRptEquipmentConditionHistory</Name>
+        <NameInSource>C2Maintenance</NameInSource>
+        <Parameters isList="true" count="5">
+          <value>_x0040_EquipmentId,,0,0</value>
+          <value>_x0040_JobEquipmentId,,0,0</value>
+          <value>_x0040_ClientSiteId,,8,0</value>
+          <value>_x0040_ServiceId,,8,0</value>
+          <value>_x0040_LanguageId,,8,0</value>
+        </Parameters>
+        <ReconnectOnEachRow>True</ReconnectOnEachRow>
+        <SqlCommand>EAppRptEquipmentConditionHistory</SqlCommand>
+        <Type>StoredProcedure</Type>
+      </EAppRptEquipmentConditionHistory>
+      <EAppRptEquipmentConditionMonitoringAssets Ref="5" type="Stimulsoft.Report.Dictionary.StiSqlSource" isKey="true">
+        <Alias>EAppRptEquipmentConditionMonitoringAssets</Alias>
+        <Columns isList="true" count="16">
+          <value>UnitType,System.String</value>
+          <value>UnitOrder,System.Int32</value>
+          <value>ConditionName,System.String</value>
+          <value>ConditionCode,System.Int32</value>
+          <value>ConfidentFactor,System.String</value>
+          <value>FailureProbFactor,System.String</value>
+          <value>Prioirty,System.String</value>
+          <value>NoOfDays,System.Int32</value>
+          <value>Comment,System.String</value>
+          <value>Recommendation,System.String</value>
+          <value>FailureMode,System.String</value>
+          <value>FailureCause,System.String</value>
+          <value>AssetId,System.String</value>
+          <value>AssetOrder,System.String</value>
+          <value>UnitAnalysisId,System.Int64</value>
+          <value>ClientSiteId,System.Int32</value>
+        </Columns>
+        <CommandTimeout>30</CommandTimeout>
+        <Dictionary isRef="1" />
+        <Key>4b300f3535c247c09ccb88da93a748ed</Key>
+        <Name>EAppRptEquipmentConditionMonitoringAssets</Name>
+        <NameInSource>C2Maintenance</NameInSource>
+        <Parameters isList="true" count="3">
+          <value>_x0040_ClientSiteId,EAppRptEquipmentConditionMonitoring.ClientSiteId,8,0</value>
+          <value>_x0040_JobEquipmentId,EAppRptEquipmentConditionMonitoring.JobEquipmentId,0,0</value>
+          <value>_x0040_LanguageId,,8,0</value>
+        </Parameters>
+        <ReconnectOnEachRow>True</ReconnectOnEachRow>
+        <SqlCommand>EAppRptEquipmentConditionMonitoringAssets</SqlCommand>
+        <Type>StoredProcedure</Type>
+      </EAppRptEquipmentConditionMonitoringAssets>
+    </DataSources>
+    <Relations isList="true" count="0" />
+    <Report isRef="0" />
+    <Resources isList="true" count="1">
+      <value>Name=skf, Alias=skf, Content=ONXFazWokwDTgshVPV29VHH4C_x002B_C_x002F_b_x002F_H8Cy_x002F_iAXbF403T0hePa_x002F_P6tvjGf0fDxaaJmuvSBOcBfD20fbrmLLu_x002F_TFeHpF1PsdrrywgXk55caarzlRkWce_x002F_UGzxHOm10Z9ir2tnXyWRTH5xYJg6sqlw6TzsupOkUB_x002F_U_x002B_8xzCPkQNZmlUAx_x002F_Hb2jpoYG5wopqAwGR671_x002F_Erx3hRvL0GRsW4phYSrM_x002B_D0KCyOKj0EX6M99L8Mu7c_x002F_EAPxwgLlEOGVA_x002F_AP_x002F_Rz9KjyhQIR2ZvZh88W2nwTNMNHx36UviXJUNqWI1B63YFFjVIeHiUkdGZB4CXRNr93PKSCv1cVlBZcKR2fch0bOBaooEKvl_x002F_c4RieE3DOLLg_x002B_d3vmljj796KOKETf2W2a_x002B_3zPStbs5l6_x002B_8eP09JFk_x002B__x002F_o7QbdAwTu6ngGAMvHnsfmFItPoTe2wI2AJgKu_x002B_YWV_x002B_O_x002F_ib4_x002B_T0IYDTWX_x002F_pzsftqfd0E_x002B_5PaHqJuCVZd5jLPV53B1PTlm5ruRAsPwAf6f4fFYiQb_x002F_x1PKqsUYLmmRKLN9z81Rbwoxah4MWv87y8xbOOekPQjPY06_x002F_dU6LnObdzmxXBEvwtQSEbKVDGxn8oAprTacpry1G1i7MEkQYJ2IVCw4Z1YmQZ3e7FybZ_x002B_LnX7zZMSEYxzD8uU0kL4jJWHriRMPdumzKsu1IEkuOBKSehb8X15XR18_x002B_XSgcByULuA3jbELD1RY6_x002F_ZT6WFM1GWnfhGMYM1YPGzfFivbUjKJYMS7NiYitmvuqfOUO7oxYbPF6rZ5lui58p_x002B_4tBNecgI3a1Tl7wXlYk2lvfAGGdcU1hNBegY79mRdmT2XcTDinY4OsMM0b1LeVLRJ5yCYQxlKLL6fEAFCHaJlsSMfyTK8SsbSBuK40aISQalZ6eLgtFZ19qWbpAj4ZsaLRv8zVIfxp74dj7EnccwVog0x0ecjcxRKgLdgKWZUyf03jPA5AgYC2kYCXoiCzqooyDTko0cpIQzCuskJ81mXllNhncb98c1fkB0xEJ0Rvc4xIOR8QxJKybdrmVKfJMo1lKyxSf2xBnVgNzqHrW4olBuVCExeZjCvtG5nMp2UE0YWPRMgS8zU_x002B_IbXXMkftfhj86MaYZcV6Z5C_x002F_52tkcZd_x002F_WMVzaYDjMzbxBMSWKXWrdWKPUR6DLUGqmcudtWo0_x002F_TuQoyzELbBtUsf6FAj5_x002F_l3TOJ5FpOTfUxw6_x002F_My_x002F_2JxwGJm6h3myzAdcd86nZHIgC5XEbRp6Zf5aJafakiHrgddvzcXiGEFsM0V3O5yoxi14p1LhWUM0dJVbSFNWlOfMTJ1JWkI7E3ySfocxC46s4Rr8_x002B_1zAyLUSRYutM_x002B_V6Q46YNzZyN4kVX0XeX48nwVNquXLy4AeJGNH48wnAUAzvDjcWVZHHGaBIYT3W6qWhi1hsq_x002F_AP3xEOAzZhfmInmiQi56_x002F_eJ_x002B_ndGHWrwwFW5VNilG8jMmOkuOuejkv3Ll7xNaeWfBypRw6Qoqvw6jlcTqeFTM3eQR_x002F_80HipdCgR5Y53vrv9mQBeZnKMGNLuNK1DuhB_x002B_UinCBY17AXQw0cYueNquRoUV4qShta0U2W96tadfq6QOTktxQnNlCCHcKsAp5Sqy49Z4crg83HN6JKfRJq8Qt_x002B_Q1iaDpCObpGO0M05z9Av1owhN1J_x002F_dAsEMQgK0fy_x002B_gb7KxquM9Y4_x002F_C3UNfowUQ3g7FfRMrFv0LXvtOmVoqlfH1PFWO0eQJvDY116hvtAPHhurOQII_x002F_wZzFzMb4Gs51GXexaubROcaPsQk2nZ_x002B_eD0HwvcYluOe1arsctKBBbbwg9BeRB_x002B_JQHD9ymZMx9ozKhHHtldRwkQ_x002F_uiLpGbqjhJu6E4F0DkP_x002B_ZpE0vB3U5vcyFSUiSg6YDc0CcWSCfbyw_x002B_sXB62mWyJS4AXZADGzxk_x002F_o2IwM21VLYTFsBCxks_x002B_Q_x002B_u76MpeZUKsyQcOFjpSMhJsv7lsSxY4YtinlfwJpbpVBYhvLZkT3TMtPmPd3CyQn3Gk0aLWKlgG4_x002F_yQaZhIF_x002F_5cm03GAF9kVDgx_x002F_MkHXFKE_x002B_tCgQTPX1hAVt1kLB4LLHu1LyL5InOOqqg9iraD1kyHct4icrh_x002B_IeqfcCImbHrkaja9LwmQbNTCxrch1X_x002B_UtwK3HTHIHmSe5YFJJkQNxjCunX6XMnR2dRrrxPzm9k9Lv4UxsDX1j4LXRHzf1RjZQJtU2H_x002F_d0jo5RzHwQlE3HrN_x002B_7aa35Jw4oKqBKclPYXrYof1i6x9Yq9xHT_x002B_sRweuIdiFyX81rns2meH3s0RmLcfxY57f0vEsY3SRBpSK118hNrFNeQqCnQSnvWdTLt0U6R0KkpHMY0QtykWAK8yBgeMBAO4IasoiOqVzKLTAmK39vEOsY0JCohs8aSjb4ApeQnEo_x002B_t7X3TZ8rVncDVjNQ87I74_x002F_bpE1wBig67VQg0BOVRpqgIVjap4dRk1qt1pKT4hNCUh2shmLyPtFvVdcBVPlMBzPA1VpjYyV7RMqFcuCDzpjEeC4_x002B_jHUykisVBcUDv7skGLaIcnUlRv8A8ECHpJfDEmTcl2m5T7z7GfLrQyxeOQif6_x002F_jRifHXGX6HtwW04dG7m4dLsBqS9dEqCpoqjmtCdGzt97GkCV0ILxt5aS4A3WwzCeqqd_x002F_h_x002F_REIUoDWc9lVGSNo_x002B_54P4XX5gB_x002F_5RpxytCYZ82_x002F_4IzRNYEt1vOLtVFeh9m60SSO8oEo0BiMRI3_x002B_7lCX6XPOmHMEbT4DBPJqNjnnZs_x002B_S9bvtlIwtXtvnvamE65fcopriLl7KRTgq73z52YyQFI1iSPD3dnNJiJW7oCUqD_x002B_1YC5EQ1trHCMc_x002B_rR6LQf5vNmn2KX8Jgi0C_x002F_ULdps3CZqmh0dAxJlzZgq_x002F_F4lfPjztBXh1ubTjwy_x002F_TN_x002F_IrjjqP1L0t9J_x002B_ulHlVgrIEVzGJsr3kC_x002B_U0r7jrrC8LlvRb1XPnVFvmigzJO9VyUMaGoe4AhStCzMtb7Pyh4_x002B_b_x002B_AGFFiIQheayzHtDcYj7vqv8hMbpIsRNV6px9iry92KA3nhMquHGhNyXY1a31sBEEeO_x002B_QPV4aL2D4dcbnAGavi_x002B_atIZPJC5vGM_x002B_EXmsG4AcK8JOvBPrEUu9vx3r8N68mDy23WFjfGtaXTwbC9X_x002B_sDlr3q1imhFhS2hkNfmjAvH9jwtQgSHv8cfqc5bUQX3HjrD6GYDcgfN_x002F_lJKUxqRxOns6Cwyvi0QTtzWwdWlCAzgDaWWV_x002B_a4RE6mt8fFVqhY_x002B_bF78_x002B_7H5NxImRdgLpEZdbqCL_x002B_umoEAastWE7WgvYjSIgQ4sZzlgsUs20MyKt9RDMvEKUmrZx23wPx9fOaMI8Q_x002F_xk77L0sr5GSa6mqKspx4nY4_x002B_QGp0SroObVIG_x002F_u3JKs_x002B_yzdbZRnsSw8ev7Po9LERFrxMFSMTW8IeiVVeGMQUjeqOThM1IqsNtOKXJsmFDHhMkFxDbdSpdEi3xJzDoAHE9K6YANCc3t10r7fn5R2ePqBsTs3QoIu3PGf3L9LW84_x002B_rWXdztrC4UbXgHjEDZEy_x002F_Ks5jdalPpyEDYxV5_x002B_godylKy95vCRw_x002B_MW8G6NTsP780DnA4Gy2rTYeN9QkuqaUy6bklr01dg3yxscOUzWA_x002B_PpaCCD7xI2auHHrDu_x002F_A091Tvsr9EgonsiTth4MwAjpxWGUVLmHeUh2sugG2tf_x002F_9_x002F_W_x002F_kNVB8j1fa9TgGnwNecckguPMTHsqDTih8wZ0QnYgpRt5nMZkafKPYtgBTNW_x002F_fSKIPjvt9PcxEgTVDy6v07fuyhFppUxf6cbZrtyaheu62cou8M27LeX_x002B_g_x002F_LmkKPvm9_x002B_DQI4SkPEqcsbO6sSoCQ9OZBkEL0xO2SMcdvUR2LPYLFbBdWaaS81RQJ9Z0AeX0SwM5e2nlec12D2Yg220ZfGHkHKnzvMYByFYfjddrFwKreS8d7tW9a28sRq8rlpsOg0Z1KcyRASLKp7Sxpnk_x002B_ucxzikz_x002B_Ec_x002B_11uedewa8mu1U4yi8DulAJwGAIT8fDudlZmKRgpkhasRSUfONGPJpl_x002F_xjAhcnxGslFRGrCE7CW5M5EoMq2PNjsePoelPfEFy2CXclg9DqI6o7Dw5HUdcI_x002F_65w_x002B_DIu3G909jBh5JOLvOszxFAXFGru1lcat7WyfdnqCHFke14B6Uc5XeU1q8B4qY3CWWZ3wpX5Gz6gYHYvO7fGbaRjzJtDvsaG3DWfl8K4eF8nDT4v4_x002B_n4ryN9ERmym6PpndXlRHzNn0hnmBOaauwrfw9cHPFyDHI7NVUw5VMbFBMAhORTiVRu3sncjKEZIaivWcHs8s6wRKn2l6yC2CRP80b6_x002F_MpqigiWZ8kKM0Hamg5p1mwNAAsqMVD4iie2vaam5uagX2wxkAW2GWPa3GydvvXAq5TPQN_x002F_fhrmd996_x002B_5h1TJK_x002B_EVAy8wy8Nmi9PfkPkoiyo_x002B_vs5CvX7RIOdvetd4YMmNJeMd_x002F_gzLwR6Tz9LCD_x002B__x002F_TNNEJ5Do1C33Dnlc8bdYKIShLusZSpAvNOllDpVrfDydpaXuz0pCcyZTyJrzMx_x002F_pwcdf5EaBfDffXpb4doT64ID4651xGB3_x002F_4sHuPKsm9c7jKRJ78US_x002F_evWRZ_x002F_5qn_x002B_lY_x002F_GBTnZNrPhTdl4PPxDHnYgbcLZ6he648cwo31nVjIesvAmpW3u8XIk16dK3rm06rqO5B41K5WYhwadgRO6SpQyOeHzTgCaQXZ3SD8hYlo7Z8BodddUScEdfMvCdf9W2hT4SuUASV8Un3h6uGInpUhmVix07FQIOsHYJhtgi3GGSHCkB25euaDKfStIDCKUiU_x002B_1aBKL370IvuexIybz7wyYZQQnmlgRYn5RMd3vlJbMGAr_x002B_Orks9HnWOlaRoUGOE4ynnODU4CUfvsLpW8OTwvXBimjQpe3Eo3xfSu4KeFYBGb2QuI8fwAeNZgsG_x002F_MqRDuC141iQsWSGzDaYo8ylWkNyK1zt_x002F_tveV5nX7qVsWDzdW1VlVlEfl6QVt9YnspXPgc_x002B_QE1F87GDzqBlnCTt8UYrCbNdbadER1O1aCch6ONSyfhTczl9qx0rv8r7D5bDX0_x002F_kDuI1_x002F_zwJArkJYnRLnC9TK6LQmBdRgvZypIJkYIbvM7reEqX04cNNjuY_x002B_G_x002B_sExkud_x002F_zhW0ZkVmomQS96ppXsrY39FxyfKhsRj3ynu0NJnevxezuv0MNPfdiBEKhFJLUZ_x002F_YCLcOPQq7pXUxRpvDRiLDeaET2GibQSqYqQBDyPG1Rq_x002B_nBP_x002B_ilumJNW7AyAeaMBm77TenlGQaSan9DsbOBPdYmFt4ritwcp11NZfnljR0VGuKQZy76CWMH2R3E6xxE4EXiF5zTXIqbvbIAPFGb2_x002F_2oge80ikUe8ZyZph0ZwQKT9wcXZjvw_x002B_HYN7tYcZZ6uE2RyQPPaap_x002F_LOwJKFKcYTv1y6Wd85od_x002B_zXL_x002F_GUeKROldylrVJ_x002B_mlUiiBP9tuBpvA0uIvC1fGnvbOZ4wTh2g3eBagfG_x002F_ZllKktcXaAJljQ240PMJ2_x002F_KVgMW4LlnSUYM7Ttp1ES3rNpVJZCbDjDq2lixfnRIXTyaMY8ueuT7Jc0aX1ehAS1wbJCQBw41NDFxJeC1at0TR3dLDUDCqZGasSdOWPjV_x002F_XsnwOAj9sAbILJfK0nQn4TqcjGQtw7JlodSuLT9sogArIAKc2T1shS3IKwhqh_x002F_mFSL7vtJXfHCiZkjxBAQSi2YXX6MSeu4NE_x002F_zBTdWnf1fyjkj14uMnQe5RCW3n8x4VeJXOhCwX9uuXBfABGNM_x002F_HABsDv8C8X_x002F_8UTYFkoySt7i1_x002B_nfG8fzDHfGDS82bdUgsnAN0miyN3jzC2i3f_x002B_JRDLbBy236NLBNIkwgADESIaKWn_x002B_LbAZUrF5KGawt3BVwSqp5ndbbms2eg8Rgnv91B1Y3iAxaN3SdQuO5sFv12VjZENUF8SYLmMRix72mB8AMSacGdioCql3wOUzHoGunguA0s4fbA4q9Y_x002F_HNfkWigCtX54Zpq_x002F_yFvJbsq1B9oi19xvjoxYJpBDCnXn_x002B_b1T1IzNCFuXR15xO9xkle_x002B_4dbWcNdaAltc21oijdfPLGtQdqwBhkvot7bESrIpnYXcrZLC77j2JDnfIgkM25dqXf6P0krDN7p_x002F_uC9kHoj_x002F_l1NAoW7oDNB9gpVsIo3HukjKQuCo3wJsHPDEqwXOVP6vysHYfWH193wsM0MXKKqqNqWVkTIo20xuWPI7M0dSiXiZakh1DAkISmpBRFyG3xoMLrIghRt5D7yHVyMENgym_x002F_zTzEi1WMRlrNBZWxXQ9SW0kJeczOH_x002B__x002B_Jt6tTX_x002B_ltiKEuhi3wEd6qYXfnbXCn_x002B_k0WlIxHavOqIYjtb74wgODucBGTA_x002F_Hm18EG55Ag4jJkua488pS_x002B_uoOux1OOv6SOOwkhVyayjamfTE3HZv1kA_x002B_muR46ASd_x002B_EkREy4YGun5YQm03TCCSjfWex9KRaQ_x002B_O9mHWBqjqNBvIdCR6hh_x002B_WaOV3APjnOoJbaaMe0IPAl50KhtRB4yOSz0n7rtHOylL8PFjarKIatcmbWS79SUpLiT_x002F__x002F_fMXGGQeQqUvGxMHznCQUzukcFfzQG0m5joOUjEVhyRWGHwXkUAaOZC7OgskOYXo1V4W5A6URsVgxa5jXZdNXpmr1wxFrW2msaLL2tdWLxn4MyWisQNQ1ERTVQpray0nhOQUBQsX8kWZ0ggzekWAbXTEJ6_x002B_x4vZ3JprvRO9HHJIsor38LWmLfTVsMHRt4umrfB9_x002F_BlnpI5mrQgmufMlGZBY12VeiliR85VxvTNlAOi4_x002B_HCWxjldI4s_x002F_wur4eZ75ksFguRTzWY4tlMaqUMXI7kldPENBYMEvBR_x002F_F6bS4926PZ_x002F_pO_x002B_Vv54eL_x002F_J_x002B_p5ux74mbEmnY2amYvkQeVNxDQePCGE5pXQKgK6F_x002F_iMrlxw2LaDqWilkUzvnwt9YbItb3sHwkIcHCFl0piQ_x002B_y5ZhqcYF1kpjFBqkxBEvJLm43UPZOoX_x002F_oZMVoG4rjCWDfhHggG_x002F_TRQ6sgM0BQHQpfG795PJwyRF9ixousfXH4IQ40OxxPKdlZBPQCsHifIhDQS_x002F_7_x002F_b2P6TUew_x002B_dqX4Dh72jbVQGBQs_x002F_9OEeFbyAI9tEAbxyQOtsS6csRGoLR3yNodP_x002F_PbIGubaSWR7ab6UiKkQXh20zE9mhlcIqjFijuiTBR_x002F_9f9UmgV6SHAzb4W4SAO2hxdDa_x002B_DAYxL3_x002B_2QEQF7EicGZIKNZxHIQ702moJtTMV_x002B_mmROMlmGII0moTd3Vcktjn_x002B_FSlJF3R9UFsheDcG6quA8STtUwc25kawSDCIthj9DOM6OWJTcOd_x002B_5yiqM7PVIySwiuF7A4QYXycTp24bB2tIKhw8YGhttcfup_x002F_qVs2HAoUHKtbF4zuFIhusFFer3yxWan969r5JeklNRI418F0WFWjljCgpLBtsSkArrfNbuHxExWRvuAIMnn1wkSwmFrfMJPcHZEUZOZZqbLagw1jlialQi7_x002B_tW2UCEXOC64KM8BCivqCA6mgudfRkoTn7U_x002F_bn_x002F_r3RctUYqL_x002F_Akzv65ALZidWEBm1KjTS1Zn5H0Cev4IIxnc8QvthVj_x002F_f9_x002F_bH9Bo1wcAsBQzR1vZ_x002B_nypuZolvP0U5lWApvR4zxGMfXtzINKTNmG0NLftcSsG8bHeZREwLz7JXYDwYWTO4BFGeP2ddx1tKcuUYACJeF8p2_x002F_kEq9eAsRCb9X10xwQ9y77X2fPPb05NRL0xwd9ub0ZtaHKDJjrjmS_x002F_j8JnkDZl_x002B_UItGtGBECTH2ZV_x002F_lnnES_x002F_H3PDDhS_x002F_WWNGgSzA5KIKkJx6O87mfgs5u9eUbHC4A7UQSvQ6Wsm5QLtGX9VlAvX0Oul_x002F_zYrSgJbIFeWllcBhRpXG6_x002B_N0yrUaLLubWV_x002B_pFaB_x002B_7BBYFMsLSuvlAXz_x002F_jZjImlz9x0p1NOdBK2sclVa0kySha2BDSAvaNsQqu4RL_x002B_Si_x002B_cfz_x002F_fdkdN0Sk666QisbRDwe1A45MS7F4smUzh_x002F_ellykoTibEhRARy1wIOCmC1KCaMUR_x002F_FYEgRVaOWLw8_x002F_TyMtQYTL_x002B_Ktg59ElUBp0nfEyePY5QRDfV7rN_x002F_ZAwigSI5DZ1jDCAo3_x002F_guo5Y8NQnWOALMUU0cmrAWFK8sjxz_x002B_R_x002B__x002B_iTeBgjizRCSlPdubS3VCGWtqeJX0O4YfMH_x002B_21XcZ9mdnuZDmGp0OO9AfRdi_x002F_Binpttvnxm7wLjYHNwbRpZzSNCzIBkiNnHr0KeoODLux32dSme8_x002F_6IjVfa_x002B_fQNYqKdvR5PXQuIPX4KjkJ7oUvGe_x002F_uReU4p7S64jSKn81eEBlTs7BvEVunvAxS_x002B_7TxFmL4OwRa8VLDjPXXMeYpXMurC30ZLpB4hXWpk3U1N4pijPBWd8KjegY4VmbAiriHbqMe1xVnC9owKACY3ywEIciZRkGfuEe_x002B_dFMntxv03TQqlJ5HO5dk4CrGJHy9MMle0IoBKVJ_x002F_X5joHf4RskShjA8ABssuqGDzjqOmuDM3YuYZbI3xahJ6YacPxquRrGsDFr2fkbnnlADoLa54M8rYVi7SHpoXgE0zvI0XbSma5B_x002B_7JsXUaUGBzdXi4o_x002B_98GhOxd4t7rhOJxP0UK_x002B_Sa_x002B__x002B_Fh_x002B_GyzLmZAeg11a2J2tU6xtxnpvE3AYIMfaa_x002F_y3GN5VPByhxrIPZ_x002F_Ln27P9JvaDSwlBFfVF7u02Zg01q3BuTua5AecBDINughuJkJGOmr_x002F_5m6frtQEZVhaMLGhNaMGedm2QwjEkC5gzfWUg88PQID9q2_x002F_VJ0wojIvSQi73QGGkLnV8kMNXi1uzY5p_x002F_NeLVm_x002B_XlU89sjfYE7noarhH_x002B_CKyyp2UzCEkZdAHA6bywomoNOkxzPQYSluEUDaAEzLHtAeRKAWTbO0R45Wl7lMmxpsFVZDwLVpY9QKoUC5xIEq0Ej9MuwNbOFbRwqsiN0cw5HuxDkkzROmnvkQLqZJFUttyF82tww_x002B_cYYdiK8lGeXwf3vcPCxAPwDTT3tmGuovrF7T7GeHlHuC62eQutfFzBeTNFkMSB72yZX1fB9mHLwklLiXqaRPaY7iKInOdI1w6Xnsc1bSSqffWU1FkzOPf6f1ObC_x002B_azIFpzgD4FiKPLKYkoRGmZwy4y4oURG6udAHvRA6WYg9H00djIrwpdbuejhEWuw0hAyAZdcQ0OcaEtCi8iCeBdWkMm20gTAZUIRglVmD84BP86xQmGteanBU4bkZf6Fu0dC4LWADwcinnUMPPDdtvAgQLwZSL200BrK_x002B_rUE6PYBQ2ROc7Mimnx7zMfYOsCwNi0B38S77wzh_x002F_uKbRvFixOtz12F_x002F_oOaOHXgApm9yT5QVX9hlzueY17dwIeE4oItFBD2PhmboiBz_x002B_LAEz7Xs8AZTC1uJ6eNY1SOOuP1w2sMCpC_x002F_Vfpa_x002B_z_x002B_XPg_x002F_UVX_x002F_s1WnXoStINJxDfGjc0FZZytaGDppSH_x002F_TN_x002B_UKvn2qGzTQuRz9DxsjMkdWVpaXAJGxVom8fznMttCeE7iu_x002B_V2MKK0_x002B_LSw9d9YM3ePLJGuV7mRKeQUy0fuzAw0cgDLL_x002B_tcg5ebk0fEnHk8wyp8pK5qIGGHZsIniEGJNz7qNpUK0va6gXw0hXtMcSp76_x002B_4Vj2ctTbbNwq0SL_x002B_JCxGPnkJYTgL9kt_x002F_3WMuPFlDnug4L9Ik3Dy2lHainoxqLsiYCJb0ugPfwlqQIhf3rO1lkvvedGByxTYAaGSBSTDG6mrDy_x002B_nVCW8grbT93Saggb208Zg7e_x002F_9xuHyfqIq1X9k5ZePeQ_x002F_9iDftK_x002B_F7Jv_x002F_0hYwUjlxi1br_x002F_Uo_x002B_gFT_x002F_yU4hCbvdKWS3dbw_x002B_rofUUZl1nat2Do64Wls5EF_x002B_e_x002F_eU4Pid_x002F_H1Yco_x002F_gpEeDY5rsm7vEfYyuDbAq4FMbQJxt_x002B_qHN5QwTPrPd7EC5D9AUCU470tcEenPOG9eRxC5VNmrRzkFAKYqhkrTSfAfP2fkMaDac2BYA053oaaA_x002F_s3E7h4iwoqAFcilutXGvQ5r2o_x002B_LDZy178y4oq2kwS_x002B_dAPhvd8AA_x002F_GQJ46pVM2CBeURhcUPqaBPVcjdMoQOnchk0hBR_x002F_frJsodFnuB1Lr_x002B_dCIIUVtKy2sSjK2JTyFLa33nrItGZSxPAtQaBUMBTtX6_x002F_TrmTEohrnxlMqjgmI2oW8URWcyCYfRxzPN_x002F_ORrRAipiXV4t5yNvwPJ2itg8xBRazeLq5mq_x002B_h5BJT1Ecf0vRZe8afW3ThF1l4YwoZAeTJ2SPUFmTFEGszA559ZtVtr2ozlFqf_x002B_oaD0DQEFS_x002F_dPObrohuCegprO2UWI8GSW1o06RiJR00S_x002B_XW_x002F_KebxA99pi3SO5Q5aoeuChKe8r_x002F_fncED_x002F_n_x002F_9_x002B_KaUDrwGDGyjV8aw6Rv3CGEG4lvdgZojn8QRid8GJjJnZ62TVUarUm_x002F_ZyksVXv773kwEUnoE9tR9fABR_x002B_aheCFbrQ0oZgdpxFpk214D0ScHAOxjhLVcpBGawbxZpsnVuzwrG0WA5q9REQALgkWC8SXsxbfaDsnlfHjF3JQ_x002F_hoUF7Dqu77h0URJc2KTXvr9ufTYcr8MTgLlqrLPrnqr3j7GTlnlVA5Soy0cSztWJbjHIUInhk48Abz_x002F_tuHbn3UXQU6FKsME5DJrENbEzMqine5MgNolnC2LXQHMeCmI7L8g4qqNRr7HZDhbTdMXaEO9VjuM4wl35s8RIFBkjOA_x002F_Y3FfQkVHN82jpEmR7RpyZFs7F9cS6ToS1JsAwB9ZcIi6M_x002F_dBlbtoYHxcHL2B5y1JVCFitccLGGCjQF9hDe2FeUuYIsgaRVIYQByQTdP4BR1lnlP_x002F_jlJXPsUAhZ_x002B_7m20ANrLKY0u8nOA7T5b_x002F_2qjZtoOU9v6yozmsq_x002F_7fL_x002F_a4uG4VE4Nu02mMRF5mhuzvZNTY1ebc0wbnNp_x002B_E4MO_x002F_n4vCzOaa75_x002F_PfPK_x002F_O2XNG0Sgn0wUlNs5UzGuEH_x002B_X9lCaSUTSgvN2rx_x002F_nnAWYLHzOGHr7_x002F_xSCLv1_x002F_f_x002F_rnBXOoMPQxGPH890yEkVRcjfgzdVujbvaYXD3z5axlhMcUGhijjeyWo3WmTdvBDkwvKTB_x002B_bPceaVaiIj7G9MfIcZcg5E_x002F_yVdChZSEFVzgbkti1TytWgwHIT0aMuiCTFkR4EiClY_x002B_Q8oLILSd0egIjZUVFUeWpFJaXZDjYzam7bf5aMOnleMlUjPhbstZzCkSkE224xJ8Fi3Fe0GPIIFgVvZQE7Rudwwf4K1zeFYFWWxcBq70OZZNK1eT211ozbuw_x002B_EIMriBbPv1V8jO2r1HmII88fZTf7ZLmDGzTWbFEDPbey1EMgiEsJJQKKAmaGBeuWIFfo_x002F_iGzKLJ8wjwpGMkEap2FjhEw12_x002B_Tg8dnV6LsDYdL_x002B_RuXIUwAXxcnq7Ve8xCEUN1euibufDxs4dKY8XcHHVCNM3SxkF_x002F_loaZDOzm5H5h1wpMP_x002B_VI0Fd9W9cg_x002F_ew6f4QVlAGYJl0TI7eNqZLYygaoABQCDzrVwXJnpXSlWfz_x002F_uGD2y2MkWIi99GzJEWjH4DyH3CLoILSBIfLrDL5jaXtXYP3C_x002F_RlSio4sTUL8gI1Zt4tafb0IlDHFqKm9TbouZ1yZD_x002F_vRvmLZEVivKL_x002B_Z3NlugLrbNavF1As81w5agSTiA0PkPLi2qFjzNTHm2tekYsF1BM3Wdd46_x002F_18Z8mr_x002B_YLmdkoFMvIlgl2RFCwnNzvh3bo1UYyLVh9Tf1sb1DXY0Bvqfc_x002F_Z3F559UqDTEOtCW0WUTBHVMSwZnT65YOC_x002B_m0aHKWMWxADYE5_x002F_9c_x002B_32rWYndhaTSVRnJsI_x002F_s7j4ss1JBTnUTPJtGaWHQsNEihZoOnzGkG49O_x002B_zMRB_x002F_eRD_x002F_ybhK05fbf3eZObe_x002B_hKCdfptivmO_x002B_a55n4Sswm2rsQBnEH2x9pcaLjf8Sixde_x002F_848uB_x002B_UBf2bbhT_x002F_dbQ1C4OFujiQfUL7XgV5l_x002B_yRclxjtFGzIYTFPNhm7ra1Xu_x002F_hvRQ8rVq4mXcMnuIqWLDeilaXeQ9DsqrLc3kss_x002F_vUaV7U_x002B_1x0ilgkcDPcr1J_x002F_KrdgvJNZe1sta_x002B_OD7BaGjsCPNfCukVqiX9iCE8K9LBuxZU1qvbRdV9fG3S8oZDP6sX_x002B_68YPXxAWifhVDQeCrXLYn7Xjp0b_x002B_0_x002B_z4iKkUqPgqw7rZ6LISLr2sroKGkYMEzIP9WtuEz1tZ8sUfkRNrK48bVxxho0pJSYjwgSgOjPx6NlBvjqDMTsVbBJdsoZTliqw5Y_x002F_STRgq6Nf2L7AQzoX7gyL0wsUb8ZK0Dj5SEM1VCrEymQ_x003D_</value>
+    </Resources>
+    <Variables isList="true" count="2">
+      <value>,_x0040_JobEquipmentId,_x0040_JobEquipmentId,,System.Int32,,False,False,False,False,,,True</value>
+      <value>,_x0040_LanguageId,_x0040_LanguageId,,System.Int32,,False,False,False,False,,,True</value>
+    </Variables>
+  </Dictionary>
+  <EngineVersion>EngineV2</EngineVersion>
+  <GlobalizationStrings isList="true" count="0" />
+  <Key>d3ff47c4ee074f209bd3a5870f97cd09</Key>
+  <MetaTags isList="true" count="0" />
+  <Pages isList="true" count="2">
+    <CMReport Ref="6" type="Page" isKey="true">
+      <Alias>Condition Monitoring Report</Alias>
+      <Border>None;Black;2;Solid;False;4;Black</Border>
+      <Brush>Transparent</Brush>
+      <Components isList="true" count="2">
+        <PageFooterBand2 Ref="7" type="PageFooterBand" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,10.99,7.57,0.3</ClientRectangle>
+          <Components isList="true" count="1">
+            <Text5 Ref="8" type="Text" isKey="true">
+              <Border>None;[58:78:94];1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>0.1,0.01,7.39,0.2</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Segoe UI,9.75,Bold</Font>
+              <Guid>01dabe1a2c234fdeb2acc6ad52f9755e</Guid>
+              <HorAlignment>Right</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text5</Name>
+              <Page isRef="6" />
+              <Parent isRef="7" />
+              <Text>{PageNofM}</Text>
+              <TextBrush>Black</TextBrush>
+              <VertAlignment>Center</VertAlignment>
+            </Text5>
+          </Components>
+          <Conditions isList="true" count="0" />
+          <Guid>27afebe3de914d92943f16b0cc93e310</Guid>
+          <Name>PageFooterBand2</Name>
+          <Page isRef="6" />
+          <Parent isRef="6" />
+        </PageFooterBand2>
+        <ReportTitleBand1 Ref="9" type="ReportTitleBand" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,0.2,7.57,0.6</ClientRectangle>
+          <Components isList="true" count="4">
+            <Text1 Ref="10" type="Text" isKey="true">
+              <Border>Bottom;LightGray;1;None;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>0,0.3,7.57,0.25</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Arial,12,Bold</Font>
+              <Guid>3b548c33aa3445e1bac981f805ac48c1</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text1</Name>
+              <Page isRef="6" />
+              <Parent isRef="9" />
+              <Text>{EAppRptEquipmentConditionMonitoring.ServiceName}</Text>
+              <TextBrush>[89:89:89]</TextBrush>
+              <Type>Expression</Type>
+              <VertAlignment>Center</VertAlignment>
+            </Text1>
+            <Text23 Ref="11" type="Text" isKey="true">
+              <Border>None;[158:158:158];1;None;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>0,0,7.57,0.3</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Arial,14,Bold</Font>
+              <Guid>0acbcdab931c41c08a9542bdac5886a0</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text23</Name>
+              <Page isRef="6" />
+              <Parent isRef="9" />
+              <Text>SKF Rotating Equipment Performance</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+              <VertAlignment>Center</VertAlignment>
+            </Text23>
+            <Panel1 Ref="12" type="Panel" isKey="true">
+              <Brush>Transparent</Brush>
+              <CanBreak>True</CanBreak>
+              <CanGrow>True</CanGrow>
+              <ClientRectangle>0,0.6,7.57,5.4</ClientRectangle>
+              <Components isList="true" count="2">
+                <ConditionMonitorBand Ref="13" type="DataBand" isKey="true">
+                  <Border>All;Gainsboro;1;None;False;4;Black</Border>
+                  <Brush>Transparent</Brush>
+                  <BusinessObjectGuid isNull="true" />
+                  <CanShrink>True</CanShrink>
+                  <ClientRectangle>0,0.2,7.57,2.7</ClientRectangle>
+                  <Components isList="true" count="12">
+                    <SubReport1 Ref="14" type="SubReport" isKey="true">
+                      <Border>All;Gainsboro;1;Solid;False;4;Black</Border>
+                      <Brush>Transparent</Brush>
+                      <ClientRectangle>4.4,0.3,3.17,1.99</ClientRectangle>
+                      <Components isList="true" count="0" />
+                      <Guid>19589958695a4bf38ff6b0608d2fc11b</Guid>
+                      <Name>SubReport1</Name>
+                      <Page isRef="6" />
+                      <Parameters isList="true" count="5">
+                        <_x0040_EquipmentId Ref="15" type="Stimulsoft.Report.Components.StiParameter" isKey="true">
+                          <Expression>EAppRptEquipmentConditionMonitoring.EquipmentId</Expression>
+                          <Name>@EquipmentId</Name>
+                        </_x0040_EquipmentId>
+                        <_x0040_JobEquipmentId Ref="16" type="Stimulsoft.Report.Components.StiParameter" isKey="true">
+                          <Expression>EAppRptEquipmentConditionMonitoring.JobEquipmentId</Expression>
+                          <Name>@JobEquipmentId</Name>
+                        </_x0040_JobEquipmentId>
+                        <_x0040_ClientSiteId Ref="17" type="Stimulsoft.Report.Components.StiParameter" isKey="true">
+                          <Expression>EAppRptEquipmentConditionMonitoring.ClientSiteId</Expression>
+                          <Name>@ClientSiteId</Name>
+                        </_x0040_ClientSiteId>
+                        <_x0040_ServiceId Ref="18" type="Stimulsoft.Report.Components.StiParameter" isKey="true">
+                          <Expression>EAppRptEquipmentConditionMonitoring.ServiceId</Expression>
+                          <Name>@ServiceId</Name>
+                        </_x0040_ServiceId>
+                        <_x0040_LanguageId Ref="19" type="Stimulsoft.Report.Components.StiParameter" isKey="true">
+                          <Expression>EAppRptEquipmentConditionMonitoring.LanguageId</Expression>
+                          <Name>@LanguageId</Name>
+                        </_x0040_LanguageId>
+                      </Parameters>
+                      <Parent isRef="13" />
+                      <SubReportPageGuid>b9da85ac7e1e4a1b8a14373333a72d4b</SubReportPageGuid>
+                      <SubReportUrl />
+                    </SubReport1>
+                    <Panel7 Ref="20" type="Panel" isKey="true">
+                      <Brush>Transparent</Brush>
+                      <CanShrink>True</CanShrink>
+                      <ClientRectangle>0,0.3,4.4,0.25</ClientRectangle>
+                      <Components isList="true" count="2">
+                        <Text3 Ref="21" type="Text" isKey="true">
+                          <Border>None;[58:78:94];1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <ClientRectangle>1.7,0,2.7,0.25</ClientRectangle>
+                          <Conditions isList="true" count="0" />
+                          <Font>Arial,10</Font>
+                          <Guid>dfcab33691bb4e5ea9902494d39f0c64</Guid>
+                          <Margins>0,0,0,0</Margins>
+                          <Name>Text3</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="20" />
+                          <Text>{EAppRptEquipmentConditionMonitoring.ReportBy}</Text>
+                          <TextBrush>Black</TextBrush>
+                          <Type>DataColumn</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text3>
+                        <Text2 Ref="22" type="Text" isKey="true">
+                          <Border>None;[58:78:94];1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <ClientRectangle>0,0,1.7,0.25</ClientRectangle>
+                          <Conditions isList="true" count="0" />
+                          <Font>Arial,10,Bold</Font>
+                          <Guid>5c10933290db424781088d65750ceaf7</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text2</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="20" />
+                          <Text>Report Prepared by :</Text>
+                          <TextBrush>Black</TextBrush>
+                          <Type>Expression</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text2>
+                      </Components>
+                      <Conditions isList="true" count="0" />
+                      <Name>Panel7</Name>
+                      <Page isRef="6" />
+                      <Parent isRef="13" />
+                      <ShiftMode>IncreasingSize, DecreasingSize</ShiftMode>
+                    </Panel7>
+                    <Panel9 Ref="23" type="Panel" isKey="true">
+                      <Brush>Transparent</Brush>
+                      <CanGrow>True</CanGrow>
+                      <CanShrink>True</CanShrink>
+                      <ClientRectangle>0,0.8,4.4,0.25</ClientRectangle>
+                      <Components isList="true" count="2">
+                        <Text14 Ref="24" type="Text" isKey="true">
+                          <Border>None;[58:78:94];1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanGrow>True</CanGrow>
+                          <ClientRectangle>0,0,1.7,0.25</ClientRectangle>
+                          <Conditions isList="true" count="0" />
+                          <Font>Arial,10,Bold</Font>
+                          <Guid>a5b89a2b9dc24da886992d5ef5a996aa</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text14</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="23" />
+                          <Text>Machine ID :</Text>
+                          <TextBrush>Black</TextBrush>
+                          <Type>Expression</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text14>
+                        <Text15 Ref="25" type="Text" isKey="true">
+                          <Border>None;[58:78:94];1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanGrow>True</CanGrow>
+                          <ClientRectangle>1.7,0,2.7,0.25</ClientRectangle>
+                          <Conditions isList="true" count="0" />
+                          <Font>Arial,10</Font>
+                          <Guid>cf7d3b730a3749728608f7fdb1fd2dc7</Guid>
+                          <Margins>0,0,0,0</Margins>
+                          <Name>Text15</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="23" />
+                          <Text>{EAppRptEquipmentConditionMonitoring.EquipmentName}</Text>
+                          <TextBrush>Black</TextBrush>
+                          <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+                          <Type>DataColumn</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text15>
+                      </Components>
+                      <Conditions isList="true" count="0" />
+                      <Guid>8b26b67ff1ec4698b6b6f3ed64029b9b</Guid>
+                      <Name>Panel9</Name>
+                      <Page isRef="6" />
+                      <Parent isRef="13" />
+                      <ShiftMode>IncreasingSize, DecreasingSize</ShiftMode>
+                    </Panel9>
+                    <Panel10 Ref="26" type="Panel" isKey="true">
+                      <Brush>Transparent</Brush>
+                      <CanShrink>True</CanShrink>
+                      <ClientRectangle>0,1.05,4.4,0.25</ClientRectangle>
+                      <Components isList="true" count="2">
+                        <Text8 Ref="27" type="Text" isKey="true">
+                          <Border>None;[58:78:94];1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <ClientRectangle>0,0,1.7,0.25</ClientRectangle>
+                          <Conditions isList="true" count="0" />
+                          <Font>Arial,10,Bold</Font>
+                          <Guid>3a9bf34a52ad47b2a88dd2a1335d0754</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text8</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="26" />
+                          <Text>Plant Area :</Text>
+                          <TextBrush>Black</TextBrush>
+                          <Type>Expression</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text8>
+                        <Text9 Ref="28" type="Text" isKey="true">
+                          <Border>None;[58:78:94];1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <ClientRectangle>1.7,0,2.7,0.25</ClientRectangle>
+                          <Conditions isList="true" count="0" />
+                          <Font>Arial,10</Font>
+                          <Guid>83e0e938a8514fdfb2ef846dba268981</Guid>
+                          <Margins>0,0,0,0</Margins>
+                          <Name>Text9</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="26" />
+                          <Text>{EAppRptEquipmentConditionMonitoring.PlantAreaName}</Text>
+                          <TextBrush>Black</TextBrush>
+                          <Type>DataColumn</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text9>
+                      </Components>
+                      <Conditions isList="true" count="0" />
+                      <Guid>444fe82e4ce044ea92dad2a71fcdd2cc</Guid>
+                      <Name>Panel10</Name>
+                      <Page isRef="6" />
+                      <Parent isRef="13" />
+                      <ShiftMode>IncreasingSize, DecreasingSize</ShiftMode>
+                    </Panel10>
+                    <Panel8 Ref="29" type="Panel" isKey="true">
+                      <Brush>Transparent</Brush>
+                      <CanShrink>True</CanShrink>
+                      <ClientRectangle>0,0.55,4.4,0.25</ClientRectangle>
+                      <Components isList="true" count="2">
+                        <Text6 Ref="30" type="Text" isKey="true">
+                          <Border>None;[58:78:94];1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <ClientRectangle>0,0,1.7,0.25</ClientRectangle>
+                          <Conditions isList="true" count="0" />
+                          <Font>Arial,10,Bold</Font>
+                          <Guid>c64e0421686a436ea3f5ad4000fcda93</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text6</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="29" />
+                          <Text>Reported by Email :</Text>
+                          <TextBrush>Black</TextBrush>
+                          <Type>Expression</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text6>
+                        <Text7 Ref="31" type="Text" isKey="true">
+                          <Border>None;[58:78:94];1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <ClientRectangle>1.7,0,2.7,0.25</ClientRectangle>
+                          <Conditions isList="true" count="0" />
+                          <Font>Arial,10</Font>
+                          <Guid>d0796d514d614cb3abfb3c2952a79b35</Guid>
+                          <Margins>0,0,0,0</Margins>
+                          <Name>Text7</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="29" />
+                          <Text>{EAppRptEquipmentConditionMonitoring.EmailId}</Text>
+                          <TextBrush>Black</TextBrush>
+                          <Type>DataColumn</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text7>
+                      </Components>
+                      <Conditions isList="true" count="0" />
+                      <Name>Panel8</Name>
+                      <Page isRef="6" />
+                      <Parent isRef="13" />
+                      <ShiftMode>IncreasingSize, DecreasingSize</ShiftMode>
+                    </Panel8>
+                    <Panel14 Ref="32" type="Panel" isKey="true">
+                      <Brush>Transparent</Brush>
+                      <CanShrink>True</CanShrink>
+                      <ClientRectangle>0,1.55,4.4,0.25</ClientRectangle>
+                      <Components isList="true" count="2">
+                        <Text19 Ref="33" type="Text" isKey="true">
+                          <Border>None;[58:78:94];1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanShrink>True</CanShrink>
+                          <ClientRectangle>0,0,1.7,0.25</ClientRectangle>
+                          <Conditions isList="true" count="0" />
+                          <Font>Arial,10,Bold</Font>
+                          <Guid>13840ef2a7fe4d19a0a7da10506bbd91</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text19</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="32" />
+                          <Text>Date of Report :</Text>
+                          <TextBrush>Black</TextBrush>
+                          <Type>Expression</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text19>
+                        <Text20 Ref="34" type="Text" isKey="true">
+                          <Border>None;[58:78:94];1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanShrink>True</CanShrink>
+                          <ClientRectangle>1.7,0,2.7,0.25</ClientRectangle>
+                          <Conditions isList="true" count="0" />
+                          <Font>Arial,10</Font>
+                          <Guid>f1558f68d0df4127ab44dc9e2f2d06ac</Guid>
+                          <Margins>0,0,0,0</Margins>
+                          <Name>Text20</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="32" />
+                          <ShiftMode>IncreasingSize, DecreasingSize</ShiftMode>
+                          <Text>{EAppRptEquipmentConditionMonitoring.ReportDate}</Text>
+                          <TextBrush>Black</TextBrush>
+                          <TextFormat Ref="35" type="CustomFormat" isKey="true">
+                            <StringFormat>dd-MM-yyyy</StringFormat>
+                          </TextFormat>
+                          <Type>DataColumn</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text20>
+                      </Components>
+                      <Conditions isList="true" count="0" />
+                      <Guid>93e5a663905746f3995d6d2f32b5fecb</Guid>
+                      <Name>Panel14</Name>
+                      <Page isRef="6" />
+                      <Parent isRef="13" />
+                    </Panel14>
+                    <Panel16 Ref="36" type="Panel" isKey="true">
+                      <Brush>Transparent</Brush>
+                      <CanShrink>True</CanShrink>
+                      <ClientRectangle>0,1.8,4.4,0.25</ClientRectangle>
+                      <Components isList="true" count="2">
+                        <Text21 Ref="37" type="Text" isKey="true">
+                          <Border>None;[58:78:94];1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <ClientRectangle>0,0,1.7,0.25</ClientRectangle>
+                          <Conditions isList="true" count="2">
+                            <value>EAppRptEquipmentConditionMonitoring.ReviewerName,IsNull,,,String,Black,Transparent,Arial_x002C_10_x002C_Bold,True,True,_x0022__x0022_,,None</value>
+                            <value>EAppRptEquipmentConditionMonitoring.ReviewerName,IsNotNull,,,String,Black,Transparent,Arial_x002C_10_x002C_Bold,True,True,_x0022_Verified_x0020_by_x0020_:_x0022_,,None</value>
+                          </Conditions>
+                          <Font>Arial,10,Bold</Font>
+                          <Guid>09b8ea789e7649c895536e6c7180476b</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text21</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="36" />
+                          <TextBrush>Black</TextBrush>
+                          <Type>Expression</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text21>
+                        <Text22 Ref="38" type="Text" isKey="true">
+                          <Border>None;[58:78:94];1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanShrink>True</CanShrink>
+                          <ClientRectangle>1.7,0,2.7,0.25</ClientRectangle>
+                          <Conditions isList="true" count="1">
+                            <value>EAppRptEquipmentConditionMonitoring.ReviewerName,IsNotNull,,,String,Black,Transparent,Arial_x002C_10,True,True,EAppRptEquipmentConditionMonitoring.ReviewerName,,None</value>
+                          </Conditions>
+                          <Font>Arial,10</Font>
+                          <Guid>34040ef07dff447ea2ff10c9f6454506</Guid>
+                          <Margins>0,0,0,0</Margins>
+                          <Name>Text22</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="36" />
+                          <ShiftMode>IncreasingSize, DecreasingSize</ShiftMode>
+                          <TextBrush>Black</TextBrush>
+                          <Type>Expression</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text22>
+                      </Components>
+                      <Conditions isList="true" count="0" />
+                      <Guid>43735784a78d47239075067298c08380</Guid>
+                      <Name>Panel16</Name>
+                      <Page isRef="6" />
+                      <Parent isRef="13" />
+                    </Panel16>
+                    <Panel15 Ref="39" type="Panel" isKey="true">
+                      <Brush>Transparent</Brush>
+                      <CanShrink>True</CanShrink>
+                      <ClientRectangle>0,2.05,4.4,0.25</ClientRectangle>
+                      <Components isList="true" count="2">
+                        <Text24 Ref="40" type="Text" isKey="true">
+                          <Border>None;[58:78:94];1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanShrink>True</CanShrink>
+                          <ClientRectangle>0,0,1.7,0.25</ClientRectangle>
+                          <Conditions isList="true" count="2">
+                            <value>EAppRptEquipmentConditionMonitoring.ConditionName,IsNull,,,String,Black,Transparent,Arial_x002C_10_x002C_Bold,True,True,_x0022__x0022_,,None</value>
+                            <value>EAppRptEquipmentConditionMonitoring.ConditionName,IsNotNull,,,String,Black,Transparent,Arial_x002C_10_x002C_Bold,True,True,_x0022_Machine_x0020_Condition_x0020_:_x0022_,,None</value>
+                          </Conditions>
+                          <Font>Arial,10,Bold</Font>
+                          <Guid>9acaf601d5f44dd1b01d5d95a4dc075b</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text24</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="39" />
+                          <TextBrush>Black</TextBrush>
+                          <Type>Expression</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text24>
+                        <Text25 Ref="41" type="Text" isKey="true">
+                          <Border>None;[58:78:94];1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanShrink>True</CanShrink>
+                          <ClientRectangle>1.7,0,2.7,0.25</ClientRectangle>
+                          <Conditions isList="true" count="1">
+                            <value>EAppRptEquipmentConditionMonitoring.ConditionName,IsNotNull,,,String,Black,Transparent,Arial_x002C_10,True,True,EAppRptEquipmentConditionMonitoring.ConditionName,,None</value>
+                          </Conditions>
+                          <Font>Arial,10</Font>
+                          <Guid>14f4d864db8045b89ea1e0c465d9075d</Guid>
+                          <Margins>0,0,0,0</Margins>
+                          <Name>Text25</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="39" />
+                          <ShiftMode>IncreasingSize, DecreasingSize</ShiftMode>
+                          <TextBrush>Black</TextBrush>
+                          <Type>Expression</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text25>
+                      </Components>
+                      <Conditions isList="true" count="0" />
+                      <Guid>3e8bb725c7d54bc3985af15fe85a459b</Guid>
+                      <Name>Panel15</Name>
+                      <Page isRef="6" />
+                      <Parent isRef="13" />
+                    </Panel15>
+                    <Panel13 Ref="42" type="Panel" isKey="true">
+                      <Brush>Transparent</Brush>
+                      <CanShrink>True</CanShrink>
+                      <ClientRectangle>0,1.3,4.4,0.25</ClientRectangle>
+                      <Components isList="true" count="2">
+                        <Text16 Ref="43" type="Text" isKey="true">
+                          <Border>None;[58:78:94];1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanShrink>True</CanShrink>
+                          <ClientRectangle>0,0,1.7,0.25</ClientRectangle>
+                          <Conditions isList="true" count="0" />
+                          <Font>Arial,10,Bold</Font>
+                          <Guid>bc7f3b055799403990cf2a249f099819</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text16</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="42" />
+                          <Text>Data Collection Date :</Text>
+                          <TextBrush>Black</TextBrush>
+                          <Type>Expression</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text16>
+                        <Text17 Ref="44" type="Text" isKey="true">
+                          <Border>None;[58:78:94];1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanShrink>True</CanShrink>
+                          <ClientRectangle>1.7,0,2.7,0.25</ClientRectangle>
+                          <Conditions isList="true" count="0" />
+                          <Font>Arial,10</Font>
+                          <Guid>da479b7079a34b9f82010893525bb1cb</Guid>
+                          <Margins>0,0,0,0</Margins>
+                          <Name>Text17</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="42" />
+                          <ShiftMode>IncreasingSize, DecreasingSize</ShiftMode>
+                          <Text>{EAppRptEquipmentConditionMonitoring.DataCollectionDate}</Text>
+                          <TextBrush>Black</TextBrush>
+                          <TextFormat Ref="45" type="CustomFormat" isKey="true">
+                            <StringFormat>dd-MM-yyyy</StringFormat>
+                          </TextFormat>
+                          <Type>DataColumn</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text17>
+                      </Components>
+                      <Conditions isList="true" count="0" />
+                      <Guid>5c4d035ff4044d2eb61345b63e0b8f84</Guid>
+                      <Name>Panel13</Name>
+                      <Page isRef="6" />
+                      <Parent isRef="13" />
+                    </Panel13>
+                    <Panel17 Ref="46" type="Panel" isKey="true">
+                      <Brush>Transparent</Brush>
+                      <CanGrow>True</CanGrow>
+                      <CanShrink>True</CanShrink>
+                      <ClientRectangle>0,2.3,6.5,0.25</ClientRectangle>
+                      <Components isList="true" count="2">
+                        <Text27 Ref="47" type="Text" isKey="true">
+                          <Border>None;[58:78:94];1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanGrow>True</CanGrow>
+                          <ClientRectangle>1.7,0,4.76,0.25</ClientRectangle>
+                          <Conditions isList="true" count="0" />
+                          <Font>Arial,10</Font>
+                          <GrowToHeight>True</GrowToHeight>
+                          <Guid>d0cb32e420ba478fbd89d63fcf1d962c</Guid>
+                          <Margins>0,0,0,0</Margins>
+                          <Name>Text27</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="46" />
+                          <ShiftMode>IncreasingSize, DecreasingSize</ShiftMode>
+                          <Text>{EAppRptEquipmentConditionMonitoring.Comment}</Text>
+                          <TextBrush>Black</TextBrush>
+                          <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+                          <Type>DataColumn</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text27>
+                        <Text26 Ref="48" type="Text" isKey="true">
+                          <Border>None;[58:78:94];1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanGrow>True</CanGrow>
+                          <ClientRectangle>0,0,1.7,0.25</ClientRectangle>
+                          <Conditions isList="true" count="0" />
+                          <Font>Arial,10,Bold</Font>
+                          <Guid>844f42f4217e48b0834d646654cbba21</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text26</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="46" />
+                          <Text>Comments :</Text>
+                          <TextBrush>Black</TextBrush>
+                          <Type>Expression</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text26>
+                      </Components>
+                      <Conditions isList="true" count="0" />
+                      <Guid>2d25d7378b9b4aeebec022b821b55039</Guid>
+                      <Name>Panel17</Name>
+                      <Page isRef="6" />
+                      <Parent isRef="13" />
+                    </Panel17>
+                    <Text4 Ref="49" type="Text" isKey="true">
+                      <Border>Top, Left, Right;Gainsboro;1;None;False;4;Black</Border>
+                      <Brush>Transparent</Brush>
+                      <ClientRectangle>0,0,7.57,0.3</ClientRectangle>
+                      <Conditions isList="true" count="0" />
+                      <Font>Arial,12,Bold</Font>
+                      <HorAlignment>Center</HorAlignment>
+                      <Margins>0,0,0,0</Margins>
+                      <Name>Text4</Name>
+                      <Page isRef="6" />
+                      <Parent isRef="13" />
+                      <Text>Summary of recommendations and results of Machine found problematic</Text>
+                      <TextBrush>Black</TextBrush>
+                      <Type>Expression</Type>
+                      <VertAlignment>Center</VertAlignment>
+                    </Text4>
+                    <HorizontalLinePrimitive1 Ref="50" type="HorizontalLinePrimitive" isKey="true">
+                      <ClientRectangle>0,2.65,7.57,0.01</ClientRectangle>
+                      <Color>Black</Color>
+                      <Conditions isList="true" count="0" />
+                      <EndCap Ref="51" type="Cap" isKey="true">
+                        <Color>Black</Color>
+                      </EndCap>
+                      <Guid>4765bd118fd14d53b67886c844d82096</Guid>
+                      <Name>HorizontalLinePrimitive1</Name>
+                      <Page isRef="6" />
+                      <Parent isRef="13" />
+                      <Size>2</Size>
+                      <StartCap Ref="52" type="Cap" isKey="true">
+                        <Color>Black</Color>
+                      </StartCap>
+                    </HorizontalLinePrimitive1>
+                  </Components>
+                  <Conditions isList="true" count="0" />
+                  <DataSourceName>EAppRptEquipmentConditionMonitoring</DataSourceName>
+                  <Filters isList="true" count="0" />
+                  <Name>ConditionMonitorBand</Name>
+                  <Page isRef="6" />
+                  <Parent isRef="12" />
+                  <Sort isList="true" count="0" />
+                </ConditionMonitorBand>
+                <DataBand1 Ref="53" type="DataBand" isKey="true">
+                  <Border>None;LightGray;1;Solid;False;4;Black</Border>
+                  <Brush>Transparent</Brush>
+                  <BusinessObjectGuid isNull="true" />
+                  <CanBreak>True</CanBreak>
+                  <CanShrink>True</CanShrink>
+                  <ClientRectangle>0,3.3,7.57,1.7</ClientRectangle>
+                  <Components isList="true" count="6">
+                    <Panel5 Ref="54" type="Panel" isKey="true">
+                      <Border>All;Black;1;Solid;False;4;Black</Border>
+                      <Brush>Transparent</Brush>
+                      <CanShrink>True</CanShrink>
+                      <ClientRectangle>0,0.6,7.57,0.25</ClientRectangle>
+                      <Components isList="true" count="4">
+                        <Text36 Ref="55" type="Text" isKey="true">
+                          <Border>Top, Left, Right;Black;1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanShrink>True</CanShrink>
+                          <ClientRectangle>0,0,1.8,0.25</ClientRectangle>
+                          <Conditions isList="true" count="2">
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,LessThanOrEqualTo,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9_x002C_Bold,True,True,_x0022__x0022_,,None,Font_x002C__x0020_FontSize_x002C__x0020_FontStyleBold_x002C__x0020_TextColor_x002C__x0020_BackColor_x002C__x0020_Borders</value>
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,GreaterThan,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9_x002C_Bold,True,True,_x0022_Confidence_x0020_Factor_x0020_:_x0022_,,All</value>
+                          </Conditions>
+                          <Font>Arial,10,Bold</Font>
+                          <Guid>4437a32389a14f2abae43f74afbd115c</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text36</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="54" />
+                          <TextBrush>Black</TextBrush>
+                          <Type>Expression</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text36>
+                        <Text37 Ref="56" type="Text" isKey="true">
+                          <Border>All;Black;1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanShrink>True</CanShrink>
+                          <ClientRectangle>1.8,0,2.17,0.25</ClientRectangle>
+                          <Conditions isList="true" count="2">
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,LessThanOrEqualTo,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9,True,True,_x0022__x0022_,,None</value>
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,GreaterThan,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9,True,True,EAppRptEquipmentConditionMonitoringAssets.ConfidentFactor_x0020__x002B__x0020__x0022__x0020__x0025__x0022_,,All</value>
+                          </Conditions>
+                          <Font>Arial,10</Font>
+                          <Guid>1b6ad36628944231a622171083210faf</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text37</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="54" />
+                          <TextBrush>Black</TextBrush>
+                          <Type>DataColumn</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text37>
+                        <Text59 Ref="57" type="Text" isKey="true">
+                          <Border>All;Black;1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanShrink>True</CanShrink>
+                          <ClientRectangle>3.97,0,1.8,0.25</ClientRectangle>
+                          <Conditions isList="true" count="2">
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,LessThanOrEqualTo,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9_x002C_Bold,True,True,_x0022__x0022_,,None,Font_x002C__x0020_FontSize_x002C__x0020_FontStyleBold_x002C__x0020_TextColor_x002C__x0020_BackColor_x002C__x0020_Borders</value>
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,GreaterThan,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9_x002C_Bold,True,True,_x0022_Priority_x0020_:_x0022_,,All</value>
+                          </Conditions>
+                          <Font>Arial,10,Bold</Font>
+                          <Guid>41075d1ec2f941c2aabe8ec4abafbb16</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text59</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="54" />
+                          <TextBrush>Black</TextBrush>
+                          <Type>Expression</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text59>
+                        <Text60 Ref="58" type="Text" isKey="true">
+                          <Border>All;Black;1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanShrink>True</CanShrink>
+                          <ClientRectangle>5.77,0,1.8,0.25</ClientRectangle>
+                          <Conditions isList="true" count="2">
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,LessThanOrEqualTo,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9,True,True,_x0022__x0022_,,None</value>
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,GreaterThan,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9,True,True,EAppRptEquipmentConditionMonitoringAssets.Prioirty,,All</value>
+                          </Conditions>
+                          <Font>Arial,10</Font>
+                          <Guid>a03ab2ccb35546b99ab0fccec7568fa0</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text60</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="54" />
+                          <TextBrush>Black</TextBrush>
+                          <Type>DataColumn</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text60>
+                      </Components>
+                      <Conditions isList="true" count="0" />
+                      <Name>Panel5</Name>
+                      <Page isRef="6" />
+                      <Parent isRef="53" />
+                      <ShiftMode>IncreasingSize, DecreasingSize</ShiftMode>
+                    </Panel5>
+                    <Panel3 Ref="59" type="Panel" isKey="true">
+                      <Border>All;Black;1;Solid;False;4;Black</Border>
+                      <Brush>Transparent</Brush>
+                      <CanShrink>True</CanShrink>
+                      <ClientRectangle>0,0.35,7.57,0.25</ClientRectangle>
+                      <Components isList="true" count="2">
+                        <Text44 Ref="60" type="Text" isKey="true">
+                          <Border>All;Black;1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanShrink>True</CanShrink>
+                          <ClientRectangle>1.8,0,5.77,0.25</ClientRectangle>
+                          <Conditions isList="true" count="2">
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,LessThanOrEqualTo,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9,True,True,_x0022__x0022_,,None</value>
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,GreaterThan,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9,True,True,EAppRptEquipmentConditionMonitoringAssets.FailureCause,,All</value>
+                          </Conditions>
+                          <Font>Arial,10</Font>
+                          <Guid>719fd09905bd4c1b9e44afc87715c1f3</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text44</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="59" />
+                          <TextBrush>Black</TextBrush>
+                          <Type>DataColumn</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text44>
+                        <Text43 Ref="61" type="Text" isKey="true">
+                          <Border>Top, Left, Right;Black;1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanShrink>True</CanShrink>
+                          <ClientRectangle>0,0,1.8,0.25</ClientRectangle>
+                          <Conditions isList="true" count="2">
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,LessThanOrEqualTo,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9_x002C_Bold,True,True,_x0022__x0022_,,None,Font_x002C__x0020_FontSize_x002C__x0020_FontStyleBold_x002C__x0020_TextColor_x002C__x0020_BackColor_x002C__x0020_Borders</value>
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,GreaterThan,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9_x002C_Bold,True,True,_x0022_Failure_x0020_Cause_x0020_:_x0022_,,All</value>
+                          </Conditions>
+                          <Font>Arial,10,Bold</Font>
+                          <Guid>bbaef2ba76fb448a983c8d6a3a35b5d6</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text43</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="59" />
+                          <TextBrush>Black</TextBrush>
+                          <Type>Expression</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text43>
+                      </Components>
+                      <Conditions isList="true" count="1">
+                        <value>EAppRptEquipmentConditionMonitoringAssets.FailureCause,IsNull,,,String,Red,Transparent,Arial_x002C_8,False,False,,,None</value>
+                      </Conditions>
+                      <Guid>e4846ef129dd41adb0996c4d81b50f93</Guid>
+                      <Name>Panel3</Name>
+                      <Page isRef="6" />
+                      <Parent isRef="53" />
+                      <ShiftMode>IncreasingSize, DecreasingSize</ShiftMode>
+                    </Panel3>
+                    <Panel4 Ref="62" type="Panel" isKey="true">
+                      <Border>All;Black;1;Solid;False;4;Black</Border>
+                      <Brush>Transparent</Brush>
+                      <CanShrink>True</CanShrink>
+                      <ClientRectangle>0,0.85,7.57,0.25</ClientRectangle>
+                      <Components isList="true" count="4">
+                        <Text62 Ref="63" type="Text" isKey="true">
+                          <Border>All;Black;1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanShrink>True</CanShrink>
+                          <ClientRectangle>1.8,0,2.17,0.25</ClientRectangle>
+                          <Conditions isList="true" count="2">
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,LessThanOrEqualTo,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9,True,True,_x0022__x0022_,,None</value>
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,GreaterThan,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9,True,True,_x0022__x0020__x0022__x0020__x002B__x0020_EAppRptEquipmentConditionMonitoringAssets.FailureProbFactor_x0020__x002B__x0020__x0022__x0020__x0025__x0022_,,All</value>
+                          </Conditions>
+                          <Font>Arial,10</Font>
+                          <Guid>82199dacf00f4ac2a79182fd1f65d87c</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text62</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="62" />
+                          <TextBrush>Black</TextBrush>
+                          <Type>DataColumn</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text62>
+                        <Text61 Ref="64" type="Text" isKey="true">
+                          <Border>Top, Left, Right;Black;1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanShrink>True</CanShrink>
+                          <ClientRectangle>0,0,1.8,0.25</ClientRectangle>
+                          <Conditions isList="true" count="2">
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,LessThanOrEqualTo,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9_x002C_Bold,True,True,_x0022__x0022_,,None,Font_x002C__x0020_FontSize_x002C__x0020_FontStyleBold_x002C__x0020_TextColor_x002C__x0020_BackColor_x002C__x0020_Borders</value>
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,GreaterThan,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9_x002C_Bold,True,True,_x0022_Failure_x0020_Probability_x0020_Factor_x0020_:_x0022_,,All</value>
+                          </Conditions>
+                          <Font>Arial,10,Bold</Font>
+                          <Guid>5a9237b135104cfe947b61e274a03b1d</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text61</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="62" />
+                          <ShiftMode>IncreasingSize, DecreasingSize</ShiftMode>
+                          <TextBrush>Black</TextBrush>
+                          <Type>Expression</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text61>
+                        <Text40 Ref="65" type="Text" isKey="true">
+                          <Border>All;Black;1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanShrink>True</CanShrink>
+                          <ClientRectangle>3.97,0,1.8,0.25</ClientRectangle>
+                          <Conditions isList="true" count="2">
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,LessThanOrEqualTo,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9_x002C_Bold,True,True,_x0022__x0022_,,None,Font_x002C__x0020_FontSize_x002C__x0020_FontStyleBold_x002C__x0020_TextColor_x002C__x0020_BackColor_x002C__x0020_Borders</value>
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,GreaterThan,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9_x002C_Bold,True,True,_x0022_No._x0020_of_x0020_Days_x0020_to_x0020_next_x0020_Survey_x0020_:_x0022__x0020_,,All</value>
+                          </Conditions>
+                          <Font>Arial,10,Bold</Font>
+                          <Guid>a6c9b0ae11ee469e9a3b8719aa5647ac</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text40</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="62" />
+                          <ShiftMode>IncreasingSize, DecreasingSize</ShiftMode>
+                          <TextBrush>Black</TextBrush>
+                          <Type>Expression</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text40>
+                        <Text49 Ref="66" type="Text" isKey="true">
+                          <Border>All;Black;1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanShrink>True</CanShrink>
+                          <ClientRectangle>5.77,0,1.8,0.25</ClientRectangle>
+                          <Conditions isList="true" count="2">
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,LessThanOrEqualTo,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9,True,True,_x0022__x0022_,,None</value>
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,GreaterThan,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9,True,True,_x0022__x0020__x0022__x0020__x002B__x0020_EAppRptEquipmentConditionMonitoringAssets.NoOfDays,,All</value>
+                          </Conditions>
+                          <Font>Arial,10</Font>
+                          <Guid>a1bf25c4250a4992bf47085f09ddcb4d</Guid>
+                          <Margins>0,0,0,0</Margins>
+                          <Name>Text49</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="62" />
+                          <TextBrush>Black</TextBrush>
+                          <Type>DataColumn</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text49>
+                      </Components>
+                      <Conditions isList="true" count="0" />
+                      <Guid>9d57430650bc4b29a0b77ff1b90984e7</Guid>
+                      <Name>Panel4</Name>
+                      <Page isRef="6" />
+                      <Parent isRef="53" />
+                      <ShiftMode>IncreasingSize, DecreasingSize</ShiftMode>
+                    </Panel4>
+                    <Panel11 Ref="67" type="Panel" isKey="true">
+                      <Border>All;Black;1;Solid;False;4;Black</Border>
+                      <Brush>Transparent</Brush>
+                      <CanGrow>True</CanGrow>
+                      <CanShrink>True</CanShrink>
+                      <ClientRectangle>0,1.1,7.57,0.25</ClientRectangle>
+                      <Components isList="true" count="2">
+                        <Text50 Ref="68" type="Text" isKey="true">
+                          <Border>Top, Left, Right;Black;1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <ClientRectangle>0,0,1.8,0.25</ClientRectangle>
+                          <Conditions isList="true" count="0" />
+                          <Font>Arial,9,Bold</Font>
+                          <Guid>9857cb17936143c2a20dcac1e53040c4</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text50</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="67" />
+                          <Text>Observations :</Text>
+                          <TextBrush>Black</TextBrush>
+                          <Type>Expression</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text50>
+                        <Text55 Ref="69" type="Text" isKey="true">
+                          <Border>All;Black;1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanGrow>True</CanGrow>
+                          <ClientRectangle>1.8,0,5.77,0.25</ClientRectangle>
+                          <Conditions isList="true" count="0" />
+                          <Font>Arial,9</Font>
+                          <Guid>136f0fa5d86146749c7805ba788ce143</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text55</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="67" />
+                          <Text>{EAppRptEquipmentConditionMonitoringAssets.Comment}</Text>
+                          <TextBrush>Black</TextBrush>
+                          <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+                          <Type>DataColumn</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text55>
+                      </Components>
+                      <Conditions isList="true" count="0" />
+                      <Name>Panel11</Name>
+                      <Page isRef="6" />
+                      <Parent isRef="53" />
+                      <ShiftMode>IncreasingSize, DecreasingSize</ShiftMode>
+                    </Panel11>
+                    <Panel6 Ref="70" type="Panel" isKey="true">
+                      <Border>All;Black;1;Solid;False;4;Black</Border>
+                      <Brush>Transparent</Brush>
+                      <CanGrow>True</CanGrow>
+                      <CanShrink>True</CanShrink>
+                      <ClientRectangle>0,1.35,7.57,0.25</ClientRectangle>
+                      <Components isList="true" count="2">
+                        <Text41 Ref="71" type="Text" isKey="true">
+                          <Border>All;Black;1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanGrow>True</CanGrow>
+                          <CanShrink>True</CanShrink>
+                          <ClientRectangle>1.8,0,5.77,0.25</ClientRectangle>
+                          <Conditions isList="true" count="2">
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,LessThanOrEqualTo,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9,True,True,_x0022__x0022_,,None</value>
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,GreaterThan,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9,True,True,EAppRptEquipmentConditionMonitoringAssets.Recommendation,,All</value>
+                          </Conditions>
+                          <Font>Arial,9</Font>
+                          <Guid>97f0062fdf364eb3ab090e6934682632</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text41</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="70" />
+                          <TextBrush>Black</TextBrush>
+                          <TextOptions>,,,,WordWrap=True,A=0</TextOptions>
+                          <Type>DataColumn</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text41>
+                        <Text39 Ref="72" type="Text" isKey="true">
+                          <Border>Top, Left, Right;Black;1;Solid;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanShrink>True</CanShrink>
+                          <ClientRectangle>0,0,1.8,0.25</ClientRectangle>
+                          <Conditions isList="true" count="2">
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,LessThanOrEqualTo,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9_x002C_Bold,True,True,_x0022__x0022_,,None,Font_x002C__x0020_FontSize_x002C__x0020_FontStyleBold_x002C__x0020_TextColor_x002C__x0020_BackColor_x002C__x0020_Borders</value>
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,GreaterThan,_x0031_,,Numeric,Black,Transparent,Arial_x002C_9_x002C_Bold,True,True,_x0022_Recommendation_x0020_:_x0022_,,All</value>
+                          </Conditions>
+                          <Font>Arial,9,Bold</Font>
+                          <Guid>6bf62d1c2dae48c58e12383fab10abed</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text39</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="70" />
+                          <TextBrush>Black</TextBrush>
+                          <Type>Expression</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text39>
+                      </Components>
+                      <Conditions isList="true" count="0" />
+                      <Name>Panel6</Name>
+                      <Page isRef="6" />
+                      <Parent isRef="53" />
+                      <ShiftMode>IncreasingSize, DecreasingSize</ShiftMode>
+                    </Panel6>
+                    <Panel2 Ref="73" type="Panel" isKey="true">
+                      <Brush>Transparent</Brush>
+                      <CanBreak>True</CanBreak>
+                      <CanShrink>True</CanShrink>
+                      <ClientRectangle>0,0.1,7.57,0.25</ClientRectangle>
+                      <Components isList="true" count="7">
+                        <Text53 Ref="74" type="Text" isKey="true">
+                          <Border>Top, Left, Bottom;Gainsboro;1;None;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <ClientRectangle>0,0,0.9,0.25</ClientRectangle>
+                          <Conditions isList="true" count="0" />
+                          <Font>Arial,9,Bold</Font>
+                          <Guid>bfcd814645a3490cb851cee8c2b5fba0</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text53</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="73" />
+                          <Text>Asset Type :</Text>
+                          <TextBrush>Black</TextBrush>
+                          <Type>Expression</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text53>
+                        <Text45 Ref="75" type="Text" isKey="true">
+                          <Border>Top, Right, Bottom;Gainsboro;1;None;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <ClientRectangle>0.9,0,0.9,0.25</ClientRectangle>
+                          <Conditions isList="true" count="0" />
+                          <Font>Arial,9</Font>
+                          <Guid>e809dc4dc49146a895efa453aa4cdf13</Guid>
+                          <Margins>0,0,0,0</Margins>
+                          <Name>Text45</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="73" />
+                          <Text>{EAppRptEquipmentConditionMonitoringAssets.UnitType}</Text>
+                          <TextBrush>Black</TextBrush>
+                          <Type>DataColumn</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text45>
+                        <Text52 Ref="76" type="Text" isKey="true">
+                          <Border>Top, Left, Bottom;Gainsboro;1;None;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <ClientRectangle>1.8,0,0.7,0.25</ClientRectangle>
+                          <Conditions isList="true" count="0" />
+                          <Font>Arial,9,Bold</Font>
+                          <Guid>a6c0f46149f34c968101dafbef3a83e6</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text52</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="73" />
+                          <Text>Asset ID :</Text>
+                          <TextBrush>Black</TextBrush>
+                          <Type>Expression</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text52>
+                        <Text54 Ref="77" type="Text" isKey="true">
+                          <Border>Top, Right, Bottom;Gainsboro;1;None;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <ClientRectangle>2.5,0,2.27,0.25</ClientRectangle>
+                          <Conditions isList="true" count="0" />
+                          <Font>Arial,9</Font>
+                          <Guid>e0ec669a888b40f794ae40723bb64186</Guid>
+                          <Margins>0,0,0,0</Margins>
+                          <Name>Text54</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="73" />
+                          <ShrinkFontToFit>True</ShrinkFontToFit>
+                          <Text>{EAppRptEquipmentConditionMonitoringAssets.AssetId}</Text>
+                          <TextBrush>Black</TextBrush>
+                          <Type>DataColumn</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text54>
+                        <Text38 Ref="78" type="Text" isKey="true">
+                          <Border>Top, Left, Bottom;Gainsboro;1;None;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <ClientRectangle>4.77,0,1.1,0.25</ClientRectangle>
+                          <Conditions isList="true" count="0" />
+                          <Font>Arial,9,Bold</Font>
+                          <Guid>0db58cde97af495ca3400663a0d7c106</Guid>
+                          <HorAlignment>Center</HorAlignment>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text38</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="73" />
+                          <Text>Asset Condition :</Text>
+                          <TextBrush>Black</TextBrush>
+                          <Type>Expression</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text38>
+                        <Text46 Ref="79" type="Text" isKey="true">
+                          <Border>Top, Right, Bottom;Gainsboro;1;None;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <ClientRectangle>5.87,0,1.4,0.25</ClientRectangle>
+                          <Conditions isList="true" count="0" />
+                          <Font>Arial,9</Font>
+                          <Guid>9cc40794b0b94e7c885f96eae7a33c71</Guid>
+                          <Margins>5,0,0,0</Margins>
+                          <Name>Text46</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="73" />
+                          <ShrinkFontToFit>True</ShrinkFontToFit>
+                          <ShrinkFontToFitMinimumSize>6</ShrinkFontToFitMinimumSize>
+                          <Text>{EAppRptEquipmentConditionMonitoringAssets.ConditionName}</Text>
+                          <TextBrush>Black</TextBrush>
+                          <Type>DataColumn</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text46>
+                        <Text51 Ref="80" type="Text" isKey="true">
+                          <Border>Bottom;[216:216:216];1;None;False;4;Black</Border>
+                          <Brush>Transparent</Brush>
+                          <CanBreak>True</CanBreak>
+                          <ClientRectangle>7.27,0.02,0.3,0.2</ClientRectangle>
+                          <Conditions isList="true" count="6">
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,EqualTo,_x0030_,,Numeric,Black,Silver,Arial_x002C_8,True,False,,,All</value>
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,EqualTo,_x0031_,,Numeric,White,Green,Arial_x002C_8,True,False,,,All</value>
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,EqualTo,_x0032_,,Numeric,White,[0:1:254],Arial_x002C_8,True,False,,,All</value>
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,EqualTo,_x0033_,,String,White,[255:127:0],Arial_x002C_8,True,False,,,All</value>
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,EqualTo,_x0034_,,Numeric,White,[252:0:0],Arial_x002C_8,True,False,,,All</value>
+                            <value>EAppRptEquipmentConditionMonitoringAssets.ConditionCode,EqualTo,_x0035_,,Numeric,White,Black,Arial_x002C_8,True,False,,,All</value>
+                          </Conditions>
+                          <Font>Arial,9</Font>
+                          <Guid>218bbb9ecf2a4c089451db5beb552a9a</Guid>
+                          <HorAlignment>Center</HorAlignment>
+                          <Margins>0,0,0,0</Margins>
+                          <Name>Text51</Name>
+                          <Page isRef="6" />
+                          <Parent isRef="73" />
+                          <ShiftMode>IncreasingSize, DecreasingSize</ShiftMode>
+                          <Text>{EAppRptEquipmentConditionMonitoringAssets.ConditionCode}</Text>
+                          <TextBrush>Black</TextBrush>
+                          <Type>DataColumn</Type>
+                          <VertAlignment>Center</VertAlignment>
+                        </Text51>
+                      </Components>
+                      <Conditions isList="true" count="0" />
+                      <Name>Panel2</Name>
+                      <Page isRef="6" />
+                      <Parent isRef="53" />
+                    </Panel2>
+                  </Components>
+                  <Conditions isList="true" count="0" />
+                  <DataSourceName>EAppRptEquipmentConditionMonitoringAssets</DataSourceName>
+                  <Filters isList="true" count="0" />
+                  <Name>DataBand1</Name>
+                  <Page isRef="6" />
+                  <Parent isRef="12" />
+                  <Sort isList="true" count="0" />
+                </DataBand1>
+              </Components>
+              <Conditions isList="true" count="0" />
+              <GrowToHeight>True</GrowToHeight>
+              <Name>Panel1</Name>
+              <Page isRef="6" />
+              <Parent isRef="9" />
+            </Panel1>
+            <HorizontalLinePrimitive2 Ref="81" type="HorizontalLinePrimitive" isKey="true">
+              <ClientRectangle>0,0.55,7.57,0.01</ClientRectangle>
+              <Color>Black</Color>
+              <Conditions isList="true" count="0" />
+              <EndCap Ref="82" type="Cap" isKey="true">
+                <Color>Black</Color>
+              </EndCap>
+              <Name>HorizontalLinePrimitive2</Name>
+              <Page isRef="6" />
+              <Parent isRef="9" />
+              <Size>3</Size>
+              <StartCap Ref="83" type="Cap" isKey="true">
+                <Color>Black</Color>
+              </StartCap>
+            </HorizontalLinePrimitive2>
+          </Components>
+          <Conditions isList="true" count="0" />
+          <Guid>6378b1a911ca4373b27e38939071adf2</Guid>
+          <Name>ReportTitleBand1</Name>
+          <Page isRef="6" />
+          <Parent isRef="6" />
+        </ReportTitleBand1>
+      </Components>
+      <Conditions isList="true" count="1">
+        <value>EAppRptEquipmentConditionMonitoring.JobEquipmentId,GreaterThan,_x0030_,,Numeric,Red,Transparent,Arial_x002C_8,True,False,,,None</value>
+      </Conditions>
+      <Enabled>False</Enabled>
+      <Guid>0a08d1268a1c4cc59416aaddf102ce17</Guid>
+      <Margins>0.5,0.2,0.3,0.1</Margins>
+      <Name>CMReport</Name>
+      <PageHeight>11.69</PageHeight>
+      <PageWidth>8.27</PageWidth>
+      <Report isRef="0" />
+    </CMReport>
+    <CMHistory Ref="84" type="Page" isKey="true">
+      <Border>None;Black;2;Solid;False;4;Black</Border>
+      <Brush>Transparent</Brush>
+      <Components isList="true" count="3">
+        <HeaderBand2 Ref="85" type="HeaderBand" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,0.2,3.17,0.2</ClientRectangle>
+          <Components isList="true" count="1">
+            <Text30 Ref="86" type="Text" isKey="true">
+              <Border>All;Gainsboro;1;Solid;False;4;Black</Border>
+              <Brush>[242:242:242]</Brush>
+              <ClientRectangle>0,0,3.17,0.2</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Arial,10,Bold</Font>
+              <Guid>1a261559275e43d38d53d1a85c6fa422</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text30</Name>
+              <Page isRef="84" />
+              <Parent isRef="85" />
+              <Text>Machine Condition Code History</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+              <VertAlignment>Center</VertAlignment>
+            </Text30>
+          </Components>
+          <Conditions isList="true" count="0" />
+          <Name>HeaderBand2</Name>
+          <Page isRef="84" />
+          <Parent isRef="84" />
+        </HeaderBand2>
+        <HeaderBand3 Ref="87" type="HeaderBand" isKey="true">
+          <Brush>Transparent</Brush>
+          <ClientRectangle>0,0.8,3.17,0.2</ClientRectangle>
+          <Components isList="true" count="2">
+            <Text32 Ref="88" type="Text" isKey="true">
+              <Border>All;Gainsboro;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>0,0,1.1,0.2</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Arial,10,Bold</Font>
+              <Guid>4b181034f88742dd9a86c3f02aee90f0</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>5,0,0,0</Margins>
+              <Name>Text32</Name>
+              <Page isRef="84" />
+              <Parent isRef="87" />
+              <Text>Report Date</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text32>
+            <Text33 Ref="89" type="Text" isKey="true">
+              <Border>All;Gainsboro;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>1.1,0,2.07,0.2</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Arial,10,Bold</Font>
+              <Guid>e9c01bf8ec2a46d9b8cfea3891c80744</Guid>
+              <Margins>35,0,0,0</Margins>
+              <Name>Text33</Name>
+              <Page isRef="84" />
+              <Parent isRef="87" />
+              <Text>Condition</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>Expression</Type>
+            </Text33>
+          </Components>
+          <Conditions isList="true" count="0" />
+          <Name>HeaderBand3</Name>
+          <Page isRef="84" />
+          <Parent isRef="84" />
+        </HeaderBand3>
+        <DataBand2 Ref="90" type="DataBand" isKey="true">
+          <Brush>Transparent</Brush>
+          <BusinessObjectGuid isNull="true" />
+          <ClientRectangle>0,1.4,3.17,0.2</ClientRectangle>
+          <Components isList="true" count="3">
+            <Text28 Ref="91" type="Text" isKey="true">
+              <Border>All;Gainsboro;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>0,0,1.1,0.2</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Arial,10</Font>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>5,0,0,0</Margins>
+              <Name>Text28</Name>
+              <Page isRef="84" />
+              <Parent isRef="90" />
+              <Text>{EAppRptEquipmentConditionMonitoring.DataCollectionDate}</Text>
+              <TextBrush>Black</TextBrush>
+              <TextFormat Ref="92" type="CustomFormat" isKey="true">
+                <StringFormat>dd-MM-yy</StringFormat>
+              </TextFormat>
+              <Type>DataColumn</Type>
+              <VertAlignment>Center</VertAlignment>
+            </Text28>
+            <Text29 Ref="93" type="Text" isKey="true">
+              <Border>All;Gainsboro;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>1.4,0,1.77,0.2</ClientRectangle>
+              <Conditions isList="true" count="0" />
+              <Font>Arial,10</Font>
+              <Guid>7568573126f146f0a004e6b7b0416d73</Guid>
+              <Margins>5,0,0,0</Margins>
+              <Name>Text29</Name>
+              <Page isRef="84" />
+              <Parent isRef="90" />
+              <ShrinkFontToFit>True</ShrinkFontToFit>
+              <ShrinkFontToFitMinimumSize>4</ShrinkFontToFitMinimumSize>
+              <Text>{EAppRptEquipmentConditionHistory.RConditionName}</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>DataColumn</Type>
+              <VertAlignment>Center</VertAlignment>
+            </Text29>
+            <Text31 Ref="94" type="Text" isKey="true">
+              <Border>All;Gainsboro;1;Solid;False;4;Black</Border>
+              <Brush>Transparent</Brush>
+              <ClientRectangle>1.1,0,0.3,0.2</ClientRectangle>
+              <Conditions isList="true" count="6">
+                <value>EAppRptEquipmentConditionHistory.RConditionCode,EqualTo,_x0030_,,Numeric,Black,Silver,Arial_x002C_8,True,False,,,All</value>
+                <value>EAppRptEquipmentConditionHistory.RConditionCode,EqualTo,_x0031_,,Numeric,White,Green,Arial_x002C_8,True,False,,,All</value>
+                <value>EAppRptEquipmentConditionHistory.RConditionCode,EqualTo,_x0032_,,Numeric,White,[0:1:254],Arial_x002C_8,True,False,,,All</value>
+                <value>EAppRptEquipmentConditionHistory.RConditionCode,EqualTo,_x0033_,,String,White,[255:127:0],Arial_x002C_8,True,False,,,All</value>
+                <value>EAppRptEquipmentConditionHistory.RConditionCode,EqualTo,_x0034_,,Numeric,White,[252:0:0],Arial_x002C_8,True,False,,,All</value>
+                <value>EAppRptEquipmentConditionHistory.RConditionCode,EqualTo,_x0035_,,Numeric,White,Black,Arial_x002C_8,True,False,,,All</value>
+              </Conditions>
+              <Font>Arial,10</Font>
+              <Guid>290eadec653b4becb05157aab035dc78</Guid>
+              <HorAlignment>Center</HorAlignment>
+              <Margins>0,0,0,0</Margins>
+              <Name>Text31</Name>
+              <Page isRef="84" />
+              <Parent isRef="90" />
+              <Text>{EAppRptEquipmentConditionHistory.RConditionCode}</Text>
+              <TextBrush>Black</TextBrush>
+              <Type>DataColumn</Type>
+              <VertAlignment>Center</VertAlignment>
+            </Text31>
+          </Components>
+          <Conditions isList="true" count="0" />
+          <DataRelationName isNull="true" />
+          <DataSourceName>EAppRptEquipmentConditionHistory</DataSourceName>
+          <Filters isList="true" count="0" />
+          <Name>DataBand2</Name>
+          <Page isRef="84" />
+          <Parent isRef="84" />
+          <Sort isList="true" count="0" />
+        </DataBand2>
+      </Components>
+      <Conditions isList="true" count="0" />
+      <Guid>b9da85ac7e1e4a1b8a14373333a72d4b</Guid>
+      <Margins>0,0,0,0</Margins>
+      <Name>CMHistory</Name>
+      <PageHeight>4</PageHeight>
+      <PageWidth>3.17</PageWidth>
+      <Report isRef="0" />
+    </CMHistory>
+  </Pages>
+  <ReferencedAssemblies isList="true" count="8">
+    <value>System.Dll</value>
+    <value>System.Drawing.Dll</value>
+    <value>System.Windows.Forms.Dll</value>
+    <value>System.Data.Dll</value>
+    <value>System.Xml.Dll</value>
+    <value>Stimulsoft.Controls.Dll</value>
+    <value>Stimulsoft.Base.Dll</value>
+    <value>Stimulsoft.Report.Dll</value>
+  </ReferencedAssemblies>
+  <ReportAlias>Rotating Equipment Performance</ReportAlias>
+  <ReportChanged>7/11/2019 10:47:59 PM</ReportChanged>
+  <ReportCreated>4/23/2019 11:54:50 PM</ReportCreated>
+  <ReportFile>C:\Users\TK\Desktop\MRT Prod\MRX\EquipmentConditionMonitoring.mrx</ReportFile>
+  <ReportGuid>47060c9b079e499680ea4ca03083fb5e</ReportGuid>
+  <ReportImage>/9j/4AAQSkZJRgABAQEAAAAAAAD/2wBDAAUDBAQEAwUEBAQFBQUGBwwIBwcHBw8LCwkMEQ8SEhEP
+ERETFhwXExQaFRERGCEYGh0dHx8fExciJCIeJBweHx7/2wBDAQUFBQcGBw4ICA4eFBEUHh4eHh4e
+Hh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCADIAaQDASIA
+AhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQA
+AAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3
+ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWm
+p6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEA
+AwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSEx
+BhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElK
+U1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3
+uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3342f
+FC28B2cVnZxR3Wt3SFoYXb5Ik6eY+OcZyAO+D0xXzJ4g+IPjPXbky6j4kv8ABbISGUxRr9FTAo+L
+OsS678Rdd1CVmP8ApbxRg/wpGdij8lrlxt2nPWv07J8noYahGUopzau2/wAkfneaZpVxFWSjJqKd
+kl+Zp/8ACReIP+g/qn/gZJ/jR/wkXiD/AKD2qf8AgZJ/jWVxRxXtewp/yr7jyfaz7s1f+Ei8Qf8A
+Qe1T/wADJP8AGj/hIvEH/Qe1T/wMk/xrK4o4o9hT/lX3B7Wfdmr/AMJF4g/6D2qf+Bkn+NH/AAkX
+iD/oPap/4GSf41lcUcUewp/yr7g9rPuzV/4SLxB/0HtU/wDAyT/Gj/hIvEH/AEHtU/8AAyT/ABrK
+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
+/9k=</ReportImage>
+  <ReportName>ConditionHistory</ReportName>
+  <ReportUnit>Inches</ReportUnit>
+  <ReportVersion>2019.3.1.0</ReportVersion>
+  <Script>using System;
+using System.Drawing;
+using System.Windows.Forms;
+using System.Data;
+using Stimulsoft.Controls;
+using Stimulsoft.Base.Drawing;
+using Stimulsoft.Report;
+using Stimulsoft.Report.Dialogs;
+using Stimulsoft.Report.Components;
+
+namespace Reports
+{
+    public class ConditionHistory : Stimulsoft.Report.StiReport
+    {
+        public ConditionHistory()        {
+            this.InitializeComponent();
+        }
+          #region StiReport Designer generated code - do not modify
+		#endregion StiReport Designer generated code - do not modify
+    }
+}
+</Script>
+  <ScriptLanguage>CSharp</ScriptLanguage>
+  <Styles isList="true" count="1">
+    <ReportTitle Ref="95" type="Stimulsoft.Report.StiStyle" isKey="true">
+      <Brush>[231:245:250]</Brush>
+      <Conditions isList="true" count="0" />
+      <Font>Segoe UI,8,Bold</Font>
+      <HorAlignment>Center</HorAlignment>
+      <Name>ReportTitle</Name>
+      <NegativeTextBrush>Red</NegativeTextBrush>
+      <TextBrush>Black</TextBrush>
+      <VertAlignment>Center</VertAlignment>
+    </ReportTitle>
+  </Styles>
+</StiSerializer>

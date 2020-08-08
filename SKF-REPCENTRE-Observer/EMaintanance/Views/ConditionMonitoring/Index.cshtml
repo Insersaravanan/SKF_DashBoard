@@ -1,0 +1,56 @@
+﻿@{
+    ViewData["Title"] = "Condition Monitoring";
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<div ng-controller="skfCtrl" class="language content-wrapper">
+    <div class="container-fluid" id="languages">
+        <div class="row">
+            <div class="col-lg-12">
+                <h4 class="page-header text-primary">Language Page</h4>
+                <div uib-alert ng-repeat="alert in alerts" class="error-alert" dismiss-on-timeout="4000" ng-class="'alert-' + (alert.type || 'success')" close="closeAlert($index)">{{alert.msg}}</div>
+            </div>
+        </div>
+       
+        <form name="userForm" novalidate>
+            <div class="row create-form">
+                <div class="col-md-9">
+                    <div class="text-danger"></div>
+                    <div class="col-md-3 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.LName.$invalid && !userForm.LName.$pristine }">
+                        <label class="control-label">Language Name*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" id="LName" required ng-model="LName" name="LName" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.countryCode.$invalid && !userForm.countryCode.$pristine }">
+                        <label class="control-label">Country Code*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" id="countryCode" required ng-model="countryCode" name="countryCode" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="buttons create filter-button col-md-3">
+                    <button ng-disabled="readOnlyPage || userForm.$invalid" ng-click="saveLanguage()" ng-hide="isEdit" ng-show="isclear" class="btn btn-info"><i class="fa fa-save icon-filter"></i>Save</button>
+                    <button ng-disabled="readOnlyPage || userForm.$invalid" ng-click="updateLanguage()" class="btn btn-info" ng-show="isEdit" ng-hide="isclear"><i class="fa fa-save icon-filter"></i>Update</button>
+                    <button ng-click="clearOut()" class="btn btn-info"><i class="fa fa-eraser icon-filter"></i>Clear</button>
+                </div>
+            </div>
+        </form>
+        <div class="table-responsive">
+            <div class="grid data">
+                <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-pinning ui-grid-resize-columns></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <environment include="Development">
+        <script src="~/js/languages/index.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/languages/index.min.js" asp-append-version="true"></script>
+    </environment>
+}

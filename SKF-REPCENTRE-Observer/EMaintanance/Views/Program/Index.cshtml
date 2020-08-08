@@ -1,0 +1,257 @@
+﻿@{
+    ViewData["Title"] = "Programs";
+    Layout = "~/Views/Shared/_ObserverLayout.cshtml";
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<div ng-controller="skfCtrl" class="programs content-wrapper">
+    <div class="container-fluid" id="programs">
+        <div class="row heading-wrapper">
+            <div class="col-md-3 heading">
+                <h4 class="page-header text-primary">{{isEdit?"Edit Program":"Create Program"}}</h4>
+            </div>
+            <div class="col-md-9 menu-button">
+                <a ng-disabled="isCreate" ng-click="isCreate || createToggle()" title="Create"><i class="fa fa-plus icon-filter"></i>Create</a>
+                @*<a ng-disabled="isSearch" ng-click="isSearch || searchToggle()" title="Search"><i class="fa fa-search-plus icon-filter"></i><span>Search</span></a>*@
+                <span class="Pipe"></span>
+                <a ng-disabled="readOnlyPage || userForm.$invalid" ng-click="readOnlyPage || userForm.$invalid || save()" ng-show="isCreate" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-disabled="readOnlyPage || userForm.$invalid" ng-click="readOnlyPage || userForm.$invalid || update()" ng-show="isEdit" title="Update"><i class="fa fa-save icon-filter"></i><span>Update</span></a>
+                <a ng-disabled="isEdit" ng-click="isEdit || clearOut()" ng-show="isCreate || isEdit" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+                <a ng-show="isSearch" ng-click="clearOut()" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+            </div>
+           
+        </div>
+        @*<div class="row search-form" ng-hide="isEdit || isCreate">
+            <div class="col-md-10 col-sm-10">
+                <div class="col-md-2 col-sm-4 input-field">
+                    <label class="control-label">Status</label>
+                    <div>
+                        <select class="form-control" ng-model="P_Status" name="Active">
+                            <option value="All">--ALL--</option>
+                            <option value="Y">Active</option>
+                            <option value="N">In Active</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="buttons create filter-button col-md-2  col-sm-2">
+                <button ng-disabled="readOnlyPage" ng-click="loadData()" class="btn btn-info"><i class="fa fa-binoculars icon-filter"></i>Go</button>
+            </div>
+        </div>*@
+        <form name="userForm" novalidate>
+            <div class="row create-form" ng-show="isEdit || isCreate">
+                <div class="col-md-12">
+                    <div class="col-md-3 col-sm-3 input-field" ng-class="{ 'has-error' : userForm.ProgramCode.$invalid && !userForm.ProgramCode.$pristine }">
+                        <label class="control-label">Program Code*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" required ng-model="Program.ProgramCode" name="ProgramCode" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Program Name*</label>
+                        <div>
+                            <input required ng-disabled="readOnlyPage" class="form-control" ng-model="Program.ProgramName" name="ProgramName" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Controller Name</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" ng-model="Program.ControllerName" name="ControllerName" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Menu Name</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" ng-model="Program.MenuName" name="MenuName" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Menu Order</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" ng-model="Program.MenuOrder" name="MenuOrder" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Icon Name</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" ng-model="Program.IconName" name="IconName" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Group Code</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" ng-model="Program.GroupCode" name="GroupCode" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Sub-Group Code</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" ng-model="Program.SubgroupCode" name="SubGroupCode" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Action Name</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" ng-model="Program.ActionName" name="ActionName" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Link Url</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" ng-model="Program.LinkUrl" name="LinkUrl" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Menu Group</label>
+                        <div>
+                            <select ng-model="Program.MenuGroupId" class="form-control search-input" name="MenuGroupId"
+                                    ng-options="value.LookupId as value.LValue for (key, value) in ProgramDDL">
+                                <option value="">-- select --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Description</label>
+                        <div>
+                            <textarea ng-disabled="readOnlyPage" class="form-control" ng-model="Program.Descriptions" name="Descriptions"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-4 input-field" ng-show="isEdit">
+                        <label class="control-label">Status</label>
+                        <div>
+                            <select ng-disabled="readOnlyPage" class="form-control" ng-model="Program.Active" name="Active">
+                                <option value="Y">Active</option>
+                                <option value="N">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-4 input-field" ng-show="isEdit">
+                        <label class="control-label">Usage</label>
+                        <div>
+                            <select ng-disabled="readOnlyPage" class="form-control" ng-model="Program.Internal" name="Active">
+                                <option value="N">External</option>
+                                <option value="Y">Internal</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="table-responsive">
+            <div class="grid data">
+                <div id="uiGrid" ui-grid="gridOpts" class="grid"  ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+    <script src="~/lib/angular/angular-drag-and-drop-lists.min.js"></script>
+    <environment include="Development">
+        <script src="~/js/program/Index.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/program/index.min.js" asp-append-version="true"></script>
+    </environment>
+}
+<script type="text/ng-template" id="skfMultiLanguageModal.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Program / Multilingual</span>
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary">{{ProgramName}} </h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+          
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive">
+                <div class="grid data">
+                    <div id="uiGrid" ui-grid="gridOpts2" class="grid" ui-grid-edit ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfRoleGroupModal.html">
+    <div class="popup-user-role">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Program / Privilege Relation</span>
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary">{{ProgramName}} </h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+           
+        </div>
+        <div class="modal-body">
+            <div class="multi-drag row">
+                <div ng-repeat="list in models" class="col-md-6">
+                    <div class="panel panel-{{list.cssClass}}">
+                        <div class="select-button">
+
+                            <a class="btn btn-info right" ng-click="ShuttleRight(list)" title="Move right" ng-disabled="!btnright"></a>
+                            <a class="btn btn-info right rightAll" ng-click="ShuttleRightAll(list)" title="Move all" ng-disabled="list.items.length <= 0"></a>
+                            <a class="btn btn-info left leftAll" ng-click="ShuttleLeftAll(list)" title="Move all" ng-disabled="list.items.length <= 0"></a>
+                            <a class="btn btn-info left" ng-click="ShuttleLeft(list)" title="Move left" ng-disabled="!btnleft"> </a>
+
+                        </div>
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-md-4 list-heading">
+                                    <h3 class="panel-title">{{list.listName}}</h3>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="panel-body">
+                            <ul dnd-list dnd-drop="onDrop(list, item, index)">
+                                <li ng-repeat="item in list.items"
+                                    dnd-draggable="getSelectedItemsIncluding(list, item)"
+                                    dnd-dragstart="onDragstart(list, event)"
+                                    dnd-moved="onMoved(list)"
+                                    dnd-dragend="list.dragging = false"
+                                    dnd-selected="setSelected(list,item)"
+                                    ng-class="{'selected': item.selected}"
+                                    ng-hide="list.dragging && item.selected">
+                                    <span>:::</span>  {{item.PrivilegeName}}
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>

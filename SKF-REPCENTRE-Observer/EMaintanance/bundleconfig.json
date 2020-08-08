@@ -1,0 +1,664 @@
+[
+  {
+    "outputFileName": "wwwroot/css/site.min.css",
+    // An array of relative input file paths. Globbing patterns supported
+    "inputFiles": [
+      "wwwroot/css/site.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/site.min.js",
+    "inputFiles": [
+      "wwwroot/js/site.js"
+    ],
+    // Optionally specify minification options
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    },
+    // Optionally generate .map file
+    "sourceMap": false,
+    "renameLocals": false
+  },
+  {
+    "outputFileName": "wwwroot/js/app.min.js",
+    "inputFiles": [
+      "wwwroot/js/app.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/home/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/home/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/EncryptRDecrypt/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/EncryptRDecrypt/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/home/health.min.js",
+    "inputFiles": [
+      "wwwroot/js/home/health.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/home/performance.min.js",
+    "inputFiles": [
+      "wwwroot/js/home/performance.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/import/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/import/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/import/MasterImport.min.js",
+    "inputFiles": [
+      "wwwroot/js/import/MasterImport.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/users/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/users/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/users/userlog.min.js",
+    "inputFiles": [
+      "wwwroot/js/users/userlog.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/userclientrelation/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/userclientrelation/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/sector/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/sector/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/client/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/client/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/login/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/login/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/country/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/country/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/cms/skfcontent.min.js",
+    "inputFiles": [
+      "wwwroot/js/cms/skfcontent.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/cms/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/cms/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/costcentre/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/costcentre/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/Languages/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/Languages/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/segment/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/segment/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/industry/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/industry/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/lookup/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/lookup/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/assetcategory/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/assetcategory/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/assetclass/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/assetclass/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/assetSequence/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/assetSequence/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/failurecause/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/failurecause/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/failuremode/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/failuremode/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/assettype/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/assettype/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/taxonomy/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/taxonomy/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/clientsite/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/clientsite/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/rolegroup/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/rolegroup/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/role/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/role/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/program/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/program/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/WorkNotification/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/WorkNotification/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/privilege/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/privilege/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/feedback/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/feedback/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/equipment/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/equipment/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/plant/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/plant/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/bearing/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/bearing/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/manufacture/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/manufacture/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/manufacture/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/manufacture/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/dashboard/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/dashboard/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/dashboard/view.min.js",
+    "inputFiles": [
+      "wwwroot/js/dashboard/view.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/schedule/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/schedule/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/applicationconfiguration/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/applicationconfiguration/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/faultcount/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/faultcount/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/job/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/job/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/reportfeeder/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/reportfeeder/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/leverage/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/leverage/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/leverageexport/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/leverageexport/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/clientdoc/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/clientdoc/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/otherreports/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/otherreports/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/ConditionMonitoring/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/ConditionMonitoring/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/SummaryReport/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/SummaryReport/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/TechUpgrade/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/TechUpgrade/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/failurereport/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/failurereport/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/avoidedplannedmaint/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/avoidedplannedmaint/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/area/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/area/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/system/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/system/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/worknotification/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/worknotification/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/releasenote/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/releasenote/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/clientmapping/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/clientmapping/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/assetmapping/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/assetmapping/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/assetsensormapping/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/assetsensormapping/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  },
+  {
+    "outputFileName": "wwwroot/js/imageplotting/index.min.js",
+    "inputFiles": [
+      "wwwroot/js/imageplotting/index.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": false
+    }
+  }
+
+]

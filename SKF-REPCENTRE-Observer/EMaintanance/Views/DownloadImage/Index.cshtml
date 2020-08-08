@@ -1,0 +1,39 @@
+﻿
+@{
+    ViewData["Title"] = "Download Image";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<div ng-controller="skfCtrl" class="country content-wrapper">
+    <div class="container-fluid" id="country">
+        <div class="row heading-wrapper">
+            <div class="col-md-3 heading">
+                <h4 class="page-header text-primary">Download Image</h4>
+            </div>
+            <div class="col-md-9 menu-button">
+                <a ng-click="DownloadImage()"><i class="fa fa-download icon-filter"></i>Download Image</a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+    <environment include="Development">
+        <script src="~/js/downloadimage/index.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/downloadimage/index.min.js" asp-append-version="true"></script>
+    </environment>
+}
+

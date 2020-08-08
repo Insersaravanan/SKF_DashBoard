@@ -1,0 +1,70 @@
+﻿ProgramCode	-	ProgramName
+PRG01	-	Languages                                                 
+PRG02	-	Users
+PRG03	-	Country
+PRG04	-	CostCentre
+PRG05	-	Lookup
+PRG06	-	Sector
+PRG07	-	Industry
+PRG08	-	ClientGroup
+PRG09	-	ClientSite
+PRG10	-	Plant
+PRG11	-	RoleGroup
+PRG12	-	Segment
+PRG13	-	Settings
+PRG14	-	AssetType
+PRG15	-	FailureMode
+PRG16	-	FailureCause
+PRG17	-	Taxonomy
+PRG18	-	Page Setup
+PRG19	-	Programs
+PRG20	-	Role(S)
+PRG21	-	Privilege(S)
+PRG22	-	User-RoleGroup Relation
+PRG23	-	RoleGroup-Role Relation
+PRG24	-	Program-Privilege Relation
+PRG25	-	Role-Progam Privilege Relation
+PRG26   -   Client Site Relation
+PRG27   -   Condition Code Mapping
+PRG28   -   Import Master
+PRG29   -   AssetCategory
+PRG30   -	AssetClass
+PRG31   -   AssetSequence
+PRG32   -   Equipment
+PRG33   -   Schedule
+PRG34   -   Jobs
+PRG35   -   Failure Report
+PRG36   -   Avoided Planned Maintenance
+PRG37   -   Create Report
+PRG38   -   Leverage
+PRG39   -   Bearing
+PRG40   -   Upload Documents
+PRG41   -   Manufacturer
+PRG42   -   Other Reports	
+PRG43   -   Technology Upgrade	
+PRG44   -   Work Notification
+PRG45   -   Condition Monitoring Report	
+PRG46   -   ViewReports	
+PRG47   -   SummaryReport	
+PRG48   -   Area	
+PRG49   -   System	
+PRG50   -   Plant Area	
+PRG51   -   Others	
+PRG52   -   Audit Log
+PRG53   -   Health 
+PRG54   -   Performance
+PRG56   -   Leverage Export
+PRG57   -   Asset Sensor Mapping
+PRG58   -   Image Plotting
+PRG59   -   Client Mapping
+PRG60   -   Asset Mapping
+PRG61   -   Email Configuration
+PRG62   -   SMS Configuration
+PRG63   -   Observer Settings
+PRG64   -   SMS Configuration
+PRG65   -   ENGINEERING UNIT
+PRG66   -   Channel
+PRG67   -   DASHBOARD CMP
+PRG68   -   ALARMEMAIL
+PRG69   -   HISTORIAL REPORT
+PRG70   -   PROGRAM TYPE

@@ -1,0 +1,121 @@
+﻿<script src="~/lib/highchart/highchart.js"></script>
+@*<script src="~/lib/highchart/boost.js"></script>*@
+<script src="~/lib/highchart/funnel.js"></script>
+<script src="~/lib/highchart/exporting.js"></script>
+<script src="~/lib/highchart/export-data.js"></script>
+<div ng-controller="skfCtrl" class="content-wrapper">
+    <div class="container-fluid dashboard" id="Dashboard">
+        <div class="row heading-wrapper">
+            <div class="col-md-3 heading">
+                <h4 class="page-header text-primary">Dashboard</h4>
+            </div>
+            <div class="col-md-9 menu-button">
+                <div class="tab-wrapper">
+                    <div class="tab-field">
+                        <span class="select-box">
+                            <label class="control-label">Showing:</label>
+                            <select ng-model="val" class="form-control search-input" name="sort" ng-change="loadChartData(LoadDataList, val)"
+                                    ng-options="value.val as value.text for (key, value) in sordByDDL"></select>
+                        </span>
+                        <button class="btn btn-info" ng-disabled="firstTab" ng-click="ShowTab('first')">First Section</button>
+                        <button class="btn btn-info" ng-disabled="secondTab" ng-click="ShowTab('second')">Second Section</button>
+                        <button class="btn btn-info" ng-disabled="thirdTab" ng-click="ShowTab('third')">Third Section</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-2 col-sm-6 input-field">
+                <label class="control-label">ClientSite Name</label>
+                @*<select ng-model="ClientSiteId" class="form-control search-input" name="ClientSiteName"
+                    ng-options="value.ClientSiteId as value.ClientSiteName for (key, value) in clientSiteDDL | unique : 'ClientSiteName'"></select>*@
+
+                <ui-select ng-model="ClientSiteDDL.ClientName" theme="bootstrap" ng-disabled="readOnlyPage" style="width: 800px;" title="Choose a client site" on-select="save()">
+                    <ui-select-match placeholder="Select Client Site...">{{$select.selected.ClientSiteName}}</ui-select-match>
+                    <ui-select-choices repeat="clientSite.ClientSiteName as clientSite in clientSiteDDL | propsFilter: {ClientSiteName: $select.search} | limitTo: 100">
+                        <div ng-bind-html="clientSite.ClientSiteName | highlight: $select.search"></div>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+            <div class="col-md-2 col-sm-6 input-field">
+                <label class="control-label">Country Name</label>
+                <select ng-model="CountryId" class="form-control search-input" name="CountryName"
+                        ng-options="value.CountryId as value.CountryName for (key, value) in countryDDL | unique : 'CountryName'"></select>
+            </div>
+            <div class="col-md-2 col-sm-6 input-field">
+                <label class="control-label">Branch Name</label>
+                <select ng-model="CostCentreId" class="form-control search-input" name="CostCentreName" ng-change="loadData()"
+                        ng-options="value.CostCentreId as value.CostCentreName for (key, value) in costcentreDDL | unique : 'CostCentreName'"></select>
+            </div>
+            <div class="col-md-2 col-sm-6 input-field">
+                <label class="control-label">Sector Name</label>
+                <select ng-model="SectorId" class="form-control search-input" name="CostCentreName"
+                        ng-options="value.SectorId as value.SectorName for (key, value) in sectorDDL | unique : 'SectorName'"></select>
+            </div>
+            <div class="col-md-2 col-sm-6 input-field">
+                <label class="control-label">Segment Name</label>
+                <select ng-model="SegmentId" class="form-control search-input" name="CostCentreName"
+                        ng-options="value.SegmentId as value.SegmentName for (key, value) in segmentDDL | unique : 'SegmentName'"></select>
+            </div>
+            <div class="col-md-2 col-sm-6 input-field">
+                <label class="control-label">Industry Name</label>
+                <select ng-model="IndustryId" class="form-control search-input" name="CostCentreName"
+                        ng-options="value.IndustryId as value.IndustryName for (key, value) in industryDDL | unique : 'IndustryName'"></select>
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <div class="first-wrapper" ng-hide="!firstTab">
+                <div class="inner-wrapper">
+                    <div id="container"></div>
+                </div>
+                <div class="inner-wrapper">
+                    <div id="container1"></div>
+                </div>
+                <div class="inner-wrapper">
+                    <div id="container2"></div>
+                </div>
+                <div class="inner-wrapper">
+                    <div id="container3"></div>
+                </div>
+                <div class="inner-wrapper">
+                    <div id="container4"></div>
+                </div>
+            </div>
+
+            <div class="second-wrapper" ng-hide="!secondTab">
+                <div class="inner-wrapper">
+                    <div id="container5"></div>
+                </div>
+                <div class="inner-wrapper">
+                    <div id="container6"></div>
+                </div>
+                <div class="inner-wrapper">
+                    <div id="container7"></div>
+                </div>
+                <div class="inner-wrapper">
+                    <div id="container8"></div>
+                </div>
+                <div class="inner-wrapper">
+                    <div id="container9"></div>
+                </div>
+            </div>
+
+            <div class="third-wrapper" ng-hide="!thirdTab">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <environment include="Development">
+        <script src="~/js/dashboard/view.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/dashboard/view.min.js" asp-append-version="true"></script>
+    </environment>
+}

@@ -1,0 +1,264 @@
+﻿@{
+    ViewData["Title"] = "Taxonomy";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<div ng-controller="skfCtrl" class="Taxonomy content-wrapper">
+    <div class="container-fluid" id="Taxonomy">
+        <div class="row heading-wrapper">
+            <div class="col-md-3 heading">
+                <h4 class="page-header text-primary">{{isEdit?"Edit Taxonomy":isSearch?"Search Taxonomy":"Create Taxonomy"}}</h4>
+            </div>
+            <div class="col-md-9 menu-button">
+                <a ng-click="import()" title="Import"><i class="fa fa-download icon-filter"></i>Import</a>
+                <a ng-disabled="isCreate" ng-click="isCreate || createToggle()" title="Create"><i class="fa fa-plus icon-filter"></i>Create</a>
+                <a ng-disabled="isSearch" ng-click="isSearch || searchToggle()" title="Search"><i class="fa fa-search-plus icon-filter"></i><span>Search</span></a>
+                <span class="Pipe"></span>
+                <a ng-disabled="readOnlyPage || userForm.$invalid || isSearch" ng-click="readOnlyPage || userForm.$invalid || isSearch || save()" ng-show="isCreate || isSearch" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-disabled="readOnlyPage || userForm.$invalid" ng-click="readOnlyPage || userForm.$invalid || update()" ng-show="isEdit" title="Update"><i class="fa fa-save icon-filter"></i><span>Update</span></a>
+                <a ng-disabled="isEdit" ng-click="isEdit || clearOut()" ng-show="isCreate || isEdit" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+                <a ng-show="isSearch" ng-click="clearValue()" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+            </div>
+        </div>
+        <form name="searchForm" novalidate ng-hide="!isSearch" id="searchForm">
+            <div class="row search-form" ng-hide="isEdit || isCreate">
+                <div class="col-md-10">
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Sector Name*</label>
+                        <select required ng-model="S_Taxonomy.SectorId" class="form-control required search-input" name="SectorName" ng-change="loadSegment(S_Taxonomy.SectorId)"
+                                ng-options="value.SectorId as value.SectorName for (key, value) in SectorDDL"></select>
+                        @*<div class="col-md-12">
+                                <div class="well">
+                                    <ui-select ng-model="S_Taxonomy.SectorId" theme="bootstrap" ng-disabled="readOnlyPage" style="width: 800px;" on-select="loadSegment($select.selected.SectorId)">
+                                        <ui-select-match placeholder="Select Sector...">{{$select.selected.SectorName}}</ui-select-match>
+                                        <ui-select-choices  repeat="sector.SectorName as sector in SectorDDL | propsFilter: {SectorName: $select.search,SectorCode: $select.search} | limitTo: 50" >
+                                            <div ng-bind-html="sector.SectorName | highlight: $select.search"></div>
+                                            <small>
+                                                ({{sector.SectorCode}}) - {{sector.SectorName}}
+                                            </small>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </div>*@
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Segment Name*</label>
+                        <select required ng-model="S_Taxonomy.SegmentId" class="form-control search-input" name="Segment" ng-change="loadIndustry(S_Taxonomy.SegmentId)"
+                                ng-options="value.SegmentId as value.SegmentName for (key, value) in SegmentDDL"></select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Industry Name</label>
+                        <select ng-model="S_Taxonomy.IndustryId" class="form-control search-input" name="IndustryName" ng-change="loadAssetCategory()"
+                                ng-options="value.IndustryId as value.IndustryName for (key, value) in IndustryDDL"></select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Asset Category (L1)</label>
+                        <select ng-model="S_Taxonomy.AssetCategoryId" class="form-control search-input" name="AssetCategoryName" ng-change="S_loadAssetClass(S_Taxonomy.AssetCategoryId)"
+                                ng-options="value.AssetCategoryId as value.AssetCategoryName for (key, value) in AssetCategoryDDL"></select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Asset Class (L2)</label>
+                        <select ng-model="S_Taxonomy.AssetClassId" class="form-control search-input" name="AssetClassName" ng-change="s_AssetClassChange(S_Taxonomy.AssetClassId)"
+                                ng-options="value.AssetClassId as value.AssetClassName for (key, value) in AssetClassDDL"></select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Asset Type (L3)</label>
+                        <select ng-model="S_Taxonomy.AssetTypeId" class="form-control search-input" name="AssetTypeName" ng-change="loadAssetSequence(S_Taxonomy.AssetTypeId)"
+                                ng-options="value.AssetTypeId as value.AssetTypeName for (key, value) in AssetTypeDDL"></select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Asset Sequence (L4)</label>
+                        <select ng-model="S_Taxonomy.AssetSequenceId" class="form-control search-input" name="AssetSequenceName"
+                                ng-options="value.AssetSequenceId as value.AssetSequenceName for (key, value) in AssetSequenceDDL"></select>
+                    </div>
+                    @*<div class="col-md-3 col-sm-6 input-field">
+                            <label class="control-label">Asset Name*</label>
+                            <select ng-model="S_Taxonomy.AssetTypeId" class="form-control search-input" name="AssetType" ng-change="loadFailureMode(S_Taxonomy.AssetTypeId)"
+                                    ng-options="value.AssetTypeId as value.AssetTypeName for (key, value) in AssetTypeDDL"></select>
+                        </div>*@
+                    @*<div class="col-md-3 col-sm-6 input-field">
+                            <label class="control-label">Failure Mode Name</label>
+                            <select ng-model="S_Taxonomy.FailureModeId" class="form-control search-input" name="FailureMode" ng-change="loadFailureCause(S_Taxonomy.FailureModeId)"
+                                    ng-options="value.FailureModeId as value.FailureModeName for (key, value) in FailureModeDDL"></select>
+                        </div>
+                        <div class="col-md-3 col-sm-6 input-field">
+                            <label class="control-label">Failure Cause Name</label>
+                            <select ng-model="S_Taxonomy.FailureCauseId" class="form-control search-input" name="FailureCause"
+                                    ng-options="value.FailureCauseId as value.FailureCauseName for (key, value) in FailureCauseDDL"></select>
+                        </div>*@
+                    <div class="col-md-2 col-sm-4 input-field">
+                        <label class="control-label">Status</label>
+                        <div>
+                            <select class="form-control" ng-model="S_Taxonomy.Status" name="Active">
+                                <option value="All">--ALL--</option>
+                                <option value="Y">Active</option>
+                                <option value="N">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="buttons create filter-button col-md-2  col-sm-2">
+                    <button ng-disabled="readOnlyPage" ng-click="loadData()" class="btn btn-info"><i class="fa fa-binoculars icon-filter"></i>Go</button>
+                </div>
+            </div>
+        </form>
+        <form name="userForm" novalidate>
+            <div class="row create-form" ng-show="isEdit || isCreate">
+                <div class="col-md-12">
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Sector Name*</label>
+                        <select ng-model="Taxonomy.SectorId" class="form-control required search-input" name="SectorName" ng-change="loadSegment(Taxonomy.SectorId)"
+                                ng-options="value.SectorId as value.SectorName for (key, value) in SectorDDL"></select>
+                        @*<div class="col-md-12">
+                                <div class="well">
+                                    <ui-select ng-model="Taxonomy.SectorId" ng-disabled="readOnlyPage" close-on-select="false" style="width: 800px;">
+                                        <ui-select-match placeholder="Select Sector...">{{$item.SectorName}}</ui-select-match>
+                                        <ui-select-choices repeat="sector in SectorDDL | propsFilter: {SectorName: $select.search,SectorCode: $select.search} | limitTo: 50" onselect="loadSegment(Taxonomy.SectorId)">
+                                            <div ng-bind-html="sector.SectorName | highlight: $select.search"></div>
+                                            <small>
+                                                ({{sector.SectorCode}}) - {{sector.SectorName}}
+                                            </small>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                            </div>*@
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Segment Name*</label>
+                        <select ng-model="Taxonomy.SegmentId" class="form-control search-input" name="Segment" ng-change="loadIndustry(Taxonomy.SegmentId)"
+                                ng-options="value.SegmentId as value.SegmentName for (key, value) in SegmentDDL"></select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Industry Name*</label>
+                        <select ng-model="Taxonomy.IndustryId" class="form-control search-input" name="SectorName" ng-change="loadAssetCategory()"
+                                ng-options="value.IndustryId as value.IndustryName for (key, value) in IndustryDDL"></select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Asset Category (L1)*</label>
+                        <select ng-model="Taxonomy.AssetCategoryId" class="form-control search-input" name="AssetCategoryName" ng-change="loadAssetClass(Taxonomy.AssetCategoryId)"
+                                ng-options="value.AssetCategoryId as value.AssetCategoryName for (key, value) in AssetCategoryDDL"></select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Asset Class (L2)*</label>
+                        <select ng-model="Taxonomy.AssetClassId" class="form-control search-input" name="AssetClassName" ng-change="AssetClassChange(Taxonomy.AssetClassId)"
+                                ng-options="value.AssetClassId as value.AssetClassName for (key, value) in AssetClassDDL"></select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Asset Type (L3)*</label>
+                        <select ng-model="Taxonomy.AssetTypeId" class="form-control search-input" name="AssetTypeName" ng-change="loadAssetSequence(Taxonomy.AssetTypeId)"
+                                ng-options="value.AssetTypeId as value.AssetTypeName for (key, value) in AssetTypeDDL"></select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Asset Sequence (L4)*</label>
+                        <select ng-model="Taxonomy.AssetSequenceId" class="form-control search-input" name="AssetSequenceName"
+                                ng-options="value.AssetSequenceId as value.AssetSequenceName for (key, value) in AssetSequenceDDL"></select>
+                    </div>
+                    @*<div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Failure Mode Name</label>
+                        <select ng-model="Taxonomy.FailureModeId" class="form-control search-input" name="FailureMode"
+                                ng-options="value.FailureModeId as value.FailureModeName for (key, value) in FailureModeDDL" ng-change="loadFailureCause(Taxonomy.FailureModeId)"></select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Failure Cause Name</label>
+                        <select ng-model="Taxonomy.FailureCauseId" class="form-control search-input" name="FailureCause"
+                                ng-options="value.FailureCauseId as value.FailureCauseName for (key, value) in FailureCauseDDL"></select>
+                    </div>*@
+
+                    <div class="col-md-1 col-sm-6 input-field taxo-code">
+                        <label class="control-label">MTBF (Years)</label>
+                        <div>
+                            <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46"  placeholder="0" ng-disabled="readOnlyPage" class="form-control" ng-model="Taxonomy.MTBF" name="Mfr" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-1 col-sm-6 input-field taxo-code">
+                        <label class="control-label">MTTR (Hours)</label>
+                        <div>
+                            <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" placeholder="0" ng-disabled="readOnlyPage" class="form-control" ng-model="Taxonomy.MTTR" name="Mttr" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+
+
+                    @*<div class="col-md-1 col-sm-6 input-field taxo-code">
+                            <label class="control-label">MTTR(O)</label>
+                            <div>
+                                <input type="number" placeholder="0" ng-disabled="readOnlyPage" class="form-control" ng-model="Taxonomy.MTTROld" name="Mttr" />
+                                <span class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-1 col-sm-6 input-field taxo-code">
+                            <label class="control-label">MTBF(O)</label>
+                            <div>
+                                <input type="number" placeholder="0" ng-disabled="readOnlyPage" class="form-control" ng-model="Taxonomy.MTBFOld" name="Mfr" />
+                                <span class="text-danger"></span>
+                            </div>
+                        </div>*@
+                    <div class="col-md-2 col-sm-4 input-field" ng-show="isEdit">
+                        <label class="control-label">Status*</label>
+                        <div>
+                            <select ng-disabled="readOnlyPage" class="form-control" ng-model="Taxonomy.Active" name="Active">
+                                <option value="Y">Active</option>
+                                <option value="N">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="table-responsive">
+            <div class="grid data">
+                <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+    <script src="~/lib/angular/ui-grid/import/xlsx.full.min.js"></script>
+    <script src="~/lib/angular/ui-grid/import/ods.js"></script>
+    <environment include="Development">
+        <script src="~/js/import/index.js" asp-append-version="true"></script>
+        <script src="~/js/Taxonomy/index.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/import/index.min.js" asp-append-version="true"></script>
+        <script src="~/js/Taxonomy/index.min.js" asp-append-version="true"></script>
+    </environment>
+}
+
+<script type="text/ng-template" id="skfMultiLanguageModal.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary">Taxonomy - Multilingual</h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Save"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive">
+                <div class="grid data">
+                    <div id="uiGrid" ui-grid="gridOpts2" class="grid" ui-grid-edit ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>

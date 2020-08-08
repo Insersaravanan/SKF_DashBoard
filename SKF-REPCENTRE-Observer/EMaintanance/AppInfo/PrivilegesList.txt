@@ -1,0 +1,8 @@
+﻿PrivilegeCode  -  PrivilegeName
+P1	-  View
+P2	-  Create
+P3	-  Update
+P4	-  Create Multilingual
+P5	-  Export Data
+P6	-  Import Data
+P7	-  Create Job

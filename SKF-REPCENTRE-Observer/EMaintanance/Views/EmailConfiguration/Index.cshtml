@@ -1,0 +1,120 @@
+﻿@{
+    ViewData["Title"] = "Emain Configuration";
+    Layout = "~/Views/Shared/_ObserverLayout.cshtml";
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<div ng-controller="skfCtrl" class="email-config content-wrapper">
+    <div class="container-fluid" id="country">
+        <div class="row heading-wrapper">
+            <div class="col-md-3 heading">
+                <h4 class="page-header text-primary">{{isEdit?"Edit Country":"Create Email Configuration"}}</h4>
+            </div>
+            <div class="col-md-9 menu-button">
+                @*<a ng-disabled="isCreate" ng-click="isCreate || createToggle()" title="Create"><i class="fa fa-plus icon-filter"></i>Create</a>*@
+                @*<span class="Pipe"></span>*@
+                <a ng-disabled="readOnlyPage || userForm.$invalid || isSearch" ng-click="readOnlyPage || userForm.$invalid || isSearch || save()" ng-show="isCreate || isSearch" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-disabled="readOnlyPage || userForm.$invalid" ng-click="readOnlyPage || userForm.$invalid || update()" ng-show="isEdit" title="Update"><i class="fa fa-save icon-filter"></i><span>Update</span></a>
+                <a ng-disabled="isEdit" ng-click="isEdit || clearOut()" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+            </div>
+        </div>
+        <form name="userForm" novalidate>
+            <div class="row create-form email-config" ng-show="isEdit || isCreate">
+                @*<div class="col-md-12">
+                        <div class="text-danger"></div>
+                        <div class="col-md-3 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.groupName.$invalid && !userForm.groupName.$pristine }">
+                            <label class="control-label">Group Name*</label>
+                            <div>
+                                <input maxlength=2 class="form-control" id="groupName" required ng-model="groupName" name="groupName" />
+                                <span class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.alarmInterval.$invalid && !userForm.alarmInterval.$pristine }">
+                            <label class="control-label">Alarm Interval*</label>
+                            <div>
+                                <input class="form-control" id="alarmInterval" required ng-model="alarmInterval" name="alarmInterval" />
+                                <span class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.minutesInterval.$invalid && !userForm.minutesInterval.$pristine }">
+                            <label class="control-label">Minutes Interval*</label>
+                            <div>
+                                <input class="form-control" id="minutesInterval" required ng-model="minutesInterval" name="minutesInterval" />
+                                <span class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.AlarmStatus.$invalid && !userForm.AlarmStatus.$pristine }">
+                            <label class="control-label">Alarm Status*</label>
+                            <span class="alarm-radio-btn">
+                                <input type="radio" class="alarm-status" name="AlarmStatus" ng-model="AlarmStatus" value="Y"> ON
+                                <input type="radio" class="alarm-status" name="AlarmStatus" ng-model="AlarmStatus" value="N"> OFF
+                                <span class="text-danger"></span>
+                            </span>
+                        </div>
+                        <div class="col-md-3 col-sm-6 input-field" Id="emailList" ng-class="{ 'has-error' : userForm.emailList.$invalid && !userForm.emailList.$pristine }">
+                            <label class="control-label">Email List*</label>
+                            <div>
+                                <textarea ng-model="emailList" placeholder="Email List" class="form-control search-input big" name="emailList" cols="1" rows="2"></textarea>
+                                <span class="text-danger"></span>
+                                <span class="note">Please seperate email using semicolon*</span>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6 input-field" Id="MobNoList" ng-class="{ 'has-error' : userForm.MobNoList.$invalid && !userForm.MobNoList.$pristine }">
+                            <label class="control-label">Mobile Number List*</label>
+                            <div>
+                                <textarea ng-model="MobNoList" placeholder="Mobile Number List" class="form-control search-input big" name="MobNoList" cols="1" rows="2"></textarea>
+                                <span class="text-danger"></span>
+                                <span class="note">Please seperate mobile no using comma*</span>
+                            </div>
+                        </div>
+                    </div>*@
+
+                <div class="col-md-12">
+                    <div class="text-danger"></div>
+                    <div class="col-md-12 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.toMail.$invalid && !userForm.toMail.$pristine }">
+                        <label class="control-label">To Mail*</label>
+                        <div>
+                            <input class="form-control" placeholder="To" ng-model="toMail" name="toMail" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.groupName.$invalid && !userForm.groupName.$pristine }">
+                        <label class="control-label">Subject*</label>
+                        <div>
+                            <input class="form-control" placeholder="subject" required ng-model="subject" name="subject" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.groupName.$invalid && !userForm.groupName.$pristine }">
+                        <label class="control-label">Body*</label>
+                        <div>
+                            <textarea ng-model="body" placeholder="Add body Content" class="form-control email-body search-input big" name="MobNoList" cols="6" rows="6"></textarea>
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.groupName.$invalid && !userForm.groupName.$pristine }">
+                        <button class="btn btn-primary" ng-click="send()">Send</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+    <environment include="Development">
+        <script src="~/js/emailconfiguration/index.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/emailconfiguration/index.min.js" asp-append-version="true"></script>
+    </environment>
+}

@@ -1,0 +1,149 @@
+﻿@{
+    ViewData["Title"] = "Leverage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<div ng-controller="skfCtrl" class="leverage content-wrapper">
+    <div class="container-fluid rds leverage" id="leverage">
+        <div class="wizard-inner">
+            <div class="connecting-line"></div>
+            <ul class="tabs">
+                <li class="list-tab" ng-class="{'active':exportLeverageActive}" ng-disabled="exportLeverageActive">
+                    <a ng-click="next('stage0')" Title="Export Leverage">
+                        <span class="round-tab">
+                            Export List
+                        </span>
+                    </a>
+                </li>
+                <li class="list-tab" ng-class="{'active':exportListActive}" ng-disabled="exportListActive">
+                    <a ng-click="next('stage1')" Title="File List">
+                        <span class="round-tab">
+                            File List
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="animate-switch-container" ng-switch on="stage">
+            <div class="Export-Leverage animate-switch" ng-switch-default>
+                <div class="row heading-wrapper">
+                    <div class="col-md-3 heading">
+                        <h4 class="page-header text-primary">Export Leverages</h4>
+                    </div>
+                    <div class="col-md-9 menu-button">
+                        <a ng-disabled="" ng-click="save()" title="Generate"><i class="fa fa-save icon-filter"></i><span>Generate</span></a>
+
+                        <span class="Pipe"></span>
+
+                        <a ng-disabled="" ng-click="clearOut()" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+                    </div>
+                </div>
+                <div class="row search-form">
+                    <div class="col-md-10 col-sm-10">
+                        <div class="col-md-3 col-sm-6 input-field">
+                            <label class="control-label">From Date*</label>
+                            <p class="input-group date-picker date-wrapper">
+                                <input type="text" class="form-control date-picker-input" ng-dblclick="d_LeverageFromDate=true" placeholder="dd/mm/yyyy" uib-datepicker-popup="dd/MM/yyyy"
+                                       ng-model="L_Leverage.LeverageFromDate" name="L_Leverage.LeverageFromDate" ng-init="d_LeverageFromDate=false" is-open="d_LeverageFromDate"
+                                       datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                                <span class="input-group-btn date-picker-button">
+                                    <button type="button" class="btn btn-default" ng-click="d_LeverageFromDate=true"><i class="fa fa-calendar"></i></button>
+                                </span>
+                        </div>
+                        <div class="col-md-3 col-sm-6 input-field">
+                            <label class="control-label">To Date:</label>
+                            <p class="input-group date-picker date-wrapper">
+                                <input type="text" class="form-control date-picker-input" ng-dblclick="d_LeverageToDate=true" placeholder="dd/mm/yyyy" uib-datepicker-popup="dd/MM/yyyy"
+                                       ng-model="L_Leverage.LeverageToDate" name="L_Leverage.LeverageToDate" ng-init="d_LeverageToDate=false" is-open="d_LeverageToDate"
+                                       datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                                <span class="input-group-btn date-picker-button">
+                                    <button type="button" class="btn btn-default" ng-click="d_LeverageToDate=true"><i class="fa fa-calendar"></i></button>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-md-3 col-sm-6 input-field">
+                            <label class="control-label">Country:</label>
+                            <select ng-model="L_Leverage.CountryId" class="form-control search-input" required name="country"
+                                    ng-options="value.CountryId as value.CountryName for (key, value) in CountryDDL"></select>
+                        </div>
+                    </div>
+                    <div class="buttons create filter-button col-md-2  col-sm-2">
+                        <button ng-click="loadData()" class="btn btn-info"><i class="fa fa-binoculars icon-filter"></i>Go</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <div class="grid data">
+                        <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                    </div>
+                </div>
+            </div>
+            <div class="Export-List animate-switch" ng-switch-when="stage1">
+                <div class="row heading-wrapper">
+                    <div class="col-md-3 heading">
+                        <h4 class="page-header text-primary">Export List</h4>
+
+                    </div>
+                    <div class="col-md-9 menu-button">
+                        <a title="Search"></a>
+                    </div>
+                </div>
+                <div class="row search-form">
+                    <div class="col-md-10 col-sm-10">
+                        <div class="col-md-2 col-sm-6 input-field">
+                            <label class="control-label">File From Date</label>
+                            <p class="input-group date-picker date-wrapper">
+                                <input type="text" class="form-control date-picker-input" ng-dblclick="d_FileFromDate=true" placeholder="dd/mm/yyyy" uib-datepicker-popup="dd/MM/yyyy"
+                                       ng-model="L_ExportLeverage.FileFromDate" name="L_Leverage.LeverageFromDate" ng-init="d_LeverageFromDate=false" is-open="d_LeverageFromDate"
+                                       datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                                <span class="input-group-btn date-picker-button">
+                                    <button type="button" class="btn btn-default" ng-click="d_LeverageFromDate=true"><i class="fa fa-calendar"></i></button>
+                                </span>
+                        </div>
+                        <div class="col-md-2 col-sm-6 input-field">
+                            <label class="control-label">File To Date:</label>
+                            <p class="input-group date-picker date-wrapper">
+                                <input type="text" class="form-control date-picker-input" ng-dblclick="d_FileToDate=true" placeholder="dd/mm/yyyy" uib-datepicker-popup="dd/MM/yyyy"
+                                       ng-model="L_ExportLeverage.FileToDate" name="L_Leverage.LeverageToDate" ng-init="d_LeverageToDate=false" is-open="d_LeverageToDate"
+                                       datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                                <span class="input-group-btn date-picker-button">
+                                    <button type="button" class="btn btn-default" ng-click="d_LeverageToDate=true"><i class="fa fa-calendar"></i></button>
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="buttons create filter-button col-md-2  col-sm-2">
+                        <button ng-click="loadExport()" class="btn btn-info"><i class="fa fa-binoculars icon-filter"></i>Go</button>
+                    </div>
+                </div>
+                <div class="table-responsive job-list-grid">
+                    <div class="grid data">
+                        <div id="uiGrid" ui-grid="gridOpts1" class="grid" ui-grid-edit ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+    <script src="~/lib/angular/ui-grid/import/xlsx.full.min.js"></script>
+    <script src="~/lib/angular/ui-grid/import/ods.js"></script>
+    <environment include="Development">
+        <script src="~/js/import/index.js" asp-append-version="true"></script>
+        <script src="~/js/leverageexport/index.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/import/index.min.js" asp-append-version="true"></script>
+        <script src="~/js/leverageexport/index.min.js" asp-append-version="true"></script>
+    </environment>
+}
+

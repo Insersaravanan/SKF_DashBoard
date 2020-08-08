@@ -1,0 +1,115 @@
+﻿@{
+    ViewData["Title"] = "Other Reports";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<div ng-controller="skfCtrl" class="sector content-wrapper">
+    <div class="container-fluid" id="sector">
+        <div class="row heading-wrapper">
+            <div class="col-md-3 heading">
+                <h4 class="page-header text-primary">{{isSearch?"Search Other Reports":"Create Other Reports"}}</h4>
+            </div>
+            <div class="col-md-9 menu-button">
+                <a ng-disabled="isCreate" ng-click="isCreate || createToggle()" title="Create"><i class="fa fa-plus icon-filter"></i>Create</a>
+                <a ng-disabled="isSearch" ng-click="isSearch || searchToggle()" title="Search"><i class="fa fa-search-plus icon-filter"></i><span>Search</span></a>
+                <span class="Pipe"></span>
+                <a ng-disabled="readOnlyPage || userForm.$invalid || isSearch" ng-click="readOnlyPage || userForm.$invalid || isSearch || uploadDocument()" ng-show="isCreate || isSearch" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-disabled="" ng-click="clearOut()" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+            </div>
+        </div>
+        <div class="row search-form" ng-hide="isCreate">
+            <div class="col-md-10 col-sm-10">
+                <div class="col-md-2 col-sm-6 input-field">
+                    <label class="control-label">Report Date:</label>
+                    <p class="input-group date-picker date-wrapper">
+                        <input type="text" class="form-control date-picker-input" ng-dblclick="d_ReportDate=true" placeholder="dd/mm/yyyy" uib-datepicker-popup="dd/MM/yyyy"
+                               ng-model="O_OtherReportList.ReportDate" ng-disabled="readOnlyPage" name="ReportDate" ng-init="d_ReportDate=false" is-open="d_ReportDate"
+                               datepicker-options="dateOptions" required ng-required="true" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                        <span class="input-group-btn date-picker-button">
+                            <button type="button" class="btn btn-default" ng-disabled="readOnlyPage" ng-click="d_ReportDate=true"><i class="fa fa-calendar"></i></button>
+                        </span>
+                </div>
+            </div>
+            <div class="buttons create filter-button col-md-2  col-sm-2">
+                <button ng-disabled="readOnlyPage" ng-click="loadData()" class="btn btn-info"><i class="fa fa-binoculars icon-filter"></i>Go</button>
+            </div>
+        </div>
+        <form name="userForm" novalidate>
+            <div class="row create-form" ng-show="isCreate">
+                <div class="col-md-12">
+
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Report Type*</label>
+                        <select required ng-model="ReportTypeId" class="form-control search-input" name="ReportName"
+                                ng-options="value.LookupId as value.LValue for (key, value) in ReportNameDDL"></select>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Plant Name*</label>
+                        <select required ng-model="PlantAreaId" class="form-control search-input" name="PlantArea" ng-change="loadEquipment(PlantAreaId)"
+                                ng-options="value.PlantAreaId as value.PlantAreaName for (key, value) in PlantAreaDDL"></select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Equipment</label>
+                        <select ng-model="EquipmentId" class="form-control search-input" name="EquipmentName" ng-change="loadAsset(EquipmentId)"
+                                ng-options="value.EquipmentId as value.EquipmentName for (key, value) in EquipmentDDL"></select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Asset</label>
+                        <select ng-model="UnitId" class="form-control search-input" name="AssetName"
+                                ng-options="value.AssetId as value.IdentificationName for (key, value) in AssetDDL"></select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Report Date:</label>
+                        <p class="input-group date-picker date-wrapper">
+                            <input type="text" class="form-control date-picker-input" ng-dblclick="d_ReportDate=true" placeholder="dd/mm/yyyy" uib-datepicker-popup="dd/MM/yyyy"
+                                   ng-model="ReportDate" name="FromDate" ng-init="d_ReportDate=false" is-open="d_ReportDate"
+                                   datepicker-options="dateOptions" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                            <span class="input-group-btn date-picker-button">
+                                <button type="button" class="btn btn-default" ng-click="d_ReportDate=true"><i class="fa fa-calendar"></i></button>
+                            </span>
+                        </p>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">File Description</label>
+                        <div>
+                            <textarea rows="1" ng-disabled="readOnlyPage" class="form-control" ng-model="FileDescription" name="FileDescription"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-6 input-field">
+                        <label class="control-label">Choose File</label>
+                        <input type="file" id="files" class="uploadfile" name="files[]" ng-model="fileUpload" onchange="angular.element(this).scope().uploadImageStart()" />
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="table-responsive">
+            <div class="grid data">
+                <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+    <script src="~/lib/angular/ui-grid/import/xlsx.full.min.js"></script>
+    <script src="~/lib/angular/ui-grid/import/ods.js"></script>
+    <environment include="Development">
+        <script src="~/js/import/index.js" asp-append-version="true"></script>
+        <script src="~/js/otherreports/index.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/import/index.min.js" asp-append-version="true"></script>
+        <script src="~/js/otherreports/index.min.js" asp-append-version="true"></script>
+    </environment>
+}
+
+

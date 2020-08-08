@@ -1,0 +1,37 @@
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
+        <li class="dropdown" uib-dropdown="" style="">
+            <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage" role="button" class="dropdown-toggle" uib-dropdown-toggle="" aria-haspopup="true" aria-expanded="true">
+                <img class="header-profile-img" src="~/images/profile-img.png" title="Photo">
+                <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li class="profile">
+                    <img src="~/images/profile-img.png" title="Photo">
+                </li>
+                <li class="login-user-name">
+                    Hello @UserManager.GetUserName(User)!
+                </li>
+                <li>
+                    <a asp-area="Identity" asp-page="/Account/Manage/ChangePassword" title="Change Password"><i class="fa fa-edit"></i>Change Password</a>
+                </li>
+                <li>
+                    <button type="submit" class="btn btn-link navbar-btn navbar-link" onclick="sessionStorage.clear()"><i class="fa fa-sign-out"></i>Logout</button>
+                </li>
+            </ul>
+        </li>
+    </form>
+}
+else
+{
+    <ul class="nav navbar-nav navbar-right">
+        @*<li><a asp-area="Identity" asp-page="/Account/Register">Register</a></li>*@
+        <li><a asp-area="Identity" asp-page="/Account/Login">Login</a></li>
+    </ul>
+}

@@ -1,0 +1,85 @@
+﻿@{
+    ViewData["Title"] = "Page Setup";
+    Layout = "~/Views/Shared/_ObserverLayout.cshtml";    
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<div ng-controller="skfCtrl" class="language content-wrapper">
+    <div class="container-fluid" id="languages">
+        <div class="row heading-wrapper">
+            <div class="col-md-3 heading">
+                <h4 class="page-header text-primary">{{isEdit?"Edit Page Setup":"Create Page Setup"}}</h4>
+            </div>
+            <div class="col-md-9 menu-button">
+                <a ng-disabled="isCreate" ng-click="isCreate || clearOut()" title="Create"><i class="fa fa-plus icon-filter"></i>Create New</a>
+                <span class="Pipe"></span>
+                <a ng-disabled="readOnlyPage || userForm.$invalid || isEdit" ng-click="readOnlyPage || userForm.$invalid || saveCMS()" ng-hide="isEdit" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-disabled="readOnlyPage || userForm.$invalid || !isEdit" ng-click="readOnlyPage || userForm.$invalid || updateCMS()" ng-show="isEdit" title="Update"><i class="fa fa-save icon-filter"></i><span>Update</span></a>
+                <a ng-disabled="isEdit" ng-click="isEdit || clearOut()" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+            </div>
+        </div>
+        <form name="userForm" novalidate>
+            <div class="row create-form">
+                <div class="col-md-12 col-sm-12">
+                    <div class="col-md-2 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.TypeCode.$invalid && !userForm.TypeCode.$pristine }">
+                        <label class="control-label">Type Code*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" required ng-model="Cmssetup.TypeCode" name="TypeCode" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.TypeName.$invalid && !userForm.TypeName.$pristine }">
+                        <label class="control-label">Type Name*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" required ng-model="Cmssetup.TypeName" name="TypeName" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Description</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" ng-model="Cmssetup.Descriptions" name="Descriptions" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-6 input-field">
+                        <label class="control-label">Type Order</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" type="number" class="form-control" ng-model="Cmssetup.TypeOrder" name="TypeOrder" />
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-6 input-field">
+                        <label class="control-label">Status</label>
+                        <div>
+                            <select ng-disabled="readOnlyPage" class="form-control" ng-model="Cmssetup.Active" name="Active">
+                                <option value="">-- Nil --</option>
+                                <option value="Y">Active</option>
+                                <option value="N">InActive</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12 input-field">
+                        <br />
+                        <div text-angular ng-model="Cmssetup.TypeText"></div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="table-responsive">
+            <div class="grid data">
+                <div id="uiGrid" ui-grid="gridOpts" class="grid"  ui-grid-pinning ui-grid-resize-columns></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angular/textAngular/textAngular-rangy.min.js"></script>
+    <script src="~/lib/angular/textAngular/textAngular-sanitize.min.js"></script>
+    <script src="~/lib/angular/textAngular/textAngular.min.js"></script>
+    <environment include="Development">
+        <script src="~/js/cms/index.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/cms/index.min.js" asp-append-version="true"></script>
+    </environment>
+}

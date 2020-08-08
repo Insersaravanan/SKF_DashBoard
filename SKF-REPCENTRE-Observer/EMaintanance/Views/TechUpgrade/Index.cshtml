@@ -1,0 +1,154 @@
+﻿@{
+    ViewData["Title"] = "Tech Upgrade";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<div ng-controller="skfCtrl" class="TechUpgrade content-wrapper">
+    <div class="container-fluid" id="TechUpgrade">
+        <div class="row heading-wrapper">
+            <div class="col-md-3 heading">
+                <h4 class="page-header text-primary">{{isEdit?"Edit Tech Upgrade":isSearch?"Search Tech Upgrade":"Create Tech Upgrade"}}</h4>
+            </div>
+            <div class="col-md-9 menu-button">
+                <a ng-disabled="isCreate" ng-click="isCreate || createToggle()" title="Create"><i class="fa fa-plus icon-filter"></i>Create</a>
+                <a ng-disabled="isSearch" ng-click="isSearch || searchToggle()" title="Search"><i class="fa fa-search-plus icon-filter"></i><span>Search</span></a>
+                <span class="Pipe"></span>
+                <a ng-disabled="readOnlyPage || userForm.$invalid || isSearch" ng-click="readOnlyPage || userForm.$invalid || isSearch || uploadDocument()" ng-show="isCreate || isSearch" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-disabled="readOnlyPage || userForm.$invalid" ng-click="readOnlyPage || userForm.$invalid || update()" ng-show="isEdit" title="Update"><i class="fa fa-save icon-filter"></i><span>Update</span></a>
+                <a ng-disabled="" ng-click="clearOut()" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+            </div>
+            
+        </div>
+        <div class="row search-form" ng-hide="isEdit || isCreate">
+            <div class="col-md-10 col-sm-10">
+               <div class="col-md-2 col-sm-6 input-field">
+                    <label class="control-label">Status</label>
+                    <div>
+                        <select ng-disabled="readOnlyPage" class="form-control" ng-model="S_Active" name="Active">
+                            <option value="All">-- ALL --</option>
+                            <option value="Y">Active</option>
+                            <option value="N">In Active</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="buttons create filter-button col-md-2  col-sm-2">
+                <button ng-disabled="readOnlyPage" ng-click="loadData()" class="btn btn-info"><i class="fa fa-binoculars icon-filter"></i>Go</button>
+            </div>
+        </div>
+        <form name="userForm" novalidate>
+            <div class="row create-form" ng-show="isEdit || isCreate">
+                <div class="col-md-12">
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Plant *</label>
+                       <select ng-model="PlantAreaId" ng-disabled="readOnlyPage" class="form-control search-input" required name="Plant" ng-change="loadEquipment(PlantAreaId)"
+                                ng-options="value.PlantAreaId as value.PlantAreaName for (key, value) in PlantDDL"></select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Equipment*</label>
+                        <select required ng-model="EquipmentId" class="form-control search-input" name="EquipmentName"
+                                ng-options="value.EquipmentId as value.EquipmentName for (key, value) in EquipmentDDL"></select>
+                    </div>
+                    <div class="col-md-2 col-sm-4 input-field">
+                        <label class="control-label">Date of Report:</label>
+                        <p class="input-group date-picker date-wrapper">
+                            <input type="text" class="form-control date-picker-input" ng-dblclick="d_ReportDate=true" placeholder="dd/mm/yyyy" uib-datepicker-popup="dd/MM/yyyy"
+                                   ng-change="ChangestartDate()" ng-model="ReportDate" ng-disabled="readOnlyPage" name="FromDate" ng-init="d_StartDate=false" is-open="d_StartDate"
+                                   datepicker-options="options" required ng-required="true" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                            <span class="input-group-btn date-picker-button">
+                                <button type="button" class="btn btn-default" ng-disabled="readOnlyPage" ng-click="d_StartDate=true"><i class="fa fa-calendar"></i></button>
+                            </span>
+                        </p>
+                    </div>
+                    <div class="col-md-2 col-sm-6 input-field">
+                        <label class="control-label">Date of Recommendation:</label>
+                        <p class="input-group date-picker date-wrapper">
+                            <input type="text" class="form-control date-picker-input" ng-dblclick="d_RecommendationDate=true" placeholder="dd/mm/yyyy" uib-datepicker-popup="dd/MM/yyyy"
+                                   ng-model="RecommendationDate" ng-disabled="readOnlyPage" name="EndDate" ng-init="d_EndDate=false" is-open="d_EndDate"
+                                   datepicker-options="E_options" required ng-required="true" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                            <span class="input-group-btn date-picker-button">
+                                <button type="button" class="btn btn-default" ng-disabled="readOnlyPage" ng-click="d_EndDate=true"><i class="fa fa-calendar"></i></button>
+                            </span>
+                        </p>
+                    </div>
+                    <div class="col-md-2 col-sm-4 input-field">
+                        <label class="control-label">Saving</label>
+                        <div>
+                            <input type="number" ng-disabled="readOnlyPage" class="form-control" ng-model="Saving" name="Saving">
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+            
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Recommendation</label>
+                        <div>
+                            <textarea ng-disabled="readOnlyPage" class="form-control" ng-model="Recommendation" name="Recommendation"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Remarks</label>
+                        <div>
+                            <textarea ng-disabled="readOnlyPage" class="form-control" ng-model="Remarks" name="Remarks"></textarea>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Attachment*</label>
+                        <input type="file" id="files" class="uploadfile" name="files[]" ng-model="fileUpload" onchange="angular.element(this).scope().uploadImageStart()" />
+                    </div>
+                </div>
+                </div>
+        </form>
+        <div class="table-responsive">
+            <div class="grid data">
+                <div id="uiGrid" ui-grid="gridOpts" class="grid"   ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+    <script src="~/lib/angular/ui-grid/import/xlsx.full.min.js"></script>
+    <script src="~/lib/angular/ui-grid/import/ods.js"></script>
+    <environment include="Development">
+        <script src="~/js/import/index.js" asp-append-version="true"></script>
+        <script src="~/js/TechUpgrade/index.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/import/index.min.js" asp-append-version="true"></script>
+        <script src="~/js/TechUpgrade/index.min.js" asp-append-version="true"></script>
+    </environment>
+}
+<script type="text/ng-template" id="skfMultiLanguageModal.html">
+    <div class="popup-product">
+        <div class="modal-header">
+
+            <span class="model-breadcrumb">TechUpgrade / Multilingual</span>
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary">{{TechUpgradeName}} </h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+          
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive">
+                <div class="grid data">
+                    <div id="uiGrid" ui-grid="gridOpts2" class="grid" ui-grid-edit ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>

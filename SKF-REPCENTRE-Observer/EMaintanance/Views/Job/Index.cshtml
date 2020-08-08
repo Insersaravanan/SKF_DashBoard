@@ -1,0 +1,386 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<link href="~/lib/angucomplete/antocomplete-alt.css" rel="stylesheet" />
+<div class="job-list">
+    @*<script>
+        var editFlag = true;
+        var scheduleId =  @ViewData["id"];
+        </script>*@
+    <div ng-controller="skfCtrl" class="sector content-wrapper">
+        <div class="container-fluid job-page" id="sector">
+            <div class="row heading-wrapper">
+                <div class="col-md-2 heading">
+                    <h4 class="page-header text-primary">{{isEdit?"Edit Job":isSearch?"Search Job":isView?"View Job":isCreate?"Create Non Schedule Job":"Job List"}}</h4>
+                </div>
+                <div class="col-md-10 menu-button">
+                    <span ng-repeat="val in legendDDL" class="legend-text">
+                        <span class="legend-color" ng-style="{'background-color': val.LValue }">
+                        </span>
+                        &nbsp; {{val.Descriptions}} &nbsp;
+                    </span>
+                    @*<a ng-disabled="isCreate || SelectedRecord.length <= 0" ng-click="SelectAssignee()" title="Assing User" ng-hide="isEdit"><i class="fa fa-user icon-filter"></i>Assign User</a>*@
+                    <a ng-hide="isCreate" ng-click="isCreate || createToggle()" title="create"><i class="fa fa-plus icon-filter"></i>Create</a>
+                    <a ng-disabled="!isAssignee" ng-click="SelectAssignee()" title="Assign User" class="assign-user"><i class="fa fa-user icon-filter"></i><span>Assign User</span></a>
+                    <a ng-hide="isSearch" ng-click="isSearch || searchToggle()" title="Search"><i class="fa fa-search-plus icon-filter"></i><span>Search</span></a>
+                    <span class="Pipe"></span>
+                    <a ng-disabled="!isMachines || readOnlyPage || userForm.$invalid || isSearch" ng-click="!isMachines || readOnlyPage || userForm.$invalid || isSearch || save()" ng-show="isCreate || isSearch" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                    <a ng-disabled="!isMachines || readOnlyPage || userForm.$invalid" ng-click="!isMachines || readOnlyPage || userForm.$invalid || update()" ng-show="isEdit" title="Update"><i class="fa fa-save icon-filter"></i><span>Update</span></a>
+                    <a ng-hide="isEdit" ng-click="isEdit || clearOut()" ng-show="isCreate || isEdit || isView" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+                </div>
+            </div>
+            <div class="row search-form" ng-hide="isEdit || isCreate || isView">
+                <div class="col-md-12 col-sm-10">
+                    <div class="col-md-2 col-sm-6 input-field">
+                        <label class="control-label">From Date*:</label>
+                        <p class="input-group date-picker date-wrapper">
+                            <input type="text" class="form-control date-picker-input" ng-dblclick="d_ScheduleDate=true" placeholder="dd/mm/yyyy" uib-datepicker-popup="dd/MM/yyyy"
+                                   ng-model="S_jobList.StartDate" ng-disabled="readOnlyPage" name="ScheduleDate" ng-init="d_ScheduleDate=false" is-open="d_ScheduleDate"
+                                   datepicker-options="dateOptions" required ng-required="true" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                            <span class="input-group-btn date-picker-button">
+                                <button type="button" class="btn btn-default" ng-disabled="readOnlyPage" ng-click="d_ScheduleDate=true"><i class="fa fa-calendar"></i></button>
+                            </span>
+                    </div>
+                    <div class="col-md-2 col-sm-6 input-field">
+                        <label class="control-label">To Date:</label>
+                        <p class="input-group date-picker date-wrapper">
+                            <input type="text" class="form-control date-picker-input" ng-dblclick="d_FDate=true" placeholder="dd/mm/yyyy" uib-datepicker-popup="dd/MM/yyyy"
+                                   ng-model="S_jobList.EstEndDate" name="FromDate" ng-init="d_FromDate=false" is-open="d_FromDate"
+                                   datepicker-options="dateOptions" required ng-required="true" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                            <span class="input-group-btn date-picker-button">
+                                <button type="button" class="btn btn-default" ng-click="d_FromDate=true"><i class="fa fa-calendar"></i></button>
+                            </span>
+                        </p>
+                    </div>
+                    <div class="col-md-2 col-sm-6 input-field">
+                        <label class="control-label">Job Number</label>
+                        <div>
+                            <input class="form-control" name="AssetName" ng-model="S_jobList.JobNumber" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-1 col-sm-6 buttons create filter-button">
+                        <button ng-disabled="readOnlyPage" ng-click="loadData()" class="btn btn-info"><i class="fa fa-binoculars icon-filter"></i>Go</button>
+                    </div>
+                    <div class="col-md-5 rf-tab" ng-if="isJobStatusColour">
+                        <table class="tooltip-sec small-first-col">
+                            <thead>
+                                <tr>
+                                    <th>Data collector</th>
+                                    <th>Analyst</th>
+                                    <th>Reviewer</th>
+                                    <th>Report sent</th>
+                                </tr>
+                            </thead>
+                            <tbody class="body-half-screen">
+                                <tr ng-repeat="val in JobStatusColourDDL" ng-if="JobStatusColourDDL.length > 0">
+                                    <td><span class="legend-color fortab" ng-style="{'background-color': val.DCStatus }"></span>{{val.DataCollector}}</td>
+                                    <td><span class="legend-color fortab" ng-style="{'background-color': val.ALStatus }"></span>{{val.Analyst}}</td>
+                                    <td><span class="legend-color fortab" ng-style="{'background-color': val.RVStatus }"></span>{{val.Reviewer}}</td>
+                                    <td><span ng-show="{{val.ReportSent}} == 1"><i class="fa fa-check tick" aria-hidden="true"></i></span></td>
+                                </tr>
+                                <tr ng-if="JobStatusColourDDL.length <= 0">
+                                    <td colspan="4">No Data Avaliable</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <form name="userForm" novalidate>
+                <div class="row create-form" ng-show="isEdit || isCreate || isView">
+                    <div class="col-md-12">
+                        <div class="col-md-1 col-sm-6 input-field" ng-show="isEdit || isView">
+                            <label class="control-label">Job No</label>
+                            <div>
+                                <input disabled class="form-control" required ng-model="JobList.JobNumber" name="JobName" />
+                                <span class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-2 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.JobName.$invalid && !userForm.JobName.$pristine }">
+                            <label class="control-label">Job Name*</label>
+                            <div>
+                                <input ng-disabled="readOnlyPage" class="form-control" required ng-model="JobList.JobName" name="JobName" />
+                                <span class="text-danger"></span>
+                            </div>
+                        </div>
+                        @*<div class="col-md-2 col-sm-6 input-field">
+                                <label class="control-label">Schedule Date:*</label>
+                                <p class="input-group date-picker date-wrapper">
+                                    <input type="text" class="form-control date-picker-input" ng-dblclick="d_StartDate=true" placeholder="dd/mm/yyyy" uib-datepicker-popup="dd/MM/yyyy"
+                                           ng-model="JobList.ScheduleDate" ng-disabled="readOnlyPage" name="FromDate" ng-init="d_StartDate=false" is-open="d_StartDate"
+                                           datepicker-options="dateOptions" required ng-required="true" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                                    <span class="input-group-btn date-picker-button">
+                                        <button type="button" class="btn btn-default" ng-disabled="readOnlyPage" ng-click="d_StartDate=true"><i class="fa fa-calendar"></i></button>
+                                    </span>
+                                </p>
+                            </div>*@
+                        <div class="col-md-3 col-sm-6 input-field">
+                            <label class="control-label">Program Type</label>
+                            <select ng-model="JobList.ProgramTypeId" required class="form-control search-input" name="ProgramType"
+                                    ng-options="value.LookupId as value.LValue for (key, value) in ProgramTypeDDL"></select>
+                        </div>
+                        <div class="col-md-2 col-sm-6 input-field">
+                            <label class="control-label">Start Date:*</label>
+                            <p class="input-group date-picker date-wrapper">
+                                <input type="text" class="form-control date-picker-input" ng-dblclick="d_StartDate=true" placeholder="dd/mm/yyyy" uib-datepicker-popup="dd/MM/yyyy"
+                                       ng-change="ChangestartDate()" ng-model="JobList.EstStartDate" ng-disabled="readOnlyPage" name="FromDate" ng-init="d_StartDate=false" is-open="d_StartDate"
+                                       datepicker-options="options" required ng-required="true" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                                <span class="input-group-btn date-picker-button">
+                                    <button type="button" class="btn btn-default" ng-disabled="readOnlyPage" ng-click="d_StartDate=true"><i class="fa fa-calendar"></i></button>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-md-2 col-sm-6 input-field">
+                            <label class="control-label">End Date:*</label>
+                            <p class="input-group date-picker date-wrapper">
+                                <input type="text" class="form-control date-picker-input" ng-dblclick="d_EndDate=true" placeholder="dd/mm/yyyy" uib-datepicker-popup="dd/MM/yyyy"
+                                       ng-model="JobList.EstEndDate" ng-disabled="readOnlyPage" name="FromDate" ng-init="d_EndDate=false" is-open="d_EndDate"
+                                       datepicker-options="E_options" required ng-required="true" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                                <span class="input-group-btn date-picker-button">
+                                    <button type="button" class="btn btn-default" ng-disabled="readOnlyPage" ng-click="d_EndDate=true"><i class="fa fa-calendar"></i></button>
+                                </span>
+                            </p>
+                        </div>
+
+                        @*<div class="col-md-2 col-sm-6 input-field">
+                                <label class="control-label assigned-to">Assign Analyst*</label>
+                                <angucomplete-alt id="UserId"
+                                    placeholder="AssignedTo"
+                                    input-name="AssignedUserId"
+                                    pause="400"
+                                    minlength="1"
+                                    selected-object="selectedAssignStatusFn"
+                                    remote-url="Users/SearchByName?param="
+                                    remote-url-data-field=""
+                                    title-field="UserName"
+                                    search-fields="UserId,UserName"
+                                    description-field=""
+                                    match-class="highlight"
+                                    input-class="form-control form-control-small"
+                                    disable-input="readOnlyPage" />
+
+                                <ui-select ng-model="JobList.UserId" theme="bootstrap" ng-disabled="readOnlyPage" style="width: 800px;">
+                                    <ui-select-match placeholder="Select User...">{{$select.selected.EmailId}}</ui-select-match>
+                                    <ui-select-choices repeat="email.UserId as email in assignToListDDL | propsFilter: {EmailId: $select.search} | limitTo: 50">
+                                        <div ng-bind-html="email.EmailId | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                            </div>*@
+
+                        <div class="col-md-2 col-sm-6 input-field" checked>
+                            <label class="control-label">Schedule Reports</label>
+                            <div ng-dropdown-multiselect=""
+                                 options="Reporting"
+                                 selected-model="ScheduleSelectedData"
+                                 extra-settings="ReportingSerSettings" checkboxes="true" disabled="readOnlyPage" class="reporting">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-6 input-field">
+                            <label class="control-label link">
+                                <a ng-click="SelectPlant()" ng-disabled="JobList.JobName.length == null" tooltip-append-to-body="true" uib-tooltip="Select Equipment" tooltip-class="customClass" class="mouse-pointer">
+                                    Select Equipment(s)* <i class="fa fa-info"></i>
+                                </a> <span class="selected-equipment"> {{EqCount != undefined ? EqCount : 0 }} {{EqCount > 1 ? 'Equipments Added' : 'Equipment Added'}}</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-4 rf-tab" ng-if="isJobStatusColour" ng-hide="isCreate || isEdit">
+                        <table class="tooltip-sec small-first-col">
+                            <thead>
+                                <tr>
+                                    <th>Data collector</th>
+                                    <th>Analyst</th>
+                                    <th>Reviewer</th>
+                                    <th>Report sent</th>
+                                </tr>
+                            </thead>
+                            <tbody class="body-half-screen">
+                                <tr ng-repeat="val in JobStatusColourDDL" ng-if="JobStatusColourDDL.length > 0">
+                                    <td><span class="legend-color fortab" style="background-color:{{val.DCStatus}}"></span>{{val.DataCollector}}</td>
+                                    <td><span class="legend-color fortab" style="background-color:{{val.ALStatus}}"></span>{{val.Analyst}}</td>
+                                    <td><span class="legend-color fortab" style="background-color:{{val.RVStatus}}"></span>{{val.Reviewer}}</td>
+                                    <td><span ng-show="{{val.ReportSent}} == 1"><i class="fa fa-check tick" aria-hidden="true"></i></span></td>
+                                </tr>
+                                <tr ng-if="JobStatusColourDDL.length <= 0">
+                                    <td colspan="4">No Data Avaliable</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </form>
+            <div class="table-responsive job-list-grid">
+                <div class="grid data">
+                    <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-edit ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angucomplete/angucomplete-alt.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+    <script src="~/lib/angular/ui-grid/import/xlsx.full.min.js"></script>
+    <script src="~/lib/angular/ui-grid/import/ods.js"></script>
+    <environment include="Development">
+        <script src="~/js/import/index.js" asp-append-version="true"></script>
+        <script src="~/js/job/index.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/import/index.min.js" asp-append-version="true"></script>
+        <script src="~/js/job/index.min.js" asp-append-version="true"></script>
+    </environment>
+}
+
+<script type="text/ng-template" id="skfPlantModal.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Equipment List</span>
+            <div class="col-lg-6 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary ng-binding">{{jbName}} {{jbNo == 0 ? '': '-'}} {{jbNo == 0 ? '' : jbNo}} </h4>
+            </div>
+            <div class="col-lg-6 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-disabled="isView" ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive">
+                <div class="grid data">
+                    <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-edit ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfAssignPopupModal.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Assign</span>
+            <div class="col-lg-6 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary ng-binding"></h4>
+            </div>
+            <div class="col-md-6 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-disabled="SelectedRecord.length <= 0" ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-4 col-sm-6 input-field">
+                    <label class="control-label">
+                        Data Collector*
+                        <input type="checkbox" class="offline-checkbox" ng-click="SelectOnline()" ng-disabled="readOnlyPage" ng-model="offline"
+                               ng-true-value="'Y'" ng-false-value="'N'"><span class="offline-name">check if online</span>
+                    </label>
+                    <ui-select ng-disabled="readOnlyPage || !isDcollecter" ng-model="JobList.DataCollectorId" theme="bootstrap" style="width: 800px;">
+                        <ui-select-match placeholder="Select User...">{{$select.selected.EmailId}}</ui-select-match>
+                        <ui-select-choices repeat="email.UserId as email in DataCollectorDDL | propsFilter: {EmailId: $select.search} | limitTo: 50">
+                            <div ng-bind-html="email.EmailId | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <div class="col-md-4 col-sm-6 input-field">
+                    <label class="control-label">Analyst*</label>
+                    <ui-select ng-model="JobList.AnalystId" theme="bootstrap" ng-disabled="readOnlyPage" style="width: 800px;">
+                        <ui-select-match placeholder="Select User...">{{$select.selected.EmailId}}</ui-select-match>
+                        <ui-select-choices repeat="email.UserId as email in AnalystDDL | propsFilter: {EmailId: $select.search} | limitTo: 50">
+                            <div ng-bind-html="email.EmailId | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+
+                <div class="col-md-4 col-sm-6 input-field">
+                    <label class="control-label">Reviewer*</label>
+                    <ui-select ng-model="JobList.ReviewerId" theme="bootstrap" ng-disabled="readOnlyPage" style="width: 800px;">
+                        <ui-select-match placeholder="Select User...">{{$select.selected.EmailId}}</ui-select-match>
+                        <ui-select-choices repeat="email.UserId as email in ReviewerDDL | propsFilter: {EmailId: $select.search} | limitTo: 50">
+                            <div ng-bind-html="email.EmailId | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+
+                @*<div class="col-md-6 col-sm-12 create-button  menu-button">
+                        <span class="Pipe"></span>
+                        <a ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                        <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+                    </div>*@
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfAssignEqPopupModal.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Equipment List</span>
+            <div class="col-lg-6 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary ng-binding">{{JobName}}</h4>
+            </div>
+            <div class="col-md-6 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+
+        <div class="modal-body">
+            <div class="row">
+
+                <div class="col-md-4 col-sm-6 input-field">
+                    <label class="control-label">
+                        Data Collector*  <input type="checkbox" class="offline-checkbox" ng-click="SelectOnline()" ng-disabled="readOnlyPage" ng-model="offline"
+                                                ng-true-value="'Y'" ng-false-value="'N'"><span class="offline-name">check if online</span>
+                    </label>
+                    <ui-select ng-disabled="readOnlyPage || !isDcollecter" ng-model="JobList.DataCollectorId" theme="bootstrap" style="width: 800px;">
+                        <ui-select-match placeholder="Select User...">{{$select.selected.EmailId}}</ui-select-match>
+                        <ui-select-choices repeat="email.UserId as email in DataCollectorDDL | propsFilter: {EmailId: $select.search} | limitTo: 50">
+                            <div ng-bind-html="email.EmailId | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+                <div class="col-md-4 col-sm-6 input-field">
+                    <label class="control-label">Analyst*</label>
+                    <ui-select ng-model="JobList.AnalystId" theme="bootstrap" ng-disabled="readOnlyPage" style="width: 800px;">
+                        <ui-select-match placeholder="Select User...">{{$select.selected.EmailId}}</ui-select-match>
+                        <ui-select-choices repeat="email.UserId as email in AnalystDDL | propsFilter: {EmailId: $select.search} | limitTo: 50">
+                            <div ng-bind-html="email.EmailId | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+
+                <div class="col-md-4 col-sm-6 input-field">
+                    <label class="control-label">Reviewer*</label>
+                    <ui-select ng-model="JobList.ReviewerId" theme="bootstrap" ng-disabled="readOnlyPage" style="width: 800px;">
+                        <ui-select-match placeholder="Select User...">{{$select.selected.EmailId}}</ui-select-match>
+                        <ui-select-choices repeat="email.UserId as email in ReviewerDDL | propsFilter: {EmailId: $select.search} | limitTo: 50">
+                            <div ng-bind-html="email.EmailId | highlight: $select.search"></div>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
+            <br>
+            <div class="table-responsive">
+                <div class="grid data">
+                    <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-edit ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
