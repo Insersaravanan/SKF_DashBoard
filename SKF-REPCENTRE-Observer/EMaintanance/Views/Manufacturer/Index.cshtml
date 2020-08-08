@@ -1,0 +1,160 @@
+﻿@{
+    ViewData["Title"] = "Manufacturer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<div ng-controller="skfCtrl" class="sector content-wrapper">
+    <div class="container-fluid" id="sector">
+        @*@section BreadCrumb {}*@
+        <div class="row heading-wrapper">
+            <div class="col-md-3 heading">
+                <h4 class="page-header text-primary">{{isEdit?"Edit Manufacturer":isSearch?"Search Manufacturer":"Create Manufacturer"}}</h4>
+            </div>
+            <div class="col-md-9 menu-button">
+                <a ng-disabled="isCreate" ng-click="isCreate || createToggle()" title="Create"><i class="fa fa-plus icon-filter"></i>Create</a>
+                <a ng-disabled="isSearch" ng-click="isSearch || searchToggle()" title="Search"><i class="fa fa-search-plus icon-filter"></i><span>Search</span></a>
+                <span class="Pipe"></span>
+                <a ng-disabled="readOnlyPage || userForm.$invalid || isSearch" ng-click="readOnlyPage || userForm.$invalid || isSearch || save()" ng-show="isCreate || isSearch" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-disabled="readOnlyPage || userForm.$invalid" ng-click="readOnlyPage || userForm.$invalid || update()" ng-show="isEdit" title="Update"><i class="fa fa-save icon-filter"></i><span>Update</span></a>
+                <a ng-disabled="isEdit" ng-click="isEdit || clearOut()" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+            </div>
+        </div>
+        <div class="row search-form" ng-hide="isEdit || isCreate">
+            <div class="col-md-10 col-sm-10">
+                <div class="col-md-2 col-sm-6 input-field">
+                    <label class="control-label">Status</label>
+                    <div>
+                        <select ng-disabled="readOnlyPage" class="form-control" ng-model="M_Active" name="Active">
+                            <option value="All">-- ALL --</option>
+                            <option value="Y">Active</option>
+                            <option value="N">In Active</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="buttons create filter-button col-md-2  col-sm-2">
+                <button ng-disabled="readOnlyPage" ng-click="loadData()" class="btn btn-info"><i class="fa fa-binoculars icon-filter"></i>Go</button>
+            </div>
+        </div>
+        <form name="userForm" novalidate>
+            <div class="row create-form manufacturer" ng-show="isEdit || isCreate">
+                <div class="col-md-12">
+                    <div class="col-md-3 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.ManufacturerCode.$invalid && !userForm.ManufacturerCode.$pristine }">
+                        <label class="control-label">Manufacturer Code*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" required ng-model="Manufacture.ManufacturerCode" name="ManufacturerCode" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.ManufacturerName.$invalid && !userForm.ManufacturerName.$pristine }">
+                        <label class="control-label">Manufacturer Name*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" required ng-model="Manufacture.ManufacturerName" name="ManufacturerName" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    @*<div class="col-md-2 col-sm-6 input-field" checked>
+                            <label class="control-label">Type*</label>
+                            <div ng-dropdown-multiselect=""
+                                 options="Type"
+                                 selected-model="TypeSelectedData"
+                                 extra-settings="TypeSettings" checkboxes="true" disabled="readOnlyDrivePage" class="reporting">
+                            </div>
+                        </div>*@
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <div>
+                            <input type="checkbox" ng-model="Manufacture.BearingMFT" name="Bearing" ng-true-value="'Y'" ng-false-value="'N'"/>
+                            <label class="control-label">Bearing</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+
+                        <div>
+                            <input type="checkbox" ng-model="Manufacture.DriveMFT" name="Drive" ng-true-value="'Y'" ng-false-value="'N'"/>
+                            <label class="control-label">Drive</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+
+                        <div>
+                            <input type="checkbox" ng-model="Manufacture.IntermediateMFT" name="Intermediate" ng-true-value="'Y'" ng-false-value="'N'"/>
+                            <label class="control-label">Intermediate</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <div>
+                            <input type="checkbox" ng-model="Manufacture.DrivenMFT" name="Driven" ng-true-value="'Y'" ng-false-value="'N'"/>
+                            <label class="control-label">Driven</label>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field" ng-show="isEdit">
+                        <label class="control-label">Status</label>
+                        <div>
+                            <select ng-disabled="readOnlyPage" class="form-control" ng-model="Manufacture.Active" name="Active">
+                                <option value="Y">Active</option>
+                                <option value="N">In Active</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Description</label>
+                        <div>
+                            <textarea ng-disabled="readOnlyPage" class="form-control" ng-model="Manufacture.Descriptions" name="Descriptions"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="table-responsive">
+            <div class="grid data">
+                <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+    <script src="~/lib/angular/ui-grid/import/xlsx.full.min.js"></script>
+    <script src="~/lib/angular/ui-grid/import/ods.js"></script>
+    <environment include="Development">
+        <script src="~/js/import/index.js" asp-append-version="true"></script>
+        <script src="~/js/manufacture/index.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/import/index.min.js" asp-append-version="true"></script>
+        <script src="~/js/manufacture/index.min.js" asp-append-version="true"></script>
+    </environment>
+}
+
+<script type="text/ng-template" id="skfMultiLanguageModal.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary">{{ManufacturerName}} </h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive">
+                <div class="grid data">
+                    <div id="uiGrid" ui-grid="gridOpts2" class="grid" ui-grid-edit ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>

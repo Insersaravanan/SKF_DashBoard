@@ -1,0 +1,62 @@
+﻿
+@using Stimulsoft.Report.Mvc;
+
+@{
+    ViewData["Title"] = "Reports";
+    Layout = "~/Views/Shared/_PublicLayout.cshtml";
+}
+
+@Html.StiNetCoreViewer(new StiNetCoreViewerOptions()
+{
+    Actions =
+    {
+        GetReport = "GetReport",
+        ViewerEvent = "ViewerEvent"
+    },
+    Appearance =
+    {
+        ShowTooltipsHelp = false
+    },
+    Toolbar =
+    {
+        ShowAboutButton = false,
+        ShowOpenButton = false,
+        ViewMode = Stimulsoft.Report.Web.StiWebViewMode.Continuous,
+        ShowMenuMode = Stimulsoft.Report.Web.StiShowMenuMode.Hover,
+        ShowPrintButton = false,
+    },
+    Exports =
+    {
+
+        DefaultSettings =
+        {
+
+            ExportToPdf =
+            {
+                ImageQuality = 1f,
+                ImageResolution = 300,
+                ImageCompressionMethod = Stimulsoft.Report.Export.StiPdfImageCompressionMethod.Flate,
+                EmbeddedFonts = true,
+            }
+        },
+
+        ShowExportDialog = true,
+        ShowExportToDbf = false,
+        ShowExportToDif = false,
+        ShowExportToXps = false,
+        ShowExportToRtf = false,
+        ShowExportToText = false,
+        ShowExportToHtml = false,
+        ShowExportToHtml5 = false,
+        ShowExportToDocument = false,
+        ShowExportToOpenDocumentCalc = false,
+        ShowExportToOpenDocumentWriter = false,
+        ShowExportToCsv = false,
+        ShowExportToExcel = false,
+        ShowExportToSylk = false,
+        ShowExportToXml = false,
+        ShowExportToExcelXml = false,
+        ShowExportToMht = false,
+        ShowExportToPowerPoint = false
+    }
+})

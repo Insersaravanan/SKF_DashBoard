@@ -1,0 +1,18 @@
+﻿@{
+    ViewData["Title"] = "dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div ng-controller="skfCtrl" class="content-wrapper">
+    <iframe src="https://app.powerbi.com/reportEmbed?reportId=25aadced-87ce-4286-9975-ac865d012b17&autoAuth=true&ctid=d5e9f6cf-bf3d-4990-98e2-ecdfde33a5b6" height="520" width="1366"></iframe>
+</div>
+
+@*@section Scripts {
+    <environment include="Development">
+        <script src="~/js/dashboard/index.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/dashboard/index.min.js" asp-append-version="true"></script>
+    </environment>
+}*@
+

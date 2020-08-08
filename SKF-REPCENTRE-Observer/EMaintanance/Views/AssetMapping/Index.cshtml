@@ -1,0 +1,150 @@
+﻿@{
+    ViewData["Title"] = "Asset Mapping";
+    Layout = "~/Views/Shared/_ObserverLayout.cshtml";
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<div ng-controller="skfCtrl" class="language content-wrapper asset-mapping">
+    <div class="container-fluid" id="languages">
+        <div class="row heading-wrapper">
+            <div class="col-md-3 heading assetMappingHeader">
+                <h4 class="page-header text-primary">Asset Mapping</h4>
+            </div>
+            <div class="col-md-9 client-unmapped" ng-if="!ObserverClientNodeId ">
+                <div class="menu-button">
+                    <span><i class="fa fa-exclamation-triangle icon-filter not-mapped-icon" tooltip-append-to-body="true" uib-tooltip="Observer client node not mapped"></i> &nbsp;Observer client node not mapped !</span>
+                    <a ng-click="clientMapping()" title="Client Mapping"><i class="fa fa-link icon-filter"></i><span>Click here to map with Client!</span></a>
+                    @*<a ng-click="cancel()" title="Cancel"><i class="fa fa-close icon-filter"></i>Cancel</a>*@
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive assetMappingGrid">
+            <div class="grid data" style="text-transform:none;">
+                <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-cellnav ui-grid-edit ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/ng-template" id="skfAssetMappingModal.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Asset Mapping</span>
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary">&nbsp;&nbsp;<span class="unit-type">{{selectedAssetType}}</span> - {{EMaintAssetName}}</h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="saveMapping()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="well">
+                <ui-select autofocus="true" ng-model="Selected" theme="bootstrap" ng-disabled="readOnlyPage" style="width: 800px;" title="Choose a asset" on-select="save($select.selected)" required>
+                    <ui-select-match placeholder="Select Asset...">
+                        {{$select.selected.NodeName}}
+                    </ui-select-match>
+                    <ui-select-choices repeat="assetObsr.NodeName as assetObsr in AssetsDDL | propsFilter: {NodeName: $select.search} | limitTo: 100">
+                        <div ng-bind-html="assetObsr.NodeName | highlight: $select.search"></div>
+                        <strong>
+                            <small style="font-size:11px; white-space: normal;">
+                                Path: {{assetObsr.NodePath}}
+                            </small>
+                        </strong>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfAssetMappingDeleteModal.html">
+    <div class="popup-product asset-unmap-popup">
+        <div class="modal-header">
+            <div class="heading">
+                <h4 class="text-primary">&nbsp;&nbsp;<span class="unit-type">{{selectedAssetType}}</span> - {{EMaintAssetName}}</h4>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="alert-unmap" style="text-align:center">
+                <span>
+                    <i class="fa fa-exclamation-triangle"></i>&nbsp;
+                    Are you sure you want to unmap this asset?
+                </span>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <span class="buttons create filter-button">
+                <button class="btn btn-info" ng-click="deleteMapping()" title="Yes"><i class="fa fa-save icon-filter"></i><span>Yes</span></button>
+                <button class="btn btn-info" ng-click="cancel()" title="No"><i class="fa fa-close icon-filter"></i><span>No</span></button>
+            </span>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfClientMappingAssetModal.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Client / Mapping</span>
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary"><span class="unit-type">EMaintenance Client</span> -{{ClientName}} </h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <form name="userForm" novalidate>
+                <div class="row create-form">
+                    <div class="col-md-12">
+                        <div class="col-md-3 col-sm-5 input-field">
+                            <label class="control-label">Observer Database Account*</label>
+                            <ui-select ng-model="ClientMapping.ObserverDBId" theme="bootstrap" ng-disabled="readOnlyPage" style="width: 800px;" on-select="SaveODb($select.selected)">
+                                <ui-select-match placeholder="Select Database...">{{$select.selected.Name}}</ui-select-match>
+                                <ui-select-choices repeat="observer.Id as observer in ObserverdbDDL | propsFilter: {Name: $select.search}">
+                                    <div ng-bind-html="observer.Name | highlight: $select.search"></div>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                        <div class="col-md-6 col-sm-7 input-field">
+                            <label class="control-label">Client Name (Observer)*</label>
+                            <ui-select ng-model="ClientMapping.ObserverNodeId" theme="bootstrap" ng-disabled="readOnlyPage" style="width:1200px;" on-select="SaveOClient($select.selected)">
+                                <ui-select-match placeholder="Select Client...">{{$select.selected.NodeName}}</ui-select-match>
+                                <ui-select-choices repeat="OClient.IDNode as OClient in ObserverClientDDL | propsFilter: {NodeName: $select.search}">
+                                    <div ng-bind-html="OClient.NodeName | highlight: $select.search"></div>
+                                    <strong>
+                                        <small style="font-size:11px; white-space: normal;">
+                                            Path: {{OClient.NodePath}}
+                                        </small>
+                                    </strong>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+    <environment include="Development">
+        <script src="~/js/assetmapping/index.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/assetmapping/index.js" asp-append-version="true"></script>
+    </environment>
+}

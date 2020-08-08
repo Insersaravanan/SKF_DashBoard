@@ -1,0 +1,67 @@
+﻿@{
+    ViewData["Title"] = "Conditional Monitoring";
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<div ng-controller="skfCtrl" class="condition-monitor report-view content-wrapper">
+    <div class="container-fluid" id="condition-monitoring">
+        <div class="row heading-wrapper">
+            <div class="col-md-3 heading">
+                <h4 class="page-header text-primary">Condition Monitoring Report</h4>
+            </div>
+            <div class="col-md-9 menu-button">
+                <a ng-click="clearValue()" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+            </div>
+        </div>
+        <div class="row search-form">
+            <div class="col-md-10 col-sm-10">
+                <div class="col-lg-2 col-sm-6 input-field">
+                    <label class="control-label">From Date*</label>
+                    <p class="input-group date-picker date-wrapper">
+                        <input type="text" class="form-control date-picker-input" placeholder="dd/mm/yyyy"  ng-dblclick="d_FromDate=true" uib-datepicker-popup="dd/MM/yyyy"
+                               ng-model="FromDate" name="FromDate" ng-init="d_FromDate=false" is-open="d_FromDate"
+                               datepicker-options="dateOptions" required ng-required="true" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                        <span class="input-group-btn date-picker-button">
+                            <button type="button" class="btn btn-default" ng-click="d_FromDate=true"><i class="fa fa-calendar"></i></button>
+                        </span>
+                    </p>
+                </div>
+                <div class="col-lg-2 col-sm-6 input-field">
+                    <label class="control-label">To Date</label>
+                    <p class="input-group date-picker date-wrapper">
+                        <input type="text" class="form-control date-picker-input" placeholder="dd/mm/yyyy"  ng-dblclick="d_ToDate=true" uib-datepicker-popup="dd/MM/yyyy"
+                               ng-model="ToDate" name="ToDate" ng-init="d_ToDate=false" is-open="d_ToDate"
+                               datepicker-options="dateOptions" required ng-required="true" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                        <span class="input-group-btn date-picker-button">
+                            <button type="button" class="btn btn-default" ng-click="d_ToDate=true"><i class="fa fa-calendar"></i></button>
+                        </span>
+                    </p>
+                </div>
+                <div class="col-lg-2 col-sm-6 input-field">
+                    <label class="control-label">Asset Condition Code</label>
+                    <select ng-model="ConditionCodeId" class="form-control search-input" ng-disabled="readOnlyDrivePage" required name="AssetConditionCode"
+                            ng-options="value.ConditionId as value.SKFConditionname for (key, value) in AssetConditionCodeDDL"></select>
+                </div>
+            </div>
+            <div class="buttons create filter-button col-md-2  col-sm-2">
+                <button ng-disabled="readOnlyPage" ng-click="loadData()" class="btn btn-info"><i class="fa fa-binoculars icon-filter"></i>Go</button>
+            </div>
+        </div>
+
+        <div class="table-responsive job-list-grid">
+            <div class="grid data ">
+                <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-cellnav ui-grid-edit ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <environment include="Development">
+        <script src="~/js/ConditionMonitoring/index.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/ConditionMonitoring/index.min.js" asp-append-version="true"></script>
+    </environment>
+}

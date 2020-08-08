@@ -1,0 +1,139 @@
+﻿@{
+    ViewData["Title"] = "Leverage";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<link href="~/lib/angucomplete/antocomplete-alt.css" rel="stylesheet" />
+
+<div ng-controller="skfCtrl" class="levage-external content-wrapper">
+    <div class="container-fluid" id="Leverage-external">
+        <div class="row heading-wrapper">
+            <div class="col-md-3 heading">
+                <h4 class="page-header text-primary">Leverage</h4>
+            </div>
+
+            <div class="col-md-9 menu-button">
+                <div class="menu-button">
+                </div>
+            </div>
+        </div>
+        <div class="row search-form">
+            <div class="col-md-12 col-sm-10">
+                <div class="col-md-2 col-sm-6 input-field">
+                    <label class="control-label">From Date:</label>
+                    <p class="input-group date-picker date-wrapper">
+                        <input type="text" class="form-control date-picker-input" ng-dblclick="d_FromDate=true" placeholder="dd/mm/yyyy" uib-datepicker-popup="dd/MM/yyyy"
+                               ng-model="L_Leverage.FromDate" ng-disabled="readOnlyPage" name="FromDate" ng-init="d_FromDate=false" is-open="d_FromDate"
+                               datepicker-options="dateOptions" required ng-required="true" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                        <span class="input-group-btn date-picker-button">
+                            <button type="button" class="btn btn-default" ng-disabled="readOnlyPage" ng-click="d_ScheduleDate=true"><i class="fa fa-calendar"></i></button>
+                        </span>
+                </div>
+                <div class="col-md-2 col-sm-6 input-field">
+                    <label class="control-label">To Date:</label>
+                    <p class="input-group date-picker date-wrapper">
+                        <input type="text" class="form-control date-picker-input" ng-dblclick="d_tDate=true" placeholder="dd/mm/yyyy" uib-datepicker-popup="dd/MM/yyyy"
+                               ng-model="L_Leverage.ToDate" name="ToDate" ng-init="d_ToDate=false" is-open="d_ToDate"
+                               datepicker-options="dateOptions" required ng-required="true" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                        <span class="input-group-btn date-picker-button">
+                            <button type="button" class="btn btn-default" ng-click="d_ToDate=true"><i class="fa fa-calendar"></i></button>
+                        </span>
+                    </p>
+                </div>
+                <div class="col-md-1 col-sm-6 buttons create filter-button">
+                    <button ng-disabled="readOnlyPage" ng-click="loadData()" class="btn btn-info"><i class="fa fa-binoculars icon-filter"></i>Go</button>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <div class="grid data">
+                <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-cellNav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angucomplete/angucomplete-alt.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+    <environment include="Development">
+        <script src="~/js/leverage/index.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/leverage/index.min.js" asp-append-version="true"></script>
+    </environment>
+}
+
+<script type="text/ng-template" id="skfLeverageExternal.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Leverage services </span>
+            <div class="col-lg-7 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary">{{EquipmentName}}</h4>
+            </div>
+            <div class="col-lg-5 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                @*<a ng-click="update()" ng-show="isEdit" ng-disabled="readOnlyPage" title="Update"><i class="fa fa-save icon-filter"></i><span>Update</span></a>*@
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+    </div>
+    <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="col-md-3 col-sm-6 input-field">
+                    <label class="control-label">Quote (CRM) Reference</label>
+                    <div>
+                        <input class="form-control ng-pristine ng-valid ng-empty ng-touched" name="LSQuoteReference" ng-model="LSQuoteReference">
+                        <span class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 input-field">
+                    <label class="control-label">Enter Value $</label>
+                    <div>
+                        <input type="number" class="form-control ng-pristine ng-valid ng-empty ng-touched" name="LSQuoteAmount" ng-model="LSQuoteAmount">
+                        <span class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.EquipmentName.$invalid && !userForm.EquipmentName.$pristine }">
+                    <label class="control-label">Quote Status</label>
+                    <div>
+                        <select required ng-model="LSQuoteStatusId" class="form-control search-input" name="UserType"
+                                ng-options="value.LookupId as value.LValue for (key, value) in QuoteStatusDDL"></select>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6 input-field">
+                    <label class="control-label">Choose File</label>
+                    <input type="file" id="files" class="uploadfile ng-pristine ng-valid ng-empty ng-touched" name="files[]" ng-model="fileUpload" onchange="angular.element(this).scope().uploadImageStart()" accept="pdf">
+                </div>
+            </div>
+            <div class="col-md-12">
+                <div class="col-md-6 col-sm-6 input-field report-textarea">
+                    <label class="control-label">
+                        (Any Other Information)
+                    </label>
+                    <div>
+                        <textarea rows="1" class="form-control big ng-pristine ng-valid ng-empty ng-touched" ng-model="LSQuoteComment" name="LSQuoteComment" style="height:70px; width: 300px;"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h4>Opportunity List:</h4>
+        <table>
+            <tr ng-repeat="x in LeverageServiceDDL">
+                <td>{{ x.OpportunityType }}</td>
+                <td><input type="checkbox" ng-model="x.Active" ng-click="DirtyValues(x)" ng-true-value="'Y'" ng-false-value="'N'" /></td>
+            </tr>
+        </table>
+    </div>
+</script>

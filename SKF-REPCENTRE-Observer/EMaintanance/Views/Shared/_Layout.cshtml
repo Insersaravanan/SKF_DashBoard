@@ -1,0 +1,420 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=11" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SKF-REP Centre Online</title>
+    <link href="~/lib/angular/loading-bar/loading-bar.min.css" rel="stylesheet" />
+    <link href="~/lib/fontawesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+    <link href="~/lib/angular/ui-select/select.min.css" rel="stylesheet" />
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true"/>
+    </environment>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <script>
+        var currentUser = "@UserManager.GetUserName(User)";
+        var currentController = "@ViewContext.RouteData.Values["Controller"]";
+        </script>
+    }
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    @*<script async src="https://www.googletagmanager.com/gtag/js?id=UA-136936880-2"></script>
+        <script>
+               window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
+            gtag('create', 'UA-136936880-2', { 'userId': '@UserManager.GetUserName(User)' });
+            gtag('set', 'dimension1', '@UserManager.GetUserName(User)');
+            gtag('send', 'pageview');
+            gtag('config', 'UA-136936880-2');
+        </script>*@
+</head>
+<body ng-app="skfApp" class="lazy-load">
+    <div class="body">
+        <header class="header-content" ng-controller="skfHeaderController">
+            <div class="head-wrappper">
+                <div class="col-lg-12 blue-background"></div>
+                <a href="/"><img src="~/images/headerLogo.png" class="logo" alt="SKF" /></a>
+                <div class="ClientMaster-wrapper" ng-hide="isDashboardheader">
+                    <div class="ClientMaster" ng-click="ClientSelect()">
+                        <img src="{{logo}}" class="client-logo">
+                        <span class="Client-name">{{clientName.length > 0 ? clientName: "Select Client"}}</span>
+                    </div>
+                </div>
+                <span class="dashboard-header" ng-show="isDashboardheader">{{appNameDDL}}</span>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <i class="fa fa-bars open"></i>
+                    <i class="fa fa-window-close close" aria-hidden="true"></i>
+                </button>
+
+
+                <div class="header-menues">
+                    <div class="tag-v2" ng-style="{'background-color': versioncolor}" ng-if="versioncolor">
+                        <i class="fa fa-code-fork" aria-hidden="true"></i>  {{releaseEnv}}
+                    </div>
+                    @*<div class="dropdown grouping">
+                        <i class="fa fa-question" aria-hidden="true"></i>
+                        <div class="dropdown-menu content">
+                            <ul>
+                                <li><a href="/UserGuide" class="User Guide" title="User Guide"><i class="fa fa-book"></i>User Guide</a></li>
+                                <li><a class="app-feedback" title="Support & Feedback" ng-click="showFeedback()"><i class="fa fa-support"></i>Help Desk</a></li>
+                                <li><a href="/Feedback" title="View Tickets"><i class="fa fa-ticket" aria-hidden="true"></i>Tickets</a></li>
+                                <li><a href="/ReleaseNote" class="Help-desk" title="ReleaseNote"> <i class="fa fa-sticky-note" aria-hidden="true"></i>ReleaseNote</a></li>
+                            </ul>
+                            <p class="drop-version">{{appVersion}}</p>
+                        </div>
+                    </div>
+                    <div class="language">
+                        <select class="form-control language-drop" ng-model="language" style="background-image: url('/images/flags/{{language.CountryCode.toLowerCase()}}.png');" ng-options="language.LName for language in languageList" ng-change="languageChange()"></select>
+                    </div>*@
+                    <div class="user"> Hello @UserManager.GetUserName(User)! </div>
+
+                    @*<div class="notify"><i class="fa fa-bell-o"></i></div>
+                        <div class="announce"><i class="fa fa-bullhorn"></i></div>*@
+                </div>
+                <ul class="nav navbar-nav navbar-right top-menu">
+                    @*Add Element if any*@
+                    @await Html.PartialAsync("_LoginPartial")
+                </ul>
+                @*<a href="/UserGuide" class="help-desk" title="User Guide" ><i class="fa fa-book"></i></a>
+                    <a class="app-feedback" title="Support & Feedback" ng-click="showFeedback()"><i class="fa fa-support"></i></a>*@
+                <div class="header-border"></div>
+            </div>
+        </header>
+    </div>
+    <partial name="_CookieConsentPartial" />
+    <div class="container main">
+        <div class="menubar">
+            <div class="left-nav side-menu" ng-controller="skfLeftNavController">
+                <ul class="list-unstyled menu-parent">
+                    <li><a href="/" title="Dashboard">@*<img src="~/images/e-image.png" class="e-image">*@<i class="fa fa-dashboard"></i><span class="left-title e-title">Dashboard</span></a></li>
+                    <li ng-repeat="m in menus" ng-class="{'has-child':m.hasChild == 'True','active':isActive(m)}">
+                        <a href="{{m.ControllerName == ''? '#' :m.LinkUrl ? m.LinkUrl : m.ActionName ? '/'+ m.ControllerName + '/' +m.ActionName : '/' + m.ControllerName}}" title="{{m.MenuName}}" ng-click="(m.hasChild != 'True') || navigate(m)">
+                            <i class="fa {{m.IconName}}"></i>
+                            <span class="left-title">{{m.MenuName}}</span>
+                        </a>
+                    </li>
+                    @*<li><a href="/UserGuide" class="User Guide" title="User Guide"><i class="fa fa-book"></i>User Guide</a></li>
+                    <li><a href="/ReleaseNote" class="Help-desk" title="ReleaseNote"> <i class="fa fa-sticky-note" aria-hidden="true"></i>ReleaseNote</a></li>
+                    <li><a class="app-feedback" title="Support & Feedback" ng-click="showFeedback()"><i class="fa fa-support"></i>Help Desk</a></li>
+                    <li><a href="/Feedback" title="View Tickets"><i class="fa fa-ticket" aria-hidden="true"></i>Tickets</a></li>*@
+                </ul>
+                <a href="#" class="bounce" title="Expand/Collapse">
+                    <i class="sidebar fa top"></i>
+                </a>
+            </div>
+        </div>
+        <div class="body-content" ng-controller="skfBreadCrumbController">
+            <div ng-hide="isDashboardheader">
+                <div class="company-info breadcrumb-selector">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item"><a href="/@ViewContext.RouteData.Values["Controller"]">@ViewContext.RouteData.Values["Controller"]</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">@ViewContext.RouteData.Values["Action"]</li>
+                        </ol>
+                    </nav>
+                    <div uib-alert ng-repeat="alert in alerts" class="error-alert" dismiss-on-timeout="{{alert.timeout?alert.timeout:4000}}" ng-class="'alert-' + (alert.type || 'success')" close="closeAlert($index)">
+                        <span class="err-message">{{alert.msg}}</span>
+                        <a ng-click="exception()" class="exception" title="View" ng-show="alert.exc.length > 0"><span>{{ShowEx?"View Less":"View More"}}</span></a>
+                        <span class="exmsg" ng-show="ShowEx">{{alert.exc}}</span>
+                    </div>
+                    @RenderSection("BreadCrumb", required: false)
+                </div>
+            </div>
+            @RenderSection("Content", false)
+            @RenderBody()
+        </div>
+    </div>
+    <footer ng-controller="skfFooterController">
+        <p class="copy-right">
+            <span class="quick-link company">SKF</span>
+            <span class="quick-link">&copy; Copyright</span>
+            <span class="quick-link"><a href="http://www.skf.com/group/footer/terms-and-conditions.html" target="_blank">Terms & Conditions</a></span>
+            <span class="quick-link"><a href="http://www.skf.com/group/footer/privacy-policy.html" target="_blank">Privacy Policy</a></span>
+            <span class="quick-link"><a href="http://www.skf.com/group/footer/site-ownership.html" target="_blank">Site Ownership</a></span>
+        </p>
+        <img src="~/images/footerLogo.png" />
+        <div class="footer-border"></div>
+        <div class="footer-wrapper"></div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/lib/angular/angular.min.js"></script>
+    <script src="~/lib/angular/angular-filter.min.js"></script>
+    <script src="~/lib/angular/angural-animate.min.js"></script>
+    <script src="~/lib/angular/ui-grid.pinning.min.js"></script>
+    <script src="~/lib/angular/ui-bootstrap-tpls-2.5.0.min.js"></script>
+    <script src="~/lib/angular/loading-bar/loading-bar.min.js"></script>
+    <script src="~/lib/angular/angular-touch.min.js"></script>
+    <script src="~/lib/html2canvas.min.js"></script>
+    <script src="~/lib/angular/textAngular/textAngular-sanitize.min.js"></script>
+    <script src="~/lib/angular/ui-select/select.min.js"></script>
+    <script src="~/lib/angular/multiselect/angularjs-dropdown-multiselect.min.js"></script>
+
+    <environment include="Development">
+        <script src="~/js/app.js"></script>
+        <script src="~/js/cms/skfcontent.js"></script>
+        <script src="~/js/site.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/app.min.js" asp-append-version="true"></script>
+        <script src="~/js/cms/skfcontent.min.js" asp-append-version="true"></script>
+        <script src="~/js/site.min.js" asp-append-version="true"></script>
+    </environment>
+
+    @RenderSection("Scripts", required: false)
+    @RenderSection("AdditionalHeadContent", false)
+
+    @*<div class="body-content content-pane">
+            @RenderSection("Content", false)
+            @RenderBody()
+        </div>*@
+
+    <script type="text/ng-template" id="tovertoMenuModal.html">
+        <div class="menu-modal">
+            <div class="modal-body">
+                <a class="close-button" ng-click="cancel()">X</a>
+                <div class="row">
+                    <div class="col-md-12">
+                        <uib-accordion close-others="false">
+                            <ul class="list-unstyled parent row">
+                                <li ng-repeat="m in menu.Childs" ng-show="m.Childs.length > 0" ng-class="{'has-child':m.hasChild == 'True'}" class="col-md-{{menu.mediaCol}}">
+                                    <div uib-accordion-group is-open="true" heading="{{m.MenuName}}">
+                                        <ul class="list-unstyled child">
+                                            <li ng-repeat="m1 in m.Childs" ng-class="{'has-child':m1.hasChild == 'True','active':currentController == m1.ControllerName}">
+                                                <a href="{{m1.LinkUrl ? m1.LinkUrl : m1.ActionName ? '/'+ m1.ControllerName + '/' +m1.ActionName : '/' + m1.ControllerName}}" ng-click="cancel()" title="{{m1.MenuName}}">
+                                                    <i class="fa {{m1.IconName}}"></i>
+                                                    <span class="left-title">{{m1.MenuName}}</span>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </uib-accordion>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="skfCMSModal.html">
+        <div class="modal-content quick-link " id="printContent">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" ng-click="cancel()" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <div ng-if="cmsContent">
+                    @*<h3>{{cmsContent.typeName}}</h3>*@
+                    <div class="panel panel-default" ng-bind-html="cmsContent.typeText | trustAsHtml">
+                    </div>
+                </div>
+                <div ng-if="!cmsContent" class="text-center">No content available</div>
+            </div>
+        </div>
+    </script>
+</body>
+</html>
+
+<script type="text/ng-template" id="skfClientInfoModal.html">
+    <div class="popup-user-role">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Home / Client Info</span>
+            <div class="col-md-5 heading">
+                <h4 class="page-header text-primary">Client Site</h4>
+            </div>
+            <div class="col-md-7 create-button  menu-button">
+                @*<a ng-disabled="readOnlyPage || userForm.$invalid" ng-click="readOnlyPage || userForm.$invalid || save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>*@
+                <a ng-click="cancel()" title="Cancel" class="cancel-btn"><i class="fa fa-close icon-filter"></i><span>Cancel</span></a>
+            </div>
+        </div>
+        <div class="modal-body client-model">
+            <div class="col-md-12">
+                <div class="well">
+                    <ui-select ng-model="ClientSiteDDL.ClientName" theme="bootstrap" ng-disabled="readOnlyPage" style="width: 800px;" title="Choose a client site" on-select="save()">
+                        <ui-select-match placeholder="Select Client Site...">{{$select.selected.ClientSiteName}}</ui-select-match>
+                        <ui-select-choices repeat="clientSite.ClientSiteName as clientSite in ClientSiteDDL | propsFilter: {ClientSiteName: $select.search,CountryName: $select.search,CostCentreName: $select.search} | limitTo: 100">
+                            <div ng-bind-html="clientSite.ClientSiteName | highlight: $select.search"></div>
+                            <small>
+                                <b>Country:</b> {{clientSite.CountryName}},
+                                <b>CostCentre:</b> {{clientSite.CostCentreName}}
+                            </small>
+                        </ui-select-choices>
+                    </ui-select>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfImportModal.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <div class="col-md-3 col-sm-12">
+                <h4 class="text-primary">{{template?template:'Setup'}} - Import</h4>
+            </div>
+            <div class="col-md-9 col-sm-12 menu-button">
+                <a ng-disabled="!template || !gridOptions.colTemp.length"
+                   ng-click="!template || !gridOptions.colTemp.length || downloadTemplate()"
+                   tooltip-append-to-body="true"
+                   uib-tooltip="{{(!gridOptions.colTemp.length)?'Download Template Setup Not Done. Please contact support!':''}}"
+                   tooltip-class="customClass"
+                   title="{{gridOptions.colTemp.length?'Download Template':''}}">
+                    <i class="fa fa-download icon-filter"></i>
+                    <span>Download Template</span>
+                </a>
+                <a ng-disabled="!gridOptions.data.length || isProgress" ng-click="!gridOptions.data.length || isProgress || reset()" title="Reset Grid"><i class="fa fa-refresh icon-filter"></i> <span>Reset Grid</span></a>
+                <span class="Pipe"></span>
+                <a ng-click="cancelProgress()" ng-if="isProgress" title="Cancel Upload"><i class="fa fa-times-circle icon-filter"></i> Cancel Upload</a>
+                <a ng-disabled="!gridOptions.data.length || isProgress || stacked.length" ng-hide="isProgress" ng-click="!gridOptions.data.length || isProgress || stacked.length || saveData()" title="Upload and Save"><i class="fa fa-cloud-upload icon-filter"></i> Upload and Save</a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div ng-show="stacked.length">
+                <uib-progress ng-class="{'progress-striped active':isProgress}">
+                    <uib-bar ng-repeat="bar in stacked track by $index" value="bar.value" type="{{bar.type}}" title="{{bar.title}}">
+                        <span>{{bar.value}}%</span>
+                    </uib-bar>
+                </uib-progress>
+            </div>
+            <div class="table-responsive">
+                <div id="grid1" ui-grid="gridOptions" class="grid" ui-grid-edit ui-grid-cellnav ui-grid-exporter>
+                    <div class="grid-msg-overlay" ng-show="!gridOptions.data.length">
+                        <div class="msg">
+                            <div class="center">
+                                <p ng-show="gridOptions.invalidUpload" class="text-danger">Invalid template!</p>
+                                <p class="muted">Select File to Upload</p>
+                                <input type="file" accept=".xls,.xlsx,.ods" fileread="" opts="gridOptions" multiple="false" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer text-right">
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfFeedbackModal.html">
+    <div class="popup-user-role">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Home / <a href="/Feedback" class="mouse-pointer" ng-click="cancel()" title="Go to Feedback List">Feedback</a> / Create</span>
+            <div class="col-md-3 heading">
+                <h4 class="page-header text-primary">Help Desk</h4>
+            </div>
+            <div class="col-md-9 create-button  menu-button">
+                <a ng-disabled="!readOnlyPage" ng-click="!readOnlyPage || clearModal()" title="Create New"><i class="fa fa-plus-square icon-filter"></i><span>Create New</span></a>
+                <a ng-disabled="readOnlyPage || userForm.$invalid" ng-click="readOnlyPage || userForm.$invalid || save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-show="readOnlyPage && task.Id" ng-click="update()" title="Update Comment"><i class="fa fa-save icon-filter"></i><span>Update Comment</span></a>
+                <a ng-show="!readOnlyPage" ng-click="cancel()" title="Cancel" class="cancel-btn"><i class="fa fa-close icon-filter"></i><span>Cancel</span></a>
+                <a ng-show="readOnlyPage" ng-click="cancel()" title="Close" class="cancel-btn"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <form name="userForm" novalidate>
+                <div class="row create-form">
+                    <div class="col-md-{{readOnlyPage?'7':'12'}}">
+                        <div class="col-md-3 input-field" ng-show="readOnlyPage && task.Id">
+                            <label class="control-label">Reference Id</label>
+                            <div>
+                                <input class="form-control" disabled ng-model="task.Id" name="Id" />
+                            </div>
+                        </div>
+                        <div class="col-md-3 input-field" ng-class="{ 'has-error' : userForm.Type.$invalid && !userForm.Type.$pristine }">
+                            <label class="control-label">Type*</label>
+                            <div class="status">
+                                <select ng-model="task.Type" required ng-disabled="readOnlyPage" name="Type" class="form-control">
+                                    <option ng-repeat="type in DevOps_WorkItemType" value="{{type.LookupCode}}">{{type.LValue}}</option>
+                                </select>
+                                @*<input ng-if="readOnlyPage" disabled class="form-control" id="countryCode" ng-model="task.Type" name="Type" />*@
+                            </div>
+                        </div>
+                        <div class="col-md-3 input-field">
+                            <label class="control-label">Priority</label>
+                            <div class="status">
+                                <select ng-model="task.Priority" ng-disabled="readOnlyPage" name="Priority" class="form-control">
+                                    <option value="">-- Nil --</option>
+                                    <option ng-repeat="p in DevOps_Priority" value="{{ p.LookupCode }}">{{p.LValue}}</option>
+                                </select>
+                                @*<input ng-if="readOnlyPage" disabled class="form-control" id="countryCode" ng-model="task.Priority" name="Priority" />*@
+                            </div>
+                        </div>
+                        @*<div class="col-md-{{readOnlyPage?'12':'3'}} input-field">
+                                <label class="control-label">{{readOnlyPage?'Tags':'Tag'}}</label>
+                                <div class="status">
+                                    <select ng-model="task.Tags" ng-hide="readOnlyPage" name="Tags" class="form-control">
+                                        <option value="">-- Nil --</option>
+                                        <option ng-repeat="t in DevOps_Tags" value="{{t.LookupCode}}">{{t.LValue}}</option>
+                                    </select>
+                                    <input ng-if="readOnlyPage" disabled class="form-control" id="countryCode" ng-model="task.Tags" name="Tags" />
+                                </div>
+                            </div>*@
+                        <div class="col-md-12 input-field" ng-class="{ 'has-error' : userForm.Title.$invalid && !userForm.Title.$pristine }">
+                            <label class="control-label">Title*</label>
+                            <div>
+                                <input ng-disabled="readOnlyPage" class="form-control" id="countryCode" required ng-model="task.Title" name="Title" />
+                            </div>
+                        </div>
+                        <div class="col-md-12 input-field feed-back-desc" ng-class="{ 'has-error' : userForm.Description.$invalid && !userForm.Description.$pristine }">
+                            <label class="control-label">Description*</label>
+                            <div>
+                                <textarea ng-disabled="readOnlyPage" class="form-control" required ng-model="task.Description" name="Description" rows="{{readOnlyPage?'13':'7'}}"></textarea>
+                            </div>
+                        </div>
+                        @*<div class="col-md-12 input-field" ng-hide="readOnlyPage">
+                                <label class="control-label">Discussion</label>
+                                <div>
+                                    <textarea class="form-control" ng-model="task.Comment" name="Comment"></textarea>
+                                </div>
+                            </div>*@
+                    </div>
+                    <div class="col-md-5" ng-show="readOnlyPage && task.Id">
+                        <div class="col-md-12 feed-back-desc">
+                            <label class="control-label">Discussion</label>
+                            <div>
+                                <textarea class="form-control" ng-model="task.Comment" name="Comment"></textarea>
+                            </div>
+                            <br />
+                        </div>
+                        <div class="comment-wrapper col-md-12">
+                            <div ng-repeat="comment in commentsData.comments | orderBy:'-revisedDate'" class="panel panel-default">
+                                <div class="panel-heading feedback-date-header">
+                                    <span tooltip-append-to-body="true" uib-tooltip="{{comment.revisedBy.uniqueName}}" tooltip-class="customClass">{{comment.revisedBy.displayName}}</span>
+                                    <span class="pull-right">{{comment.revisedDate | date :"medium"}}</span>
+                                </div>
+                                <div class="comment-content" ng-bind-html="comment.text | trustAsHtml">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <div ng-if="task.ScreenShot" class="col-md-3">
+                <img ng-src="{{task.ScreenShot}}" ng-if="task.ScreenShot" height="75" width="125" />
+                <a ng-click="task.ScreenShot=null" class="mouse-pointer"><i class="fa fa-close"></i></a>
+            </div>
+            <input type="file" id="files" class="uploadfile" name="files" multiple />
+            <a ng-click="captureScreenShot()" class="mouse-pointer" title="ScreenShot the screen"><i class="fa fa-camera"></i></a>
+        </div>
+    </div>
+</script>

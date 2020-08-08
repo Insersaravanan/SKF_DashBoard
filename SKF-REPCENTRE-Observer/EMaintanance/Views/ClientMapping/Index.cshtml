@@ -1,0 +1,127 @@
+﻿@{
+    ViewData["Title"] = "Client Mapping";
+    Layout = "~/Views/Shared/_ObserverLayout.cshtml";
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<link href="~/lib/angucomplete/antocomplete-alt.css" rel="stylesheet" />
+<div ng-controller="skfCtrl" class="clientsite content-wrapper">
+    <div class="container-fluid" id="Taxonomy">
+        <div class="row heading-wrapper">
+            <div class="col-md-3 heading assetMappingHeader">
+                <h4 class="page-header text-primary">Client Mapping</h4>
+            </div>
+            <div class="col-md-9 menu-button">
+            </div>
+        </div>
+        <div class="table-responsive assetMappingGrid">
+            <div class="grid data" style="text-transform:none;">
+                <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angucomplete/angucomplete-alt.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+
+    <environment include="Development">
+        <script src="~/js/clientmapping/index.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/clientmapping/index.min.js" asp-append-version="true"></script>
+    </environment>
+}
+
+<script type="text/ng-template" id="skfClientMappingModal.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Client / Mapping</span>
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary"><span class="unit-type">EMaintenance Client</span> -{{ClientName}} </h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <form name="userForm" novalidate>
+                <div class="row create-form">
+                    <div class="col-md-12">
+                        <div class="col-md-3 col-sm-5 input-field">
+                            <label class="control-label">Observer Database Account*</label>
+                            <ui-select ng-model="ClientMapping.ObserverDBId" theme="bootstrap" ng-disabled="readOnlyPage" style="width: 800px;" on-select="SaveODb($select.selected)">
+                                <ui-select-match placeholder="Select Database...">{{$select.selected.Name}}</ui-select-match>
+                                <ui-select-choices repeat="observer.Id as observer in ObserverdbDDL | propsFilter: {Name: $select.search}">
+                                    <div ng-bind-html="observer.Name | highlight: $select.search"></div>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                        <div class="col-md-6 col-sm-7 input-field">
+                            <label class="control-label">Client Name (Observer)*</label>
+                            <ui-select ng-model="ClientMapping.ObserverNodeId" theme="bootstrap" ng-disabled="readOnlyPage" style="width:1200px;" on-select="SaveOClient($select.selected)">
+                                <ui-select-match placeholder="Select Client...">{{$select.selected.NodeName}}</ui-select-match>
+                                <ui-select-choices repeat="OClient.IDNode as OClient in ObserverClientDDL | propsFilter: {NodeName: $select.search}">
+                                    <div ng-bind-html="OClient.NodeName | highlight: $select.search"></div>
+                                    <strong>
+                                        <small style="font-size:11px; white-space: normal;">
+                                            Path: {{OClient.NodePath}}
+                                        </small>
+                                    </strong>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                        <div class="col-md-6 col-sm-7 input-field">
+                            <label class="control-label">Sector Name*</label>
+                            <ui-select ng-model="ClientMapping.SectorId" theme="bootstrap" ng-disabled="readOnlyPage" style="width:1200px;">
+                                <ui-select-match placeholder="Select Sector...">{{$select.selected.SectorName}}</ui-select-match>
+                                <ui-select-choices repeat="sec.SectorId as sec in sectorDDL | propsFilter: {SectorName: $select.search}">
+                                    <div ng-bind-html="sec.SectorName | highlight: $select.search"></div>
+                                    @*<strong>
+                                            <small style="font-size:11px; white-space: normal;">
+                                                Path: {{OClient.NodePath}}
+                                            </small>
+                                        </strong>*@
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfClientMappingDelete.html">
+    <div class="popup-product client-unmap-popup">
+        <div class="modal-header">
+            <div class="heading">
+                <h4 class="text-primary">&nbsp;&nbsp;<span class="unit-type">EMaintenance Client</span> - {{ClientName}}</h4>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="alert-unmap" style="text-align:center">
+                <span>
+                    <i class="fa fa-exclamation-triangle"></i>&nbsp;
+                    Are you sure you want to unmap this client?
+                </span>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <span class="buttons create filter-button">
+                <button class="btn btn-info" ng-click="deleteMapping()" title="Yes"><i class="fa fa-save icon-filter"></i><span>Yes</span></button>
+                <button class="btn btn-info" ng-click="cancel()" title="No"><i class="fa fa-close icon-filter"></i><span>No</span></button>
+            </span>
+        </div>
+    </div>
+</script>

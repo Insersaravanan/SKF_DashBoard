@@ -1,0 +1,405 @@
+﻿@{
+    ViewData["Title"] = "Work Notification";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<div ng-controller="skfCtrl" class="leverage content-wrapper">
+    <div class="container-fluid rds leverage" id="leverage">
+        <div class="wizard-inner">
+            <div class="connecting-line"></div>
+            <ul class="tabs">
+                <li class="list-tab" ng-class="{'active':equipmentListActive}">
+                    <a ng-click="next('stage0')" Title="Equipment List">
+                        <span class="round-tab job-round">
+                            Equipment(WN)
+                        </span>
+                    </a>
+                </li>
+                <li class="list-tab" ng-class="{'active':assetActive}" ng-disabled="!assetActive">
+                    <a ng-click="next('stage1')" Title="Asset List">
+                        <span class="round-tab equipment-round">
+                            Asset(WN)
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="animate-switch-container" ng-switch on="stage">
+            <div class="Export-Leverage animate-switch" ng-switch-default>
+                <div class="row heading-wrapper">
+                    <div class="col-md-3 heading">
+                        <h4 class="page-header text-primary">Work Notification</h4>
+                    </div>
+                    <div class="col-md-9 menu-button">
+                        <a ng-click="DownloadWorkNotificationExcelReport()" title="Export"><i class="fa fa-download icon-filter"></i>Export Excel</a>
+                    </div>
+                </div>
+                <div class="row search-form">
+                    <div class="col-md-8">
+                        <div class="col-lg-3 col-sm-6 input-field">
+                            <label class="control-label">From Date*</label>
+                            <p class="input-group date-picker date-wrapper">
+                                <input type="text" class="form-control date-picker-input" placeholder="dd/mm/yyyy" ng-dblclick="d_FromDate=true" uib-datepicker-popup="dd/MM/yyyy"
+                                       ng-model="EqSearch.FromDate" name="FromDate" ng-init="d_FromDate=false" is-open="d_FromDate"
+                                       datepicker-options="dateOptions" required ng-required="true" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                                <span class="input-group-btn date-picker-button">
+                                    <button type="button" class="btn btn-default" ng-click="d_FromDate=true"><i class="fa fa-calendar"></i></button>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-lg-3 col-sm-6 input-field">
+                            <label class="control-label">To Date</label>
+                            <p class="input-group date-picker date-wrapper">
+                                <input type="text" class="form-control date-picker-input" placeholder="dd/mm/yyyy" ng-dblclick="d_ToDate=true" uib-datepicker-popup="dd/MM/yyyy"
+                                       ng-model="EqSearch.ToDate" name="ToDate" ng-init="d_ToDate=false" is-open="d_ToDate"
+                                       datepicker-options="dateOptions" required ng-required="true" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                                <span class="input-group-btn date-picker-button">
+                                    <button type="button" class="btn btn-default" ng-click="d_ToDate=true"><i class="fa fa-calendar"></i></button>
+                                </span>
+                            </p>
+                        </div>
+                        <div class="col-lg-3 col-sm-6 input-field">
+                            <label class="control-label">Status</label>
+                            <select ng-model="EqSearch.statusId" class="form-control search-input" required name="WorkNotificatinStatus"
+                                    ng-options="value.LookupId as value.LValue for (key, value) in WorkNotificatinStatusDDL" null-option="defaultWorkNotificatinStatus" loose-null></select>
+                        </div>
+                    </div>
+                    <div class="buttons create filter-button col-md-2  col-sm-2">
+                        <button ng-disabled="readOnlyPage" ng-click="loadData()" class="btn btn-info"><i class="fa fa-binoculars icon-filter"></i>Go</button>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <div class="grid data">
+                        <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-cellnav ui-grid-edit ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                    </div>
+                </div>
+            </div>
+            <div class="asset-detail">
+                <form name="userForm" novalidate>
+                    <div class="Export-List animate-switch" ng-switch-when="stage1">
+                        <div class="row heading-wrapper">
+                            <div class="col-md-3 heading">
+                                <h4 class="page-header text-primary">Asset List - {{worknotificationNumber}}</h4>
+                            </div>
+                            <div class="col-md-9 menu-button">
+
+                                <a ng-disabled="!isSelect" ng-click="cancelUnitAnalysis()" title="Cancel WN"><i class="fa fa-close icon-filter"></i><span>Cancel WN</span></a>
+                                <a ng-disabled="!isSave" ng-click="saveUnitAnalysis()" title="Save WN"><i class="fa fa-save icon-filter"></i><span>Save WN</span></a>
+                            </div>
+                        </div>
+                        @*<div class="row search-form">
+                                    <div class="col-md-8">
+                                        <div class="col-lg-3 col-sm-6 input-field">
+                                            <label class="control-label">From Date*</label>
+                                            <p class="input-group date-picker date-wrapper">
+                                                <input type="text" class="form-control date-picker-input" placeholder="dd/mm/yyyy" ng-dblclick="d_FromDate=true" uib-datepicker-popup="dd/MM/yyyy"
+                                                       ng-model="EqSearch.FromDate" name="FromDate" ng-init="d_FromDate=false" is-open="d_FromDate"
+                                                       datepicker-options="dateOptions" required ng-required="true" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                                                <span class="input-group-btn date-picker-button">
+                                                    <button type="button" class="btn btn-default" ng-click="d_FromDate=true"><i class="fa fa-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div class="col-lg-3 col-sm-6 input-field">
+                                            <label class="control-label">To Date</label>
+                                            <p class="input-group date-picker date-wrapper">
+                                                <input type="text" class="form-control date-picker-input" placeholder="dd/mm/yyyy" ng-dblclick="d_ToDate=true" uib-datepicker-popup="dd/MM/yyyy"
+                                                       ng-model="EqSearch.ToDate" name="ToDate" ng-init="d_ToDate=false" is-open="d_ToDate"
+                                                       datepicker-options="dateOptions" required ng-required="true" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                                                <span class="input-group-btn date-picker-button">
+                                                    <button type="button" class="btn btn-default" ng-click="d_ToDate=true"><i class="fa fa-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div class="col-lg-3 col-sm-6 input-field">
+                                            <label class="control-label">Status</label>
+                                            <select ng-model="EqSearch.Status" class="form-control search-input" ng-disabled="readOnlyDrivePage" required name="AssetConditionCode"
+                                                    ng-options="value.ConditionId as value.SKFConditionname for (key, value) in AssetConditionCodeDDL"></select>
+                                        </div>
+                                    </div>
+                                <div class="buttons create filter-button col-md-2  col-sm-2">
+                                    <button ng-disabled="readOnlyPage" ng-click="loadData()" class="btn btn-info"><i class="fa fa-binoculars icon-filter"></i>Go</button>
+                                </div>
+                            </div>*@
+                        <div class="table-responsive">
+                            <div class="grid data">
+                                <div id="uiGrid" ui-grid="gridOpts1" class="grid" ui-grid-cellnav ui-grid-edit ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+    <script src="~/lib/angular/ui-grid/import/xlsx.full.min.js"></script>
+    <script src="~/lib/angular/ui-grid/import/ods.js"></script>
+    <environment include="Development">
+        <script src="~/js/import/index.js" asp-append-version="true"></script>
+        <script src="~/js/worknotification/index.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/import/index.min.js" asp-append-version="true"></script>
+        <script src="~/js/worknotification/index.min.js" asp-append-version="true"></script>
+    </environment>
+}
+
+<script type="text/ng-template" id="skfStatus.html">
+    <form name="skfForm" ng-submit="save()" novalidate class="settings_popup pop-header">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Status</span>
+            <div class="col-lg-5 col-md-5 col-sm-12 heading">
+                <h4 class="page-header text-primary">{{eqName}}</h4>
+            </div>
+            <div class="col-lg-7 col-md-7 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <p class="status-label"><b>Ri Amperage</b></p>
+                    <p class="status-input">
+                        <input type="text" ng-model="RiAmperage" name="RiAmperage" class="form-control">
+                    </p>
+                    <div class="status-label">
+                        <label class="control-label"><b>Job Completion Date*:</b></label>
+                        <p class="input-group date-picker date-wrapper">
+                            <input type="text" class="form-control date-picker-input" ng-dblclick="d_JobCompletionDate=true" placeholder="dd/mm/yyyy" uib-datepicker-popup="dd/MM/yyyy"
+                                   ng-model="JobCompletionDate" name="JobCompletionDate" ng-init="d_JobCompletionDate=false" is-open="d_JobCompletionDate"
+                                   datepicker-options="DColEqdateoptions" ng-required="true" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                            <span class="input-group-btn date-picker-button">
+                                <button type="button" class="btn btn-default" ng-disabled="readOnlyPage" ng-click="d_JobCompletionDate=true"><i class="fa fa-calendar"></i></button>
+                            </span>
+                    </div>
+                    <p class="status-label">
+                    <p><b>Was the Analysis Accurate?</b></p>
+                    <input type="radio" name="Analysis" value="0" ng-model="IsAccurate">Accurate
+                    <input type="radio" name="Analysis" value="1" ng-model="IsAccurate">In Accurate
+                    </p>
+                    <p class="status-label"><b>Provide detailed remarks/feedback of work conducted*</b></p>
+                    <p class="status-input">
+                        <textarea ng-model="Comments" name="Comments" class="form-control" maxlength="250"></textarea>
+                    </p>
+                </div>
+                @*<div class="col-md-8">
+                        <div class="log-wrapper">
+                            <uib-accordion close-others="false">
+                                <p ng-if="status.length ==0"></p>
+                                <div ng-repeat="Status in statusLogs" class="panel panel-info">
+                                    <div uib-accordion-group is-open="true" class="comment-heading">
+                                        <uib-accordion-heading>
+                                            {{Status.CreatedBy}}
+                                            <span class="pull-right">
+                                                ( {{Status.StatusName}} )  {{Status.Createdon | date :"medium"}}
+                                            </span>
+                                        </uib-accordion-heading>
+                                        <p class="log-remarks"><span> &nbsp; {{Status.Comments}} </span> </p>
+                                    </div>
+                                </div>
+                            </uib-accordion>
+                        </div>
+                    </div>*@
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </form>
+</script>
+
+<script type="text/ng-template" id="skfOppPopup.html">
+    <form name="skfForm" ng-submit="save()" novalidate class="settings_popup pop-header">
+        <div class="modal-header">
+            <div class="content-heading-pane col-md-12">
+                <h4 class="status-title col-lg-6 col-md-4">Opportunistic Work - {{EqName}}</h4>
+                <div class="col-lg-6 col-md-4 col-sm-12 create-button  menu-button">
+                    <a ng-click="addMore()" title="Save"><i class="fa fa-plus icon-filter"></i><span>Add More</span></a>
+                    <span class="Pipe"></span>
+                    <a ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                    <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+                </div>
+            </div>
+        </div>
+        <div class="modal-body work-notify-opp">
+            <div class="create-form">
+                <div ng-repeat="val in OppDDL" ng-hide="val.Active == 'N'" class="trending-popup oil-property">
+                    <div class="col-md-2 col-sm-12 input-field">
+                        <label class="control-label">Equipment Name</label>
+                        <select ng-model="val.EquipmentId" class="form-control search-input" name="Equipment"
+                                ng-options="value.EquipmentId as value.EquipmentName for (key, value) in EquipmentDDL"></select>
+                    </div>
+                    <div class="col-md-2 col-sm-12 input-field">
+                        <label class="control-label">Actual Outage Time</label>
+                        <div class="input-group">
+                            <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                            <input type="number" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-model="val.ActualOutageHours" placeholder="Hours" class="form-control search-input" name="ActOutage">
+                        </div>
+                    </div>
+                    <div class="col-md-2 col-sm-12 input-field">
+                        <label class="control-label">Actual Repair Cost</label>
+                        <div class="input-group">
+                            <div class="input-group-addon"><i class="fa fa-dollar"></i></div>
+                            <input type="number" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-model="val.ActualRepairCost" placeholder="Amount" class="form-control search-input" name="RepairCost">
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-12 input-field">
+                        <label class="control-label">Failure Mode</label>
+                        <select ng-model="val.FailureModeId" class="form-control search-input" name="FailureMode" ng-change="loadFailureCause(val.FailureModeId, $index)"
+                                ng-options="value.FailureModeId as value.FailureModeName for (key, value) in FailureModeDDL"></select>
+                    </div>
+                    <div class="col-md-2 col-sm-12 input-field">
+                        <label class="control-label">Failure Cause</label>
+                        <select ng-model="val.FailureCauseId" class="form-control search-input" name="FailureCause"
+                                ng-options="value.FailureCauseId as value.FailureCauseName for (key, value) in FailureCauseDDL"></select>
+                    </div>
+                    <div class="col-md-1 col-sm-1 input-field">
+                        <a class="remove-icon" ng-hide="OppDDL.length <= 1" ng-disabled="IsEditable==0" ng-click="removeItem($index)"><i class="fa fa-trash"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </form>
+</script>
+
+<script type="text/ng-template" id="skfAttachmentModal.html">
+    <div class="popup-product">
+
+        <div class="modal-header">
+            <span class="model-breadcrumb">Attachments</span>
+            <div class="col-lg-5 col-md-5 col-sm-12 heading">
+                <h4 class="page-header text-primary">{{AssetName}}</h4>
+            </div>
+            <div class="col-lg-7 col-md-7 col-sm-12 create-button  menu-button">
+                <input type="file" id="files" ng-disabled="IsEditable==0" class="uploadfile" name="files[]" ng-model="attach" multiple accept="image/x-png,image/jpeg" onchange="angular.element(this).scope().uploadImageStart()" />
+                <span class="Pipe"></span>
+                <a ng-click="saveDoc()" ng-disabled="!uploadFile || IsEditable==0" class="attach-button"><i class="fa fa-floppy-o"></i>Save</a>
+                <a title="Close" ng-click="cancel()"><i class="fa fa-close icon-filter"></i><span>Cancel</span></a>
+            </div>
+        </div>
+
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-6 attachment-link">
+                        <h4 class="attach-label">Attachments :</h4>
+                        <div ng-repeat="file in attachment" class="attched-images">
+                            <a ng-click="showAttach(file.UnitAnalysisAttachId)" class="attached-imgnames">
+                                {{file.FileName}}
+                            </a>
+                            <div class="close-button"><a ng-disabled="IsEditable==0" ng-click="removeAttachment(file.UnitAnalysisAttachId, file.type)"><i class="fa fa-trash"></i></a></div>
+                        </div>
+                        <div>
+                            @*<img id="blah" src="#" ng-show="validFormat" alt="" class="upload-img" />*@
+                        </div>
+                        <span ng-show="noAttachment">No attachments Found</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="file-upload" ng-class="attached-files" ng-disabled="readOnlyPage">
+                            <span ng-repeat="file in files" value="{{file.files}}">{{file.files}}</span>
+                        </span>
+                        <div class="preview-img">
+                            <h4>Preview Image: <span class="text-primary" ng-show="FileName.length > 0">{{FileName}}</span></h4>
+                            <img src="../images/preview-icon.png" ng-show="previewImg" class="img-preview" />
+                            <img src="{{attImage}}" ng-show="attImage.length > 0" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfAssetDatailPopup.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Asset Details</span>
+            <div class="col-lg-5 col-md-5 col-sm-12 heading">
+                <h4 class="page-header text-primary">{{AssetName}}</h4>
+            </div>
+            <div class="col-lg-7 col-md-7 col-sm-12 create-button  menu-button">
+                <a title="Close" ng-click="cancel()"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <table class="wn-asset-detail">
+                    <tr>
+                        <td><b>Condition Name:</b></td>
+                        <td>{{ConditionCode}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Confident Factor:</b></td>
+                        <td>{{ConfidentFactor}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Indicated Fault:</b></td>
+                        <td>{{IndicatedFault}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Failure Probability Factor:</b></td>
+                        <td>{{FailureProbFactor}}</td>
+                    </tr>
+                    @*<tr>
+                            <td><b>Mean Repair Man Hours:</b></td>
+                            <td>{{MeanRepairManHours}}</td>
+                        </tr>*@
+                    <tr>
+                        <td><b>Recommendation:</b></td>
+                        <td>{{Recommendation}}</td>
+                    </tr>
+                    @*<tr>
+                            <td><b>Repair Cost:</b></td>
+                            <td>{{RepairCost}}</td>
+                        </tr>*@
+                    <tr>
+                        <td><b>Priority:</b></td>
+                        <td>{{WNPriority}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>Comment:</b></td>
+                        <td>{{Comment}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfCancelPopup.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Cancel Comment</span>
+            <div class="col-lg-5 col-md-5 col-sm-12 heading">
+                <h4 class="page-header text-primary">{{AssetName}}</h4>
+            </div>
+            <div class="col-lg-7 col-md-7 col-sm-12 create-button  menu-button">
+                <a title="Save" ng-click="save()"><i class="fa fa-save icon-filter"></i><span>save</span></a>
+                <a title="Close" ng-click="cancel()"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <p class="status-label"><b>Comments*</b></p>
+                    <p class="status-input">
+                        <textarea ng-model="CancelRemarks" name="Comments" class="form-control" maxlength="250"></textarea>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>

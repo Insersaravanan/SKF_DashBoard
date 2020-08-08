@@ -1,0 +1,80 @@
+﻿@{
+    ViewData["Title"] = "Master Import";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<div ng-controller="skfImportModalCtrl" class="importMaster content-wrapper">
+    <div class="container-fluid" id="client">
+        <div class="row heading-wrapper">
+            <div class="col-md-3 heading">
+                <h4 class="page-header text-primary">{{template?template:'Setup'}} - Import</h4>
+            </div>
+            <div class="col-md-9 menu-button">
+                <a ng-disabled="!template || !gridOptions.colTemp.length"
+                   ng-click="!template || !gridOptions.colTemp.length || downloadTemplate()"
+                   tooltip-append-to-body="true"
+                   uib-tooltip="{{(!gridOptions.colTemp.length)?'Download Template Setup Not Done. Please contact support!':''}}"
+                   tooltip-class="customClass"
+                   title="{{gridOptions.colTemp.length?'Download Template':''}}">
+                    <i class="fa fa-download icon-filter"></i>
+                    <span>Download Template</span>
+                </a>
+                <a ng-disabled="!gridOptions.data.length || isProgress" ng-click="!gridOptions.data.length || isProgress || reset()" title="Reset Grid"><i class="fa fa-refresh icon-filter"></i> <span>Reset Grid</span></a>
+                <span class="Pipe"></span>
+                <a ng-click="cancelProgress()" ng-if="isProgress" title="Cancel Upload"><i class="fa fa-times-circle icon-filter"></i> Cancel Upload</a>
+                <a ng-disabled="!gridOptions.data.length || isProgress || stacked.length" ng-hide="isProgress" ng-click="!gridOptions.data.length || isProgress || stacked.length || saveData()" title="Upload and Save"><i class="fa fa-cloud-upload icon-filter"></i> Upload and Save</a>
+            </div>
+           
+        </div>
+        <div class="row search-form">
+            <div class="col-md-10 col-sm-10">
+                <div class="col-md-3 col-sm-6 input-field" >
+                    <label class="control-label">Template*</label>
+                    <select ng-model="Template.LookupName" ng-disabled="gridOptions.data.length > 0" class="form-control search-input" name="SegmentName"
+                            ng-options="value.LValue as value.LValue for (key, value) in TemplateDDL" ng-change="TemplateChange()"></select>
+                </div>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div ng-show="stacked.length">
+                <uib-progress ng-class="{'progress-striped active':isProgress}">
+                    <uib-bar ng-repeat="bar in stacked track by $index" value="bar.value" type="{{bar.type}}" title="{{bar.title}}">
+                        <span>{{bar.value}}%</span>
+                    </uib-bar>
+                </uib-progress>
+            </div>
+            <div class="table-responsive" ng-hide="">
+                <div id="grid1" ui-grid="gridOptions" class="grid" ui-grid-edit ui-grid-cellnav ui-grid-exporter>
+                    <div class="grid-msg-overlay" ng-show="!gridOptions.data.length">
+                        <div class="msg">
+                            <div class="center">
+                                <p ng-show="gridOptions.invalidUpload" class="text-danger">Invalid template!</p>
+                                <p class="muted">Select File to Upload</p>
+                                <input type="file" accept=".xls,.xlsx,.ods" fileread="" opts="gridOptions" multiple="false" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+    <script src="~/lib/angular/ui-grid/import/xlsx.full.min.js"></script>
+    <script src="~/lib/angular/ui-grid/import/ods.js"></script>
+    <environment include="Development">
+        <script src="~/js/import/MasterImport.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/import/MasterImport.min.js" asp-append-version="true"></script>
+    </environment>
+}

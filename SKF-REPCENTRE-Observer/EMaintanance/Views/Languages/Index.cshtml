@@ -1,0 +1,90 @@
+﻿@{
+    ViewData["Title"] = "Languages";
+    Layout = "~/Views/Shared/_ObserverLayout.cshtml";
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<div ng-controller="skfCtrl" class="language content-wrapper">
+    <div class="container-fluid" id="languages">
+        <div class="row heading-wrapper">
+            <div class="col-md-3 heading">
+                <h4 class="page-header text-primary">{{isEdit?"Edit Language":"Create Language"}}</h4>
+            </div>
+            <div class="col-md-9 menu-button">
+                <a ng-disabled="isCreate" ng-click="isCreate || createToggle()" title="Create"><i class="fa fa-plus icon-filter"></i>Create</a>
+                @*<a ng-disabled="isSearch" ng-click="isSearch || searchToggle()" title="Search"><i class="fa fa-search-plus icon-filter"></i><span>Search</span></a>*@
+                <span class="Pipe"></span>
+                <a ng-disabled="readOnlyPage || userForm.$invalid " ng-click="readOnlyPage || userForm.$invalid || save()" ng-show="isCreate" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-disabled="readOnlyPage || userForm.$invalid" ng-click="readOnlyPage || userForm.$invalid || update()" ng-show="isEdit" title="Update"><i class="fa fa-save icon-filter"></i><span>Update</span></a>
+                <a ng-disabled="isEdit" ng-click="isEdit || clearOut()" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+            </div>
+        </div>
+        @*<div class="row search-form" ng-hide="isEdit || isCreate">
+            <div class="col-md-10 col-sm-10">
+                <div class="col-md-3 col-sm-6 input-field">
+                    <label class="control-label">Status</label>
+                    <div class="status">
+                        <select ng-model="S_active" ng-disabled="readOnlyPage">
+                            <option value="All">-- All --</option>
+                            <option value="Y">Active</option>
+                            <option value="N">In Active</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="buttons create filter-button col-md-2  col-sm-2">
+                <button ng-disabled="readOnlyPage" ng-click="loadData()" class="btn btn-info"><i class="fa fa-binoculars icon-filter"></i>Go</button>
+            </div>
+        </div>*@
+        <form name="userForm" novalidate>
+            <div class="row create-form" ng-show="isEdit || isCreate">
+                <div class="col-md-12">
+                    <div class="col-md-3 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.countryCode.$invalid && !userForm.countryCode.$pristine }">
+                        <label class="control-label">Country Code*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" maxlength=2 class="form-control" id="countryCode" required ng-model="countryCode" name="countryCode" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.LName.$invalid && !userForm.LName.$pristine }">
+                        <label class="control-label">Language Name*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" id="LName" required ng-model="LName" name="LName" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field" ng-show="isEdit" ng-hide="isclear">
+                        <label class="control-label">Status*</label>
+                        <div class="status">
+                            <select ng-model="active" ng-disabled="readOnlyPage">
+                                <option value="Y">Active</option>
+                                <option value="N">Inactive</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="table-responsive">
+            <div class="grid data">
+                <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+    <environment include="Development">
+        <script src="~/js/languages/index.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/languages/index.min.js" asp-append-version="true"></script>
+    </environment>
+}

@@ -1,0 +1,21 @@
+﻿@using Stimulsoft.Report.Web;
+@using Stimulsoft.Report.Mvc;
+
+@{
+    ViewData["Title"] = "AuditLog - Viewer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.StiNetCoreViewer(new StiNetCoreViewerOptions()
+{
+    Actions =
+    {
+        GetReport = "GetReport",
+        ViewerEvent = "ViewerEvent"
+    },
+    Toolbar =
+    {
+        ShowAboutButton = false,
+        ShowOpenButton = false
+    }
+})

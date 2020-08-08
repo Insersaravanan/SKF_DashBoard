@@ -1,0 +1,113 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - SKF-REP Centre Online</title>
+    <link href="~/lib/angular/loading-bar/loading-bar.min.css" rel="stylesheet" />
+    <link href="~/lib/fontawesome/css/font-awesome.min.css" rel="stylesheet" />
+    <environment include="Development">
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+    </environment>
+    <environment exclude="Development">
+        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
+              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/css/site.css" />
+    </environment>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <script>
+      var currentUser = "@UserManager.GetUserName(User)";
+        </script>
+    }
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-136936880-2"></script>
+    <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-136936880-2');
+    </script>
+
+</head>
+<body ng-app="skfApp" class="lazy-load">
+    <div class="body">
+        <header class="header-content">
+            <div class="head-wrappper">
+                <div class="col-lg-12 blue-background"></div>
+                <img src="~/images/headerLogo.png" class="logo" alt="SKF" />
+                <span class="dashboard-header">Rotating Equipment Performance Centre</span>
+                <div class="header-border"></div>
+            </div>
+        </header>
+    </div>
+    <partial name="_CookieConsentPartial" />
+    <div class="container main login-container lazy-load">
+        <div class="body-content login-in">
+            @RenderBody()
+        </div>
+    </div>
+    <footer ng-controller="skfFooterController">
+        <p class="copy-right">
+            <span class="quick-link company">SKF</span>
+            <span class="quick-link">&copy; Copyright</span>
+            <span class="quick-link"><a href="http://www.skf.com/group/footer/terms-and-conditions.html" target="_blank">Terms & Conditions</a></span>
+            <span class="quick-link"><a href="http://www.skf.com/group/footer/privacy-policy.html" target="_blank">Privacy Policy</a></span>
+            <span class="quick-link"><a href="http://www.skf.com/group/footer/site-ownership.html" target="_blank">Site Ownership</a></span>
+        </p>
+        <img src="~/images/footerLogo.png" />
+        <div class="footer-border"></div>
+        <div class="footer-wrapper"></div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/lib/angular/angular.min.js"></script>
+    <script src="~/lib/angular/loading-bar/loading-bar.min.js"></script>
+    <script src="~/lib/angular/ui-bootstrap-tpls-2.5.0.min.js"></script>
+    <script src="~/lib/angular/angular-sanitize.min.js"></script>
+    <script src="~/lib/slick/slick.min.js"></script>
+    <script src="~/lib/slick/angular-slick.min.js"></script>
+    <script src="~/js/home/public.js"></script>
+
+    <environment include="Development">
+        <script src="~/js/cms/skfcontent.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/cms/skfcontent.min.js" asp-append-version="true"></script>
+    </environment>
+    @RenderSection("Scripts", required: false)
+
+    <script type="text/ng-template" id="skfCMSModal.html">
+        <div class="modal-content quick-link " id="printContent">
+            <div class="modal-body">
+                <button type="button" class="close" data-dismiss="modal" ng-click="cancel()" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <div ng-if="cmsContent">
+                    @*<h3>{{cmsContent.typeName}}</h3>*@
+                    <div class="panel panel-default" ng-bind-html="cmsContent.typeText | trustAsHtml">
+                    </div>
+                </div>
+                <div ng-if="!cmsContent" class="text-center">No content available</div>
+            </div>
+        </div>
+    </script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-126617490-5"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-126617490-5');
+    </script>
+</body>
+</html>

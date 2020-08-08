@@ -1,0 +1,2221 @@
+﻿@{
+    ViewData["Title"] = "Equipment";
+    Layout = "~/Views/Shared/_ObserverLayout.cshtml";
+}
+
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<link href="~/lib/angular/ui-select/select.min.css" rel="stylesheet" />
+<link href="~/lib/angucomplete/antocomplete-alt.css" rel="stylesheet" />
+<div ng-controller="skfCtrl" class="equipment content-wrapper">
+    <div class="container-fluid rds" id="rds">
+        <div class="wizard-inner">
+            <div class="connecting-line"></div>
+            <ul class="tabs">
+                <li class="list-tab" ng-class="{'active':equipmentListActive}" ng-disabled="equipmentListActive">
+                    <a ng-click="next('stage0')" Title="Equipment List">
+                        <span class="round-tab">
+                            EL
+                        </span>
+                        <i class="fa fa-play eqp-play" aria-hidden="true"></i>
+
+                    </a>
+                </li>
+                <li class="list-tab" ng-class="{'active':equipmentActive}" ng-disabled="equipmentActive">
+                    <a ng-click="next('stage1')" Title="Equipment Create">
+                        <span class="round-tab">
+                            EQ
+                        </span>
+                        <i class="fa fa-play eqp-play" aria-hidden="true"></i>
+
+                    </a>
+                </li>
+                <li class="list-tab" ng-class="{'active':DriveActive}">
+                    <a ng-click="!isSaved || userForm.$invalid || DriveActive || GotoDrive()" Title="Drive Unit" ng-disabled="userForm.$invalid || DriveActive || !isSaved">
+                        <span class="round-tab">
+                            DR
+                        </span>
+                        <i class="fa fa-play eqp-play" aria-hidden="true"></i>
+
+                    </a>
+                </li>
+                <li class="list-tab" ng-class="{'active':IntermediateActive}">
+                    <a ng-click="IntermidiateActive || GotoIntermediate()" ng-disabled="IntermidiateActive || (!isEdit && !isView)" Title="Intermediate Unit">
+                        <span class="round-tab">
+                            IN
+                        </span>
+                        <i class="fa fa-play eqp-play" aria-hidden="true"></i>
+
+                    </a>
+                </li>
+                <li class="list-tab" ng-class="{'active':DrivenActive}">
+                    <a ng-click="DrivenActive || GotoDriven()" Title="Driven Unit" ng-disabled="DrivenActive || (!isEdit && !isView)">
+                        <span class="round-tab">
+                            DN
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="animate-switch-container" ng-switch on="stage">
+            <div class="equipment-list animate-switch" ng-switch-default>
+                <div class="row heading-wrapper">
+                    <div class="col-md-3 heading">
+                        <h4 class="page-header text-primary">Equipment List</h4>
+                    </div>
+
+                </div>
+
+                <div class="table-responsive">
+                    <div class="grid data">
+                        <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="equipment">
+                <form name="userForm" novalidate>
+                    <div class="equipment animate-switch" ng-switch-when="stage1">
+                        <div class="row heading-wrapper">
+                            <div class="col-md-3 heading">
+                                <h4 class="page-header text-primary">{{isEdit?"Edit Equipment":isSearch?"Search Equipment Unit":isView?"View Equipment Unit":isCreate?"Create Equipment":"Equipment Unit"}}</h4>
+                            </div>
+                            <div class="col-md-9 menu-button">
+                                <a ng-disabled="isCreate" ng-click="isCreate || createToggle()" title="Create"><i class="fa fa-plus icon-filter"></i>Create</a>
+                                <a ng-disabled="isSearch" ng-click="isSearch || searchToggle()" title="Search"><i class="fa fa-search-plus icon-filter"></i><span>Search</span></a>
+                                <span class="Pipe"></span>
+                                <a ng-disabled="readOnlyPage || userForm.$invalid || !equipment.PlantAreaId" ng-click="readOnlyPage || userForm.$invalid || GotoDrive()" ng-show="!isEdit" title="create"><i class="fa fa-arrow-right icon-filter"></i><span>GoTo: Drive</span></a>
+                                <a ng-disabled="readOnlyPage || userForm.$invalid" ng-click="readOnlyPage || userForm.$invalid || update()" ng-show="isEdit || isView" title="Update"><i class="fa fa-save icon-filter"></i><span>Update</span></a>
+                                <a ng-disabled="isEdit || isView" ng-click="isEdit || clearOut()" ng-show="isCreate || isEdit || isView" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+                            </div>
+                        </div>
+                        <div class="row create-form" ng-show="isEdit || isCreate || isView">
+                            <div class="col-md-12">
+                                <div class="col-md-3 col-sm-6 input-field">
+                                    <label class="control-label">
+                                        Plant* &nbsp;&nbsp;&nbsp;
+                                        <a ng-click="Plant()" tooltip-append-to-body="true" uib-tooltip="Click here to create new Plant" tooltip-class="customClass" class="mouse-pointer"><i class="fa fa-plus-square"></i></a>
+                                    </label>
+                                    <ui-select ng-model="equipment.PlantAreaId" theme="bootstrap" ng-disabled="readOnlyPage" style="width: 800px;" on-select="loadArea(equipment.PlantAreaId, 'change')">
+                                        <ui-select-match placeholder="Select ...">{{$select.selected.PlantAreaName}}</ui-select-match>
+                                        <ui-select-choices repeat="equip.PlantAreaId as equip in PlantDDL | propsFilter: {PlantAreaName: $select.search} | limitTo: 50" null-option="defaultplant" loose-null>
+                                            <div ng-bind-html="equip.PlantAreaName | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                                <div class="col-md-3 col-sm-6 input-field">
+                                    <label class="control-label">
+                                        Area &nbsp;&nbsp;&nbsp;
+                                        <a ng-click="Area()" ng-disabled="equipment.PlantAreaId == null" tooltip-append-to-body="true" uib-tooltip="Click here to create new Area" tooltip-class="customClass" class="mouse-pointer"><i class="fa fa-plus-square"></i></a>
+                                    </label>
+                                    <ui-select ng-model="equipment.AreaId" theme="bootstrap" ng-disabled="readOnlyPage || equipment.PlantAreaId == null" style="width: 800px;" on-select="loadSystem(equipment.AreaId, 'change')">
+                                        <ui-select-match placeholder="Select ...">{{$select.selected.AreaName}}</ui-select-match>
+                                        <ui-select-choices repeat="equip.AreaId as equip in AreaDDL | propsFilter: {AreaName: $select.search} | limitTo: 50" null-option="defaultarea" loose-null>
+                                            <div ng-bind-html="equip.AreaName | highlight: $select.search"></div>
+
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                                <div class="col-md-3 col-sm-6 input-field">
+                                    <label class="control-label">
+                                        System &nbsp;&nbsp;&nbsp;
+                                        <a ng-click="System()" ng-disabled="equipment.PlantAreaId == null || equipment.AreaId == null" tooltip-append-to-body="true" uib-tooltip="Click here to create new System" tooltip-class="customClass" class="mouse-pointer"><i class="fa fa-plus-square"></i></a>
+                                    </label>
+                                    <ui-select ng-model="equipment.SystemId" theme="bootstrap" ng-disabled="readOnlyPage || equipment.PlantAreaId == null || equipment.AreaId == null" style="width: 800px;">
+                                        <ui-select-match placeholder="Select ...">{{$select.selected.SystemName}}</ui-select-match>
+                                        <ui-select-choices repeat="equip.SystemId as equip in SystemDDL | propsFilter: {SystemName: $select.search} | limitTo: 50" null-option="defaultsystem" loose-null>
+                                            <div ng-bind-html="equip.SystemName | highlight: $select.search"></div>
+
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                                <div class="col-md-2 col-sm-6 input-field">
+                                    <label class="control-label">Equipment Number</label>
+                                    <div>
+                                        <input ng-disabled="readOnlyPage" class="form-control" ng-model="equipment.EquipmentCode" name="EquipmentCode" />
+                                        <span class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.EquipmentName.$invalid && !userForm.EquipmentName.$pristine }">
+                                    <label class="control-label">Equipment Name*</label>
+                                    <div>
+                                        <input ng-disabled="readOnlyPage" class="form-control" required ng-model="equipment.EquipmentName" name="EquipmentName" />
+                                        <span class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.ListOrder.$invalid && !userForm.ListOrder.$pristine }">
+                                    <label class="control-label">Reporting Order</label>
+                                    <div>
+                                        <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-disabled="readOnlyPage" class="form-control" ng-model="equipment.ListOrder" name="ListOrder" />
+                                        <span class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 input-field">
+                                    <label class="control-label">Orientation</label>
+                                    <ui-select ng-model="equipment.OrientationId" theme="bootstrap" ng-disabled="readOnlyPage" style="width: 800px;">
+                                        <ui-select-match placeholder="Select ...">{{$select.selected.LValue}}</ui-select-match>
+                                        <ui-select-choices repeat="equip.LookupId as equip in OrientationDDL | propsFilter: {LValue: $select.search} | limitTo: 50" null-option="defaultorientation" loose-null>
+                                            <div ng-bind-html="equip.LValue | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+
+                                </div>
+                                <div class="col-md-3 col-sm-6 input-field">
+                                    <label class="control-label">Stand By Equipment</label>
+                                    <ui-select ng-model="equipment.StandByEquipId" theme="bootstrap" ng-disabled="readOnlyPage" style="width: 800px;">
+                                        <ui-select-match placeholder="Select ...">{{$select.selected.EquipmentName}}</ui-select-match>
+                                        <ui-select-choices repeat="equip.EquipmentId as equip in StandByEquipmentDDL | propsFilter: {EquipmentName: $select.search} | limitTo: 50" null-option="defaultStandbyEquip" loose-null>
+                                            <div ng-bind-html="equip.EquipmentName | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                                <div class="col-md-2 col-sm-6 input-field">
+                                    <label class="control-label">Mounting</label>
+                                    <ui-select ng-model="equipment.MountingId" theme="bootstrap" ng-disabled="readOnlyPage" style="width: 800px;">
+                                        <ui-select-match placeholder="Select ...">{{$select.selected.LValue}}</ui-select-match>
+                                        <ui-select-choices repeat="equip.LookupId as equip in MountingDDL | propsFilter: {LValue: $select.search} | limitTo: 50" null-option="defaultmounting" loose-null>
+                                            <div ng-bind-html="equip.LValue | highlight: $select.search"></div>
+
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                                <div class="col-md-3 col-sm-6 input-field">
+                                    <label class="control-label">Equipment Description</label>
+                                    <div>
+                                        <textarea rows="1" name="Description" ng-disabled="readOnlyPage" class="form-control" maxlength="100" ng-model="equipment.Descriptions"></textarea>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 input-field" ng-show="isEdit">
+                                    <label class="control-label">Status</label>
+                                    <div>
+                                        <select ng-disabled="readOnlyPage" class="form-control" ng-model="equipment.Active" name="Active">
+                                            <option value="Y">Active</option>
+                                            <option value="N">Inactive</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="drive">
+                <form name="DriveUserForm" novalidate>
+                    <div class="drive-unit animate-switch" ng-switch-when="stage2">
+                        <div class="row heading-wrapper">
+                            <div class="col-md-3 heading">
+                                <h4 class="page-header text-primary">{{isEditDrive?"Edit Drive unit":isSearchDrive?"Search Drive Unit":isViewDrive?"View Drive Unit":isCreateDrive?"Create Drive Unit":"DriveUnit"}}</h4>
+                            </div>
+                            <div class="col-md-9 menu-button">
+                                <a ng-click="next('stage1')"><i class="fa fa-arrow-left icon-filter" title="Back to Equipment"></i>Go Back Equipment</a>
+                                <a ng-disabled="isCreateDrive" ng-click="isCreateDrive || createDriveToggle()" title="Create"><i class="fa fa-plus icon-filter"></i>Create</a>
+                                <span class="Pipe"></span>
+                                <span class="rds-buttons">
+                                    <span class="dropdown" ng-show="isCreateDrive">
+                                        <a ng-disabled="readOnlyDrivePage || DriveUserForm.$invalid" ng-click="readOnlyDrivePage || DriveUserForm.$invalid || save()"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                                        <a class="dropdown-toggle arrow" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+                                        <span class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" ng-disabled="readOnlyDrivePage || DriveUserForm.$invalid" ng-click="readOnlyDrivePage || DriveUserForm.$invalid || save('stage3')">Save & Add Intermediate</a>
+                                            <a class="dropdown-item" ng-disabled="readOnlyDrivePage || DriveUserForm.$invalid" ng-click="readOnlyDrivePage || DriveUserForm.$invalid || save('stage4')">Save & Add Driven</a>
+                                        </span>
+                                    </span>
+                                </span>
+                                <span class="rds-buttons">
+                                    <span class="dropdown" ng-show="isEditDrive || isViewDrive">
+                                        <a ng-disabled="readOnlyDrivePage || DriveUserForm.$invalid" ng-click="readOnlyDrivePage || DriveUserForm.$invalid || updateDrive()" title="Update"><i class="fa fa-save icon-filter"></i><span>Update</span></a>
+                                        <a class="dropdown-toggle arrow" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+                                        <span class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" ng-disabled="readOnlyDrivePage || DriveUserForm.$invalid" ng-click="readOnlyDrivePage || DriveUserForm.$invalid || updateDrive('stage3')">Update & Add Intermediate</a>
+                                            <a class="dropdown-item" ng-disabled="readOnlyDrivePage || DriveUserForm.$invalid" ng-click="readOnlyDrivePage || DriveUserForm.$invalid || updateDrive('stage4')">Update & Add Driven</a>
+                                        </span>
+                                    </span>
+                                </span>
+                                <a ng-disabled="isEditDrive || isViewDrive" ng-click="isEditDrive || clearOutDrive()" ng-show="isCreateDrive || isEditDrive || isViewDrive" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+                                <a ng-show="isSearchDrive" ng-click="clearDriveModal()" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+                            </div>
+                        </div>
+
+                        <div class="row create-form" ng-show="isEditDrive || isCreateDrive || isViewDrive">
+                            <div class="col-md-12">
+                                <div class="col-md-2 col-sm-3 input-field">
+                                    <label class="control-label">Equipment Name</label>
+                                    <div>
+                                        <input disabled class="form-control" value={{equipment.EquipmentName}} name="EquipmentName" />
+                                        <span class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-3 input-field" ng-class="{ 'has-error' : DriveUserForm.IdentificationName.$invalid && !DriveUserForm.IdentificationName.$pristine }">
+                                    <label class="control-label">Asset Name*</label>
+                                    <div>
+                                        <input ng-disabled="readOnlyDrivePage" class="form-control" required ng-model="driveUnit.IdentificationName" name="IdentificationName" />
+                                        <span class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 input-field">
+                                    <label class="control-label">
+                                        <a ng-click="ChooseAsset('Drive')" tooltip-append-to-body="true" uib-tooltip="Select Taxonomy" tooltip-class="customClass" class="mouse-pointer">
+                                            Select Taxonomy* <i class="fa fa-info"></i>
+                                        </a>
+                                    </label>
+                                    <div>
+                                        <input disabled class="form-control" required ng-model="driveUnit.AssetCode" name="Asset" />
+                                        <span class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 input-field" ng-class="{ 'has-error' : DriveUserForm.ListOrder.$invalid && !DriveUserForm.ListOrder.$pristine }">
+                                    <label class="control-label">Reporting Order</label>
+                                    <div>
+                                        <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.ListOrder" name="ListOrder" />
+                                        <span class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 input-field">
+                                    <label class="control-label">Manufacturer*</label>
+                                    <ui-select required ng-model="driveUnit.ManufacturerId" theme="bootstrap" ng-disabled="readOnlyDrivePage" style="width: 800px;">
+                                        <ui-select-match placeholder="Select ...">{{$select.selected.ManufacturerName}}</ui-select-match>
+                                        <ui-select-choices repeat="drive.ManufacturerId as drive in DriveMFTDDL | propsFilter: {ManufacturerName: $select.search} | limitTo: 50" null-option="defaultmanufacture" loose-null>
+                                            <div ng-bind-html="drive.ManufacturerName | highlight: $select.search"></div>
+
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                                <div class="col-md-2 col-sm-6 input-field">
+                                    <label style="margin-left: 15px; margin-top: 24px;" class="control-label shaft-label link">
+                                        <a ng-click="SelectShaft('DR')" ng-disabled="driveUnit.IdentificationName.length == null" tooltip-append-to-body="true" uib-tooltip="Select Shaft" tooltip-class="customClass" class="mouse-pointer">
+                                            Shaft* <i class="fa fa-info"></i>
+                                        </a>
+                                    </label>
+                                </div>
+
+                                <div class="taxonomy-values">
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Mean Repair Man (Hrs)</label>
+                                        <div>
+                                            <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.MeanRepairManHours" name="MeanRepairManHours" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Down Time Cost/Hr :</label>
+                                        <span class="unit">$</span>
+                                        <div>
+                                            <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.DownTimeCostPerHour" name="DownTimeCostPerHour" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Cost To Repair :</label>
+                                        <span class="unit">$</span>
+                                        <div>
+                                            <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.CostToRepair" name="CostToRepair" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Mean Time Failure Rate :</label>
+                                        <span class="unit">%</span>
+                                        <div>
+                                            <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.MeanFailureRate" name="MeanFailureRate" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field" ng-show="isEditDrive">
+                                        <label class="control-label">Status</label>
+                                        <div>
+                                            <select ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.Active" name="Active">
+                                                <option value="Y">Active</option>
+                                                <option value="N">Inactive</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Line Frequency*</label>
+                                        <select ng-model="driveUnit.LineFrequencyId" required class="form-control search-input" name="LineFrequency"
+                                                ng-options="value.LookupId as value.LValue for (key, value) in LineFrequencyDDL"></select>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field" ng-class="{ 'has-error' : DriveUserForm.RPM.$invalid && !DriveUserForm.RPM.$pristine }">
+                                        <label class="control-label">RPM*</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivePage" required class="form-control" ng-model="driveUnit.RPM" name="RPM" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Speed Type*</label>
+                                        <select ng-model="driveUnit.SpeedTypeId" class="form-control search-input" name="SpeedType" ng-change="onTypechange(driveUnit.SpeedTypeId)"
+                                                ng-options="value.LookupId as value.LValue for (key, value) in SpeedTypeDDL"></select>
+                                    </div>
+                                    <div class="col-md-1 col-sm-6 input-field speed-type" ng-show="isTypeDrive">
+                                        <label class="control-label">Min*</label>
+                                        <div>
+                                            <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.MinRPM" name="minValue">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1 col-sm-6 input-field speed-type" ng-show="isTypeDrive">
+                                        <label class="control-label">Max*</label>
+                                        <div>
+                                            <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.MaxRPM" name="maxValue">
+                                        </div>
+                                    </div>
+
+                                    @*<div class="col-md-2 col-sm-6 input-field">
+                                            <label class="control-label">Sensor Provider</label>
+                                            <select ng-model="driveUnit.SensorProviderId" class="form-control search-input" name="SensorProvider"
+                                                    ng-options="value.LookupId as value.LValue for (key, value) in SensorProviderDDL"></select>
+                                        </div>*@
+                                    <div class="col-md-2 col-sm-6 input-field" checked>
+                                        <label class="control-label">Reporting Service(s)</label>
+                                        <div ng-dropdown-multiselect=""
+                                             options="DriveReporting"
+                                             selected-model="DriveSelectedData"
+                                             extra-settings="ReportingSerSettings" checkboxes="true" disabled="readOnlyDrivePage" class="reporting">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="view-more-wrapper">
+                                    <span class="more-info" ng-click="morefields()">
+                                        <span class="more-info-text">{{moreFields?"- Less Info":"+ More Info"}}</span>
+                                    </span>
+                                </div>
+                                <div ng-show="moreFields" class="morefileds">
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Year Of Manufacture</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.ManufactureYear" name="ManufactureYear" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">First Installation Date:</label>
+                                        <p class="input-group date-picker date-wrapper">
+                                            <input type="text" class="form-control date-picker-input" ng-dblclick="d_FirstInstallationDate=true" placeholder="dd/mm/yyyy" uib-datepicker-popup="dd/MM/yyyy"
+                                                   ng-model="driveUnit.FirstInstallationDate" ng-disabled="readOnlyDrivePage" name="FirstInstallationDate" ng-init="d_FirstInstallationDate=false" is-open="d_FirstInstallationDate"
+                                                   datepicker-options="E_options" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                                            <span class="input-group-btn date-picker-button">
+                                                <button type="button" class="btn btn-default" ng-disabled="readOnlyDrivePage" ng-click="d_FirstInstallationDate=true"><i class="fa fa-calendar"></i></button>
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Operating Mode</label>
+                                        <ui-select ng-model="driveUnit.OperationModeId" theme="bootstrap" ng-disabled="readOnlyDrivePage" style="width: 800px;">
+                                            <ui-select-match placeholder="Select ...">{{$select.selected.LValue}}</ui-select-match>
+                                            <ui-select-choices repeat="drive.LookupId as drive in OperationModeDDL | propsFilter: {LValue: $select.search} | limitTo: 50" null-option="defaultoperationmode" loose-null>
+                                                <div ng-bind-html="drive.LValue | highlight: $select.search"></div>
+
+                                            </ui-select-choices>
+                                        </ui-select>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Model</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.Model" name="Model" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Frame</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.Frame" name="Frame" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Serial Number</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.SerialNumber" name="SerialNumber" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Voltage</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.Voltage" name="Voltage" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Power Factor</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.PowerFactor" name="PowerFactor" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Unit Rate (Energy) :</label>
+                                        <span class="unit">$</span>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.UnitRate" name="UnitRate" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">HP/KW</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.HP" name="HP" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Type</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.MType" name="Type" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Motor Fan Blades</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.MotorFanBlades" name="MotorFanBlades" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Rotor Bars</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.RotorBars" name="RotorBars" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Poles</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.Poles" name="Poles" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Slots</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.Slots" name="Slots" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Belt Length</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.BeltLength" name="BeltLength" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Coupling</label>
+                                        <ui-select ng-model="driveUnit.CouplingId" theme="bootstrap" ng-disabled="readOnlyDrivePage" style="width: 800px;">
+                                            <ui-select-match placeholder="Select ...">{{$select.selected.LValue}}</ui-select-match>
+                                            <ui-select-choices repeat="drive.LookupId as drive in CouplingDDL | propsFilter: {LValue: $select.search} | limitTo: 50" null-option="defaultcoupling" loose-null>
+                                                <div ng-bind-html="drive.LValue | hig+hlight: $select.search"></div>
+
+                                            </ui-select-choices>
+                                        </ui-select>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Pulley Diameter (Drive)</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.PulleyDiaDrive" name="PulleyDiaDrive" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Pulley Diameter (Driven)</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivePage" class="form-control" ng-model="driveUnit.PulleyDiaDriven" name="PulleyDiaDriven" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <div class="grid data">
+                                <div id="uiGrid" ui-grid="gridOpts1" class="grid" ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="inter">
+                <form name="IntermediateUserForm" novalidate>
+                    <div class="intermediate-unit animate-switch" ng-switch-when="stage3">
+                        <div class="row heading-wrapper">
+                            <div class="col-md-3 heading">
+                                <h4 class="page-header text-primary">{{isEditInter?"Edit Intermediate Unit":isSearchInter?"Search Intermediate Unit":isViewInter?"View Intermediate Unit":isCreateInter?"Create Intermediate Unit":"Intermediate Unit"}}</h4>
+                            </div>
+                            <div class="col-md-9 menu-button">
+                                <a ng-click="next('stage2')"><i class="fa fa-arrow-left icon-filter" title="Back to Drive"></i>Go Back Drive</a>
+                                <a ng-disabled="isCreateInter" ng-click="isCreateInter || createInterToggle()" title="Create"><i class="fa fa-plus icon-filter"></i>Create</a>
+                                <span class="Pipe"></span>
+                                <span class="rds-buttons">
+                                    <span class="dropdown" ng-show="isCreateInter">
+                                        <a ng-disabled="readOnlyInterPage || IntermediateUserForm.$invalid" ng-click="readOnlyInterPage || IntermediateUserForm.$invalid || saveIntermediate()"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                                        <a class="dropdown-toggle arrow" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+                                        <span class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" ng-disabled="readOnlyInterPage || IntermediateUserForm.$invalid" ng-click="readOnlyInterPage || IntermediateUserForm.$invalid || saveIntermediate('stage4')">Save & Add Driven</a>
+                                        </span>
+                                    </span>
+                                </span>
+                                <span class="rds-buttons">
+                                    <span class="dropdown" ng-show="isEditInter || isViewInter">
+                                        <a ng-disabled="readOnlyInterPage || IntermediateUserForm.$invalid" ng-click="readOnlyInterPage || IntermediateUserForm.$invalid || updateIntermediate()" title="Update"><i class="fa fa-save icon-filter"></i><span>Update</span></a>
+                                        <a class="dropdown-toggle arrow" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></a>
+                                        <span class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" ng-disabled="readOnlyInterPage || IntermediateUserForm.$invalid" ng-click="readOnlyInterPage || IntermediateUserForm.$invalid || updateIntermediate('stage4')">Update & Add Driven</a>
+                                        </span>
+                                    </span>
+                                </span>
+
+                                <a ng-disabled="isEditInter || isViewInter" ng-click="isEditInter || clearOutInter()" ng-show="isCreateInter || isEditInter || isViewInter" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+                                <a ng-show="isSearchInter" ng-click="clearIntermediateModal()" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+                            </div>
+                        </div>
+                        <div class="row create-form" ng-show="isEditInter || isCreateInter || isViewInter">
+                            <div class="col-md-12">
+                                <div class="col-md-2 col-sm-3 input-field">
+                                    <label class="control-label">Equipment Name</label>
+                                    <div>
+                                        <input disabled class="form-control" value={{equipment.EquipmentName}} name="EquipmentName" />
+                                        <span class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-3 input-field" ng-class="{ 'has-error' : IntermediateUserForm.IdentificationName.$invalid && !IntermediateUserForm.IdentificationName.$pristine }">
+                                    <label class="control-label">Asset Name*</label>
+                                    <div>
+                                        <input ng-disabled="readOnlyInterPage" class="form-control" required ng-model="intermediateUnit.IdentificationName" name="IdentificationName" />
+                                        <span class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 input-field">
+                                    <label class="control-label">
+                                        <a ng-click="ChooseAsset('Intermediate')" tooltip-append-to-body="true" uib-tooltip="Select Taxonomy" tooltip-class="customClass" class="mouse-pointer">
+                                            Select Taxonomy* <i class="fa fa-info"></i>
+                                        </a>
+                                    </label>
+                                    <div>
+                                        <input disabled class="form-control" required ng-model="intermediateUnit.AssetCode" name="Asset" />
+                                        <span class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 input-field" ng-class="{ 'has-error' : IntermediateUserForm.ListOrder.$invalid && !IntermediateUserForm.ListOrder.$pristine }">
+                                    <label class="control-label">Reporting Order</label>
+                                    <div>
+                                        <input type="number" ng-disabled="readOnlyInterPage" class="form-control" ng-model="intermediateUnit.ListOrder" name="ListOrder" />
+                                        <span class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 input-field">
+                                    <label class="control-label">Manufacturer*</label>
+                                    <ui-select required ng-model="intermediateUnit.ManufacturerId" theme="bootstrap" ng-disabled="readOnlyInterPage" style="width: 800px;">
+                                        <ui-select-match placeholder="Select ...">{{$select.selected.ManufacturerName}}</ui-select-match>
+                                        <ui-select-choices repeat="inter.ManufacturerId as inter in IntermediateMFTDDL | propsFilter: {ManufacturerName: $select.search} | limitTo: 50" null-option="defaultmanufacture" loose-null>
+                                            <div ng-bind-html="inter.ManufacturerName | highlight: $select.search"></div>
+
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                                <div class="col-md-2 col-sm-6 input-field">
+                                    <label style="margin-left: 15px; margin-top: 24px;" class="control-label shaft-label link">
+                                        <a ng-click="SelectShaft('IN')" ng-disabled="intermediateUnit.IdentificationName.length == null" tooltip-append-to-body="true" uib-tooltip="Select Shaft" tooltip-class="customClass" class="mouse-pointer">
+                                            Shaft* <i class="fa fa-info"></i>
+                                        </a>
+                                    </label>
+                                </div>
+
+                                <div class="taxonomy-values">
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Mean Repair Man (Hrs)</label>
+                                        <div>
+                                            <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-disabled="readOnlyInterPage" class="form-control" ng-model="intermediateUnit.MeanRepairManHours" name="MeanRepairManHours" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Down Time Cost/Hr :</label>
+                                        <span class="unit">$</span>
+                                        <div>
+                                            <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-disabled="readOnlyInterPage" class="form-control" ng-model="intermediateUnit.DownTimeCostPerHour" name="DownTimeCostPerHour" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Cost To Repair :</label>
+                                        <span class="unit">$</span>
+                                        <div>
+                                            <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-disabled="readOnlyInterPage" class="form-control" ng-model="intermediateUnit.CostToRepair" name="CostToRepair" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Mean Time Failure Rate :%</label>
+                                        <div>
+                                            <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-disabled="readOnlyInterPage" class="form-control" ng-model="intermediateUnit.MeanFailureRate" name="MeanFailureRate" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 col-sm-6 input-field" ng-show="isEditInter">
+                                        <label class="control-label">Status</label>
+                                        <div>
+                                            <select ng-disabled="readOnlyInterPage" class="form-control" ng-model="intermediateUnit.Active" name="Active">
+                                                <option value="Y">Active</option>
+                                                <option value="N">Inactive</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    @*<div class="col-md-2 col-sm-6 input-field">
+                                            <label class="control-label">Sensor Provider</label>
+                                            <select ng-model="intermediateUnit.SensorProviderId" class="form-control search-input" name="SensorProvider"
+                                                    ng-options="value.LookupId as value.LValue for (key, value) in SensorProviderDDL"></select>
+                                        </div>*@
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Reporting Service(s)</label>
+                                        <div ng-dropdown-multiselect=""
+                                             options="InterReporting"
+                                             selected-model="InterSelectedData"
+                                             extra-settings="ReportingSerSettings" checkboxes="true" disabled="readOnlyInterPage" class="reporting">
+                                        </div>
+                                    </div>
+
+                                    <div class="view-more-wrapper">
+                                        <span class="more-info" ng-click="morefields()">
+                                            <span class="more-info-text">{{moreFields?"- Less Info":"+ More Info"}}</span>
+                                        </span>
+                                    </div>
+                                    <div ng-show="moreFields" class="morefileds">
+                                        <div class="col-md-2 col-sm-6 input-field">
+                                            <label class="control-label">Year Of Manufacture</label>
+                                            <div>
+                                                <input ng-disabled="readOnlyInterPage" class="form-control" ng-model="intermediateUnit.ManufactureYear" name="ManufactureYear" />
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 input-field">
+                                            <label class="control-label">First Installation Date:</label>
+                                            <p class="input-group date-picker date-wrapper">
+                                                <input type="text" class="form-control date-picker-input" ng-dblclick="d_FirstInstallationDate=true" placeholder="dd/mm/yyyy" uib-datepicker-popup="dd/MM/yyyy"
+                                                       ng-model="intermediateUnit.FirstInstallationDate" ng-disabled="readOnlyInterPage" name="FirstInstallationDate" ng-init="d_FirstInstallationDate=false" is-open="d_FirstInstallationDate"
+                                                       datepicker-options="E_options" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                                                <span class="input-group-btn date-picker-button">
+                                                    <button type="button" class="btn btn-default" ng-disabled="readOnlyInterPage" ng-click="d_FirstInstallationDate=true"><i class="fa fa-calendar"></i></button>
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 input-field">
+                                            <label class="control-label">Operating Mode</label>
+                                            <ui-select ng-model="intermediateUnit.OperationModeId" theme="bootstrap" ng-disabled="readOnlyInterPage" style="width: 800px;">
+                                                <ui-select-match placeholder="Select ...">{{$select.selected.LValue}}</ui-select-match>
+                                                <ui-select-choices repeat="inter.LookupId as inter in OperationModeDDL | propsFilter: {LValue: $select.search} | limitTo: 50" null-option="defaultoperationmode" loose-null>
+                                                    <div ng-bind-html="inter.LValue | highlight: $select.search"></div>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 input-field">
+                                            <label class="control-label">Model</label>
+                                            <div>
+                                                <input ng-disabled="readOnlyInterPage" class="form-control" ng-model="intermediateUnit.Model" name="Model" />
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 input-field">
+                                            <label class="control-label">Serial</label>
+                                            <div>
+                                                <input ng-disabled="readOnlyInterPage" class="form-control" ng-model="intermediateUnit.Serial" name="Serial" />
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 input-field">
+                                            <label class="control-label">Size</label>
+                                            <div>
+                                                <input ng-disabled="readOnlyInterPage" class="form-control" ng-model="intermediateUnit.Size" name="Size" />
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 input-field">
+                                            <label class="control-label">Belt Length</label>
+                                            <div>
+                                                <input ng-disabled="readOnlyInterPage" class="form-control" ng-model="intermediateUnit.BeltLength" name="BeltLength" />
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 input-field">
+                                            <label class="control-label">Pulley Dia (Drive)</label>
+                                            <div>
+                                                <input ng-disabled="readOnlyInterPage" class="form-control" ng-model="intermediateUnit.PulleyDiaDrive" name="PulleyDiaDrive" />
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 input-field">
+                                            <label class="control-label">Pulley Dia (Driven)</label>
+                                            <div>
+                                                <input ng-disabled="readOnlyInterPage" class="form-control" ng-model="intermediateUnit.PulleyDiaDriven" name="PulleyDiaDriven" />
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        @*<div class="col-md-2 col-sm-6 input-field">
+                                                <label class="control-label">Rated RPM Input</label>
+                                                <div>
+                                                    <input ng-disabled="readOnlyInterPage" class="form-control" ng-model="intermediateUnit.RatedRPMInput" name="RatedRPMInput" />
+                                                    <span class="text-danger"></span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2 col-sm-6 input-field">
+                                                <label class="control-label">Rated RPM Output</label>
+                                                <div>
+                                                    <input ng-disabled="readOnlyInterPage" class="form-control" ng-model="intermediateUnit.RatedRPMOutput" name="RatedRPMOutput" />
+                                                    <span class="text-danger"></span>
+                                                </div>
+                                            </div>*@
+                                        <div class="col-md-2 col-sm-6 input-field">
+                                            <label class="control-label">Pinion I/P Gear Teeth</label>
+                                            <div>
+                                                <input ng-disabled="readOnlyInterPage" class="form-control" ng-model="intermediateUnit.PinionInputGearTeeth" name="PinionInputGearTeeth" />
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 input-field">
+                                            <label class="control-label">Pinion O/P Gear Teeth</label>
+                                            <div>
+                                                <input ng-disabled="readOnlyInterPage" class="form-control" ng-model="intermediateUnit.PinionOutputGearTeeth" name="PinionOutputGearTeeth" />
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 input-field">
+                                            <label class="control-label">Idler I/P Gear Teeth</label>
+                                            <div>
+                                                <input ng-disabled="readOnlyInterPage" class="form-control" ng-model="intermediateUnit.IdlerInputGearTeeth" name="PinionOutputGearTeeth" />
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 input-field">
+                                            <label class="control-label">Idler O/P Gear Teeth</label>
+                                            <div>
+                                                <input ng-disabled="readOnlyInterPage" class="form-control" ng-model="intermediateUnit.IdlerOutputGearTeeth" name="IdlerInputGearTeeth" />
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 input-field">
+                                            <label class="control-label">Ratio</label>
+                                            <div>
+                                                <input ng-disabled="readOnlyInterPage" class="form-control" ng-model="intermediateUnit.Ratio" name="Ratio" />
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-2 col-sm-6 input-field">
+                                            <label class="control-label">Bull Gear Teeth</label>
+                                            <div>
+                                                <input ng-disabled="readOnlyInterPage" class="form-control" ng-model="intermediateUnit.BullGearTeeth" name="BullGearTeeth" />
+                                                <span class="text-danger"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <div class="grid data">
+                                <div id="uiGrid" ui-grid="gridOpts2" class="grid" ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="driven">
+                <form name="DrivenUserForm" novalidate>
+                    <div class="Driven-unit animate-switch" ng-switch-when="stage4">
+                        <div class="row heading-wrapper">
+                            <div class="col-md-3 heading">
+                                <h4 class="page-header text-primary">{{isEditDriven?"Edit Driven Unit":isSearchDriven?"Search Driven Unit":isViewDriven?"View Driven Unit":isCreateDriven?"Create Driven Unit":"Driven Unit"}}</h4>
+                            </div>
+                            <div class="col-md-9 menu-button">
+                                <a ng-click="next('stage3')"><i class="fa fa-arrow-left icon-filter" title="Back to Intermediate"></i>Go Back Intermediate</a>
+                                <a ng-disabled="isCreateDriven" ng-click="isCreateDriven || createDrivenToggle()" title="Create"><i class="fa fa-plus icon-filter"></i>Create</a>
+                                @*<a ng-disabled="isSearchDriven" ng-click="isSearchDriven || searchToggleDriven()" title="Search"><i class="fa fa-search-plus icon-filter"></i><span>Search</span></a>*@
+                                <span class="Pipe"></span>
+                                <a ng-disabled="readOnlyDrivenPage || DrivenUserForm.$invalid" ng-click="readOnlyDrivenPage || DrivenUserForm.$invalid || saveDriven()" ng-show="isCreateDriven" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                                <a ng-disabled="readOnlyDrivenPage || DrivenUserForm.$invalid" ng-click="readOnlyDrivenPage || DrivenUserForm.$invalid || updateDriven()" ng-hide="isCreateDriven" ng-show="isEditDriven || isViewDriven" title="Update"><i class="fa fa-save icon-filter"></i><span>Update</span></a>
+                                <a ng-disabled="isEditDriven || isViewDriven" ng-click="isEditDriven || clearOutDriven()" ng-show="isCreateDriven || isEditDriven || isViewDriven" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+                                <a ng-show="isSearchDriven" ng-click="clearDrivenModal()" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+                            </div>
+                        </div>
+                        <div class="row create-form" ng-show="isCreateDriven || isEditDriven || isViewDriven">
+                            <div class="col-md-12">
+                                <div class="col-md-2 col-sm-3 input-field">
+                                    <label class="control-label">Equipment Name</label>
+                                    <div>
+                                        <input disabled class="form-control" value={{equipment.EquipmentName}} name="EquipmentName" />
+                                        <span class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-3 input-field" ng-class="{ 'has-error' : DrivenUserForm.IdentificationName.$invalid && !DrivenUserForm.IdentificationName.$pristine }">
+                                    <label class="control-label">Asset Name*</label>
+                                    <div>
+                                        <input ng-disabled="readOnlyDrivenPage" class="form-control" required ng-model="DrivenUnit.IdentificationName" name="IdentificationName" />
+                                        <span class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 input-field">
+                                    <label class="control-label">
+                                        <a ng-click="ChooseAsset('Driven')" tooltip-append-to-body="true" uib-tooltip="Select Taxonomy" tooltip-class="customClass" class="mouse-pointer">
+                                            Select Taxonomy* <i class="fa fa-info"></i>
+                                        </a>
+                                    </label>
+                                    <div>
+                                        <input disabled class="form-control" required ng-model="DrivenUnit.AssetCode" name="Asset" />
+                                        <span class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 input-field" ng-class="{ 'has-error' : DrivenUserForm.ListOrder.$invalid && !DrivenUserForm.ListOrder.$pristine }">
+                                    <label class="control-label">Reporting Order</label>
+                                    <div>
+                                        <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.ListOrder" name="ListOrder" />
+                                        <span class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 col-sm-6 input-field">
+                                    <label class="control-label">Manufacturer*</label>
+                                    <ui-select required ng-model="DrivenUnit.ManufacturerId" theme="bootstrap" ng-disabled="readOnlyDrivenPage" style="width: 800px;">
+                                        <ui-select-match placeholder="Select ...">{{$select.selected.ManufacturerName}}</ui-select-match>
+                                        <ui-select-choices repeat="driven.ManufacturerId as driven in DrivenMFTDDL | propsFilter: {ManufacturerName: $select.search} | limitTo: 50" null-option="defaultmanufacture" loose-null>
+                                            <div ng-bind-html="driven.ManufacturerName | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+                                <div class="col-md-2 col-sm-6 input-field">
+                                    <label style="margin-left: 15px; margin-top: 24px;" class="control-label shaft-label link">
+                                        <a ng-click="SelectShaft('DN')" ng-disabled="DrivenUnit.IdentificationName.length == null" tooltip-append-to-body="true" uib-tooltip="Select Shaft" tooltip-class="customClass" class="mouse-pointer">
+                                            Shaft* <i class="fa fa-info"></i>
+                                        </a>
+                                    </label>
+                                </div>
+
+                                <div class="taxonomy-values">
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Mean Repair Man (Hrs)</label>
+                                        <div>
+                                            <input type="number" min="0" required onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.MeanRepairManHours" name="MeanRepairManHours" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Down Time Cost/Hr :</label>
+                                        <span class="unit">$</span>
+                                        <div>
+                                            <input type="number" min="0" required onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.DownTimeCostPerHour" name="DownTimeCostPerHour" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Cost To Repair :</label>
+                                        <span class="unit">$</span>
+                                        <div>
+                                            <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.CostToRepair" name="CostPerUnit" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Mean Time Failure Rate :</label>
+                                        <span class="unit">%</span>
+                                        <div>
+                                            <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.MeanFailureRate" name="MeanFailureRate" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-2 col-sm-6 input-field" ng-show="isEditDriven">
+                                        <label class="control-label">Status</label>
+                                        <div>
+                                            <select ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.Active" name="Active">
+                                                <option value="Y">Active</option>
+                                                <option value="N">Inactive</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    @*<div class="col-md-2 col-sm-6 input-field">
+                                            <label class="control-label">Sensor Provider</label>
+                                            <select ng-model="DrivenUnit.SensorProviderId" class="form-control search-input" name="SensorProvider"
+                                                    ng-options="value.LookupId as value.LValue for (key, value) in SensorProviderDDL"></select>
+                                        </div>*@
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Reporting Service(s)</label>
+                                        <div ng-dropdown-multiselect=""
+                                             options="DrivenReporting"
+                                             selected-model="DrivenSelectedData"
+                                             extra-settings="ReportingSerSettings" checkboxes="true" disabled="readOnlyDrivenPage" class="reporting">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="view-more-wrapper">
+                                    <span class="more-info" ng-click="morefields()">
+                                        <span class="more-info-text">{{moreFields?"- Less Info":"+ More Info"}}</span>
+                                    </span>
+                                </div>
+                                <div ng-show="moreFields" class="morefileds">
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Year Of Manufacture</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.ManufactureYear" name="Model" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">First Installation Date:</label>
+                                        <p class="input-group date-picker date-wrapper">
+                                            <input type="text" class="form-control date-picker-input" ng-dblclick="d_FirstInstallationDate=true" placeholder="dd/mm/yyyy" uib-datepicker-popup="dd/MM/yyyy"
+                                                   ng-model="DrivenUnit.FirstInstallationDate" ng-disabled="readOnlyDrivenPage" name="FirstInstallationDate" ng-init="d_FirstInstallationDate=false" is-open="d_FirstInstallationDate"
+                                                   datepicker-options="E_options" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                                            <span class="input-group-btn date-picker-button">
+                                                <button type="button" class="btn btn-default" ng-disabled="readOnlyDrivenPage" ng-click="d_FirstInstallationDate=true"><i class="fa fa-calendar"></i></button>
+                                            </span>
+                                        </p>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Operating Mode</label>
+                                        <ui-select ng-model="DrivenUnit.OperationModeId" theme="bootstrap" ng-disabled="readOnlyDrivenPage" style="width: 800px;">
+                                            <ui-select-match placeholder="Select ...">{{$select.selected.LValue}}</ui-select-match>
+                                            <ui-select-choices repeat="driven.LookupId as driven in OperationModeDDL | propsFilter: {LValue: $select.search} | limitTo: 50" null-option="defaultoperationmode" loose-null>
+                                                <div ng-bind-html="driven.LValue | highlight: $select.search"></div>
+
+                                            </ui-select-choices>
+                                        </ui-select>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Model</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.Model" name="Model" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Serial Number</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.SerialNumber" name="SerialNumber" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Capacity</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.Capacity" name="Capacity" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Lubrication</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.Lubrication" name="Lubrication" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Rated Flow GPM</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.RatedFlowGPM" name="RatedFlowGPM" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Pump Efficiency</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.PumpEfficiency" name="PumpEfficiency" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Rated Suction Pressure</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.RatedSuctionPressure" name="RatedSuctionPressure" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Efficiency</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.Efficiency" name="Efficiency" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Rated Discharge Pressure</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.RatedDischargePressure" name="RatedDischargePressure" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Cost Per Unit</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.CostPerUnit" name="CostPerUnit" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Max RPM</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.MaxRPM" name="MaxRPM" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Impeller Vanes</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.ImpellerVanes" name="ImpellerVanes" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Impeller Vanes KW</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.ImpellerVanesKW" name="ImpellerVanesKW" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Stages</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.Stages" name="Stages" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Number Of Pistons</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.NumberOfPistons" name="NumberOfPistons" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6 input-field">
+                                        <label class="control-label">Pump Type</label>
+                                        <div>
+                                            <input ng-disabled="readOnlyDrivenPage" class="form-control" ng-model="DrivenUnit.PumpType" name="PumpType" />
+                                            <span class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="table-responsive">
+                            <div class="grid data">
+                                <div id="uiGrid" ui-grid="gridOpts3" class="grid" ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angucomplete/angucomplete-alt.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+    <environment include="Development">
+        <script src="~/js/equipment/index.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/equipment/index.min.js" asp-append-version="true"></script>
+    </environment>
+}
+
+<script type="text/ng-template" id="skfAttachmentModal.html">
+    <div class="popup-product">
+
+        <div class="modal-header">
+            <span class="model-breadcrumb">Attachments</span>
+            <div class="col-lg-5 col-md-5 col-sm-12 heading">
+                <h4 class="page-header text-primary">{{Uname}}</h4>
+            </div>
+            <div class="col-lg-7 col-md-7 col-sm-12 create-button  menu-button">
+                <input type="file" id="files" class="uploadfile" name="files[]" ng-model="attach" multiple accept="image/x-png,image/jpeg" onchange="angular.element(this).scope().uploadImageStart()" />
+                <a title="Close" ng-click="cancel()"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="col-md-6 attachment-link">
+                        <h4 class="attach-label">Attachments :</h4>
+                        <div ng-repeat="file in attachment" class="attched-images">
+                            <a ng-click="showAttach(file.attachId, $index)" class="attached-imgnames" ng-class="{active : {{$index}} === docindex}">
+                                {{file.FileName}}
+                            </a>
+                            <div class="close-button"><a ng-click="removeAttachment(file.attachId, file.type)"><i class="fa fa-trash"></i></a></div>
+                        </div>
+                        <span ng-show="noAttachment">No attachments Found</span>
+                    </div>
+                    <div class="col-md-6">
+                        <span class="file-upload" ng-class="attached-files" ng-disabled="readOnlyPage">
+                            <span ng-repeat="file in files" value="{{file.files}}">{{file.files}}</span>
+                        </span>
+                        <div class="preview-img">
+                            <h4>Preview Image: <span class="text-primary" ng-show="FileName.length > 0">{{FileName}}</span></h4>
+                            <img src="../images/preview-icon.png" ng-show="previewImg" class="img-preview" />
+                            <img src="{{attImage}}" ng-show="attImage.length > 0" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfAssetTypeModal.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <span class="model-breadcrumb">{{IndustryName}} / Taxonomy List</span>
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary">Select Taxonomy</h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive">
+                <div class="grid data">
+                    <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-edit ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfClonePopupModal.html">
+    <div class="popup-product clone">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Clone {{DispTypeName}}</span>
+            <div class="col-lg-5 col-md-5 col-sm-12 heading">
+                <h4 class="page-header text-primary" ng-show="NoEq">{{PlantAreaName}} - {{EquipmentName}}</h4>
+                <h4 class="page-header text-primary" ng-show="!NoEq">{{headingName}}</h4>
+            </div>
+            <div class="col-lg-7 col-md-7 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="clone()" ng-show="isClone" ng-disabled="userForm.$invalid ||readOnlyPage" title="Save"><i class="fa fa-save icon-filter"></i><span>Clone</span></a>
+                <a ng-click="save()" ng-show="!isClone" ng-disabled="userForm.$invalid ||readOnlyPage" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" ng-disabled="!isClone" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="row search-form">
+            <form name="userForm" novalidate>
+                <div class="col-md-3 col-sm-6 input-field" ng-show="isClone" ng-class="{ 'has-error' : userForm.CloneCount.$invalid && !userForm.CloneCount.$pristine }">
+                    <label class="control-label">Clone Count*</label>
+                    <div>
+                        <input type="number" min="1" max="99" class="form-control" required ng-model="CloneCount" name="CloneCount" />
+                        <span class="text-danger"></span>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <form name="userForm" novalidate>
+            <table ng-show="!isClone">
+                <tr>
+                    <th>S.no</th>
+                    <th>Name</th>
+                </tr>
+                <tr ng-repeat="p in cloneDDL">
+                    <td>
+                        <input class="form-control" disabled value="{{$index + 1}}" name="sno" />
+                    </td>
+                    <td class="edit-content" ng-class="{ 'has-error' : userForm.Name.$invalid && !userForm.Name.$pristine }">
+                        <input ng-disabled="readOnlyPage" class="form-control" required ng-model="p.TName" name="Name" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfFailureReport.html">
+    <div class="popup-product tablen failrepo">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Create Failure Report</span>
+            <div class="col-lg-5 col-md-5 col-sm-12 heading">
+                <h4 class="page-header text-primary">{{PlantAreaName}} - {{EquipmentName}}</h4>
+            </div>
+            <div class="col-lg-7 col-md-7 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save()" ng-disabled="readOnlyPage" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="row popwid">
+            <form name="userForm" novalidate>
+                <div class="col-md-12">
+                    <div class="row col-md-3 col-sm-4 input-field">
+                        <label class="control-label">Date of Report:</label>
+                        <p class="input-group date-picker date-wrapper">
+                            <input type="text" class="form-control date-picker-input" ng-dblclick="d_ReportDate=true" placeholder="dd/mm/yyyy" uib-datepicker-popup="dd/MM/yyyy"
+                                   ng-model="ReportDate" ng-disabled="readOnlyPage" name="FromDate" ng-init="d_StartDate=false" is-open="d_StartDate"
+                                   datepicker-options="options" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                            <span class="input-group-btn date-picker-button">
+                                <button type="button" class="btn btn-default" ng-disabled="readOnlyPage" ng-click="d_StartDate=true"><i class="fa fa-calendar"></i></button>
+                            </span>
+                        </p>
+                    </div>
+                    <div class="col-md-2 col-sm-6 input-field">
+                        <label class="control-label">Choose File</label>
+                        <input type="file" id="files" class="uploadfile" name="files[]" ng-model="fileUpload" onchange="angular.element(this).scope().uploadImageStart()" />
+                    </div>
+                </div>
+                <div class="asset-form col-md-12" ng-show="DriveUnitList.length > 0">
+                    <table class="asset-set">
+                        <tr class="first-row">
+                            <td class="first-column" colspan="7">
+                                <h5 class="control-label symptom-title">Drive</h5>
+                            </td>
+                        </tr>
+                        <tr class="isdesktopview">
+                            <td class="first-column">
+                                <label class="control-label">Asset Name</label>
+
+                            </td>
+                            <td class="second-column">
+                                <label class="control-label">MTTR</label>
+
+                            </td>
+                            <td class="third-column">
+                                <label class="control-label">DT. Cost</label>
+
+                            </td>
+                            <td class="fourth-column">
+                                <label class="control-label">Failure Mode</label>
+
+                            </td>
+                            <td class="fifth-column">
+                                <label class="control-label">Failure Cause</label>
+
+                            </td>
+                            <td class="sixth-column">
+                                <label class="control-label">Repair Cost</label>
+
+                            </td>
+                            <td class="seventh-column">
+                                <label class="control-label">Actual Outage</label>
+
+                            </td>
+                        </tr>
+                        <tr class="equipment-failure" ng-repeat="val in DriveUnitList">
+                            <td class="first-column">
+                                <label class="control-label ismobileview">Asset Name</label>
+                                <input ng-model="val.IdentificationName" disabled class="form-control search-input" name="IdentificationName">
+                            </td>
+                            <td class="second-column">
+                                <label class="control-label ismobileview">MTTR</label>
+                                <input ng-model="val.MTTR" disabled class="form-control search-input" name="MTTR">
+                            </td>
+                            <td class="third-column">
+                                <label class="control-label ismobileview">DT. Cost</label>
+                                <input ng-model="val.MTBF" disabled class="form-control search-input" name="MTBF">
+                            </td>
+                            <td class="fourth-column">
+                                <label class="control-label ismobileview">Failure Mode</label>
+                                <input ng-model="val.FailureModeName" disabled class="form-control search-input" name="FailureMode">
+                                <a ng-click="failuremode(val, $index)" tooltip-append-to-body="true" uib-tooltip="" tooltip-class="customClass" class="mouse-pointer"><i class="fa fa-plus-square"></i></a>
+                            </td>
+                            <td class="fifth-column">
+                                <label class="control-label ismobileview">Failure Cause</label>
+                                <input ng-model="val.FailureCauseName" disabled class="form-control search-input" name="FailureCause">
+                            </td>
+
+
+                            <td class="sixth-column">
+                                <label class="control-label ismobileview">Repair Cost</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon"><i class="fa fa-dollar"></i></div>
+                                    <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-model="val.DActualRepairCost" placeholder="Amount" class="form-control search-input" name="RepairCost">
+                                </div>
+                            </td>
+                            <td class="seventh-column">
+                                <label class="control-label ismobileview">Actual Outage</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                                    <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-model="val.DActualOutageTime" placeholder="Hours" class="form-control search-input" name="ActOutage">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="asset-form col-md-12" ng-show="IntermediateUnitList.length > 0">
+                    <table class="asset-set">
+                        <tr class="first-row">
+                            <td class="first-column" colspan="7">
+                                <h5 class="control-label symptom-title">Intermediate</h5>
+                            </td>
+                        </tr>
+                        <tr class="isdesktopview">
+                            <td class="first-column">
+                                <label class="control-label">Asset Name</label>
+
+                            </td>
+                            <td class="second-column">
+                                <label class="control-label">MTTR</label>
+
+                            </td>
+                            <td class="third-column">
+                                <label class="control-label">DT. Cost</label>
+
+                            </td>
+                            <td class="fourth-column">
+                                <label class="control-label">Failure Mode</label>
+
+                            </td>
+                            <td class="fifth-column">
+                                <label class="control-label">Failure Cause</label>
+
+                            </td>
+                            <td class="sixth-column">
+                                <label class="control-label">Repair Cost</label>
+
+                            </td>
+                            <td class="seventh-column">
+                                <label class="control-label">Actual Outage</label>
+
+                            </td>
+                        </tr>
+                        <tr class="equipment-failure" ng-repeat="val in IntermediateUnitList">
+                            <td class="first-column">
+                                <label class="control-label ismobileview">Asset Name</label>
+                                <input ng-model="val.IdentificationName" disabled class="form-control search-input" name="IdentificationName">
+                            </td>
+                            <td class="second-column">
+                                <label class="control-label ismobileview">MTTR</label>
+                                <input ng-model="val.MTTR" disabled class="form-control search-input" name="MTTR">
+                            </td>
+                            <td class="third-column">
+                                <label class="control-label ismobileview">DT. Cost</label>
+                                <input ng-model="val.MTBF" disabled class="form-control search-input" name="MTBF">
+                            </td>
+                            <td class="fourth-column">
+                                <label class="control-label ismobileview">Failure Mode</label>
+                                @*<input ng-model="val.FailureModeId" hidden disabled class="form-control search-input" name="FailureMode">*@
+                                <input ng-model="val.FailureModeName" disabled class="form-control search-input" name="FailureMode">
+                                <a ng-click="failuremode(val, $index)" tooltip-append-to-body="true" uib-tooltip="" tooltip-class="customClass" class="mouse-pointer"><i class="fa fa-plus-square"></i></a>
+
+                            </td>
+                            <td class="fifth-column">
+                                <label class="control-label ismobileview">Failure Cause</label>
+                                @*<input ng-model="val.FailureCauseId" hidden disabled class="form-control search-input" name="FailureCause">*@
+                                <input ng-model="val.FailureCauseName" disabled class="form-control search-input" name="FailureCause">
+
+                            </td>
+                            <td class="sixth-column">
+                                <label class="control-label ismobileview">Repair Cost</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon"><i class="fa fa-dollar"></i></div>
+                                    <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-model="val.DActualRepairCost" placeholder="Amount" class="form-control search-input" name="RepairCost">
+                                </div>
+                            </td>
+                            <td class="seventh-column">
+                                <label class="control-label ismobileview">Actual Outage</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                                    <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-model="val.DActualOutageTime" placeholder="Hours" class="form-control search-input" name="ActOutage">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="asset-form col-md-12" ng-show="DrivenUnitList.length > 0">
+                    <table class="asset-set">
+                        <tr class="first-row">
+                            <td class="first-column" colspan="8">
+                                <h5 class="control-label symptom-title">Driven</h5>
+                            </td>
+                        </tr>
+                        <tr class="isdesktopview">
+                            <td class="first-column">
+                                <label class="control-label">Asset Name</label>
+
+                            </td>
+                            <td class="second-column">
+                                <label class="control-label">MTTR</label>
+
+                            </td>
+                            <td class="third-column">
+                                <label class="control-label">DT. Cost</label>
+
+                            </td>
+                            <td class="fourth-column">
+                                <label class="control-label">Failure Mode</label>
+
+                            </td>
+                            <td class="fifth-column">
+                                <label class="control-label">Failure Cause</label>
+
+                            </td>
+                            <td class="sixth-column">
+                                <label class="control-label">Repair Cost</label>
+
+                            </td>
+                            <td class="seventh-column">
+                                <label class="control-label">Actual Outage</label>
+
+                            </td>
+                        </tr>
+                        <tr class="equipment-failure" ng-repeat="val in DrivenUnitList">
+                            <td class="first-column">
+                                <label class="control-label  ismobileview">Asset Name</label>
+                                <input ng-model="val.IdentificationName" disabled class="form-control search-input" name="IdentificationName">
+                            </td>
+                            <td class="second-column">
+                                <label class="control-label ismobileview">MTTR</label>
+                                <input ng-model="val.MTTR" disabled class="form-control search-input" name="MTTR">
+                            </td>
+                            <td class="third-column">
+                                <label class="control-label ismobileview">DT. Cost</label>
+                                <input ng-model="val.MTBF" disabled class="form-control search-input" name="MTBF">
+                            </td>
+                            <td class="fourth-column">
+                                <label class="control-label ismobileview">Failure Mode</label>
+                                @*<input ng-model="val.FailureModeId" hidden disabled class="form-control search-input" name="FailureMode">*@
+                                <input ng-model="val.FailureModeName" disabled class="form-control search-input" name="FailureMode">
+                                <a ng-click="failuremode(val, $index)" tooltip-append-to-body="true" uib-tooltip="" tooltip-class="customClass" class="mouse-pointer"><i class="fa fa-plus-square"></i></a>
+
+                            </td>
+                            <td class="fifth-column">
+                                <label class="control-label ismobileview">Failure Cause</label>
+                                @*<input ng-model="val.FailureCauseId" hidden disabled class="form-control search-input" name="FailureCause">*@
+                                <input ng-model="val.FailureCauseName" disabled class="form-control search-input" name="FailureCause">
+
+                            </td>
+                            <td class="sixth-column">
+                                <label class="control-label ismobileview">Repair Cost</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon"><i class="fa fa-dollar"></i></div>
+                                    <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-model="val.DActualRepairCost" placeholder="Amount" class="form-control search-input" name="RepairCost">
+                                </div>
+                            </td>
+                            <td class="seventh-column">
+                                <label class="control-label ismobileview">Actual Outage</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                                    <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-model="val.DActualOutageTime" placeholder="Hours" class="form-control search-input" name="ActOutage">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skffailureMode.html">
+    <div class="popup-product">
+
+        <div class="modal-header">
+            <span class="model-breadcrumb">Choose Failure Mode and Cause</span>
+            <div class="col-lg-5 col-md-5 col-sm-12 heading">
+                <h4 class="page-header text-primary">{{assetName}}</h4>
+            </div>
+            <div class="col-lg-7 col-md-12 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save(val, value)" ng-disabled="skfForm.$invalid || value.FailureCauseName.length == null" title="Add"><i class="fa fa-save icon-filter"></i><span>Add</span></a>
+                <a ng-click="cancel()" title="Cancel"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <form name="skfForm" id="skfForm" novalidate>
+                <div class="row">
+                    <div class="col-md-4 col-sm-10 input-field">
+                        <label class="control-label">Failure Mode*</label>
+                        <div>
+                            <select ng-model="val" class="form-control search-input" name="FailureMode" ng-change="loadFailureCause(val)"
+                                    ng-options="val.FailureModeName group by val.group for val in FailureModeDDL"></select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-sm-10 input-field">
+                        <label class="control-label">Failure Cause*</label>
+                        <div>
+                            <select ng-model="value" class="form-control search-input" name="FailureCause"
+                                    ng-options="value.FailureCauseName group by value.group for value in FailureCauseDDL"></select>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        @*<div class="modal-footer">
+                <div class="col-lg-3 col-md-3 col-sm-3 create-button">
+                    <button ng-click="save('goto')" class="btn btn-info"><i class="fa fa-save icon-filter"></i>Save</button>
+                    <button ng-click="cancel()" class="btn btn-info"><i class="fa fa-close icon-filter"></i>Close</button>
+                </div>
+            </div>*@
+    </div>
+</script>
+
+<script type="text/ng-template" id="skffailRepopopupModal.html">
+    <div class="popup-product">
+        <div class="modal-body job-list-navigate">
+            <span>Would you like to navigate to Failure Report Page ? </span>
+            <button ng-click="GotoFailureReport()" class="btn btn-info" title="Yes"><i class="fa fa-save icon-filter"></i>Yes</button>
+            <button ng-click="cancel()" class="btn btn-info" title="No"><i class="fa fa-close icon-filter"></i>No</button>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfAvoidedplmaint.html">
+    <div class="popup-product tablen">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Create Avoided Planned Maintenance</span>
+            <div class="col-lg-5 col-md-5 col-sm-12 heading">
+                <h4 class="page-header text-primary">{{PlantAreaName}} - {{EquipmentName}}</h4>
+            </div>
+            <div class="col-lg-7 col-md-7 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save()" ng-disabled="readOnlyPage" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="row popwid">
+            <form name="userForm" novalidate>
+                <div class="col-md-12">
+                    <div class="row col-md-3 col-sm-4 input-field">
+                        <label class="control-label">Date of Report:</label>
+                        <p class="input-group date-picker date-wrapper">
+                            <input type="text" class="form-control date-picker-input" ng-dblclick="d_ReportDate=true" placeholder="dd/mm/yyyy" uib-datepicker-popup="dd/MM/yyyy"
+                                   ng-model="ReportDate" ng-disabled="readOnlyPage" name="FromDate" ng-init="d_StartDate=false" is-open="d_StartDate"
+                                   datepicker-options="options" close-text="Close" alt-input-formats="['M!/d!/yyyy']" />
+                            <span class="input-group-btn date-picker-button">
+                                <button type="button" class="btn btn-default" ng-disabled="readOnlyPage" ng-click="d_StartDate=true"><i class="fa fa-calendar"></i></button>
+                            </span>
+                        </p>
+                    </div>
+                    <div class="col-md-2 col-sm-6 input-field">
+                        <label class="control-label">Choose File</label>
+                        <input type="file" id="files" class="uploadfile" name="files[]" ng-model="fileUpload" onchange="angular.element(this).scope().uploadImageStart()" />
+                    </div>
+                </div>
+                <div class="AvoidPl-form col-md-12" ng-show="DriveUnitList.length > 0">
+                    <table class="AvoidPl-set">
+                        <tr class="first-row">
+                            <td class="first-column" colspan="6">
+                                <h5 class="control-label symptom-title">Drive</h5>
+                            </td>
+                        </tr>
+                        <tr class="isdesktopview">
+                            <td class="first-column">
+                                <label class="control-label">Asset Name</label>
+
+                            </td>
+                            <td class="second-column">
+                                <label class="control-label">MTTR</label>
+
+                            </td>
+                            <td class="third-column">
+                                <label class="control-label">DT. Cost</label>
+
+                            </td>
+                            <td class="fourth-column">
+                                <label class="control-label">Description</label>
+
+                            </td>
+                            <td class="fifth-column">
+                                <label class="control-label">Repair Cost</label>
+
+                            </td>
+                            <td class="sixth-column">
+                                <label class="control-label">Actual Outage</label>
+
+                            </td>
+                        </tr>
+                        <tr ng-repeat="val in DriveUnitList">
+                            <td class="first-column">
+                                <label class="control-label ismobileview">Asset Name</label>
+                                <input ng-model="val.IdentificationName" disabled class="form-control search-input" name="IdentificationName">
+                            </td>
+                            <td class="second-column">
+                                <label class="control-label ismobileview">MTTR</label>
+                                <input ng-model="val.MTTR" disabled class="form-control search-input" name="MTTR">
+                            </td>
+                            <td class="third-column">
+                                <label class="control-label ismobileview">DT. Cost</label>
+                                <input ng-model="val.MTBF" disabled class="form-control search-input" name="MTBF">
+                            </td>
+                            <td class="fourth-column">
+                                <label class="control-label ismobileview">Description</label>
+                                <textarea ng-model="val.Descriptions" class="form-control search-input" name="Descriptions" cols="1" rows="2"></textarea>
+                            </td>
+                            <td class="fifth-column">
+                                <label class="control-label ismobileview">Repair Cost</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon"><i class="fa fa-dollar"></i></div>
+                                    <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-model="val.DActualRepairCost" placeholder="Amount" class="form-control search-input" name="RepairCost">
+                                </div>
+                            </td>
+                            <td class="sixth-column">
+                                <label class="control-label ismobileview">Actual Outage</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                                    <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-model="val.DActualOutageTime" placeholder="Hours" class="form-control search-input" name="ActualOutage">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="AvoidPl-form col-md-12" ng-show="IntermediateUnitList.length > 0">
+                    <table class="AvoidPl-set">
+                        <tr class="first-row">
+                            <td class="first-column" colspan="6">
+                                <h5 class="control-label symptom-title">Intermediate</h5>
+                            </td>
+                        </tr>
+                        <tr class="isdesktopview">
+                            <td class="first-column">
+                                <label class="control-label">Asset Name</label>
+
+                            </td>
+                            <td class="second-column">
+                                <label class="control-label">MTTR</label>
+
+                            </td>
+                            <td class="third-column">
+                                <label class="control-label">DT. Cost</label>
+
+                            </td>
+                            <td class="fourth-column">
+                                <label class="control-label">Description</label>
+
+                            </td>
+                            <td class="fifth-column">
+                                <label class="control-label">Repair Cost</label>
+
+                            </td>
+                            <td class="sixth-column">
+                                <label class="control-label">Actual Outage</label>
+
+                            </td>
+                        </tr>
+                        <tr ng-repeat="val in IntermediateUnitList">
+                            <td class="first-column">
+                                <label class="control-label ismobileview">Asset Name</label>
+                                <input ng-model="val.IdentificationName" disabled class="form-control search-input" name="IdentificationName">
+                            </td>
+                            <td class="second-column">
+                                <label class="control-label ismobileview">MTTR</label>
+                                <input ng-model="val.MTTR" disabled class="form-control search-input" name="MTTR">
+                            </td>
+                            <td class="third-column">
+                                <label class="control-label ismobileview">DT. Cost</label>
+                                <input ng-model="val.MTBF" disabled class="form-control search-input" name="MTBF">
+                            </td>
+                            <td class="fourth-column">
+                                <label class="control-label ismobileview">Description</label>
+                                <textarea ng-model="val.Descriptions" class="form-control search-input" name="IdentificationName" cols="1" rows="2"></textarea>
+                            </td>
+                            <td class="fifth-column">
+                                <label class="control-label ismobileview">Repair Cost</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon"><i class="fa fa-dollar"></i></div>
+                                    <input type="number" ng-model="val.DActualRepairCost" placeholder="Amount" class="form-control search-input" name="RepairCost">
+                                </div>
+                            </td>
+                            <td class="sixth-column">
+                                <label class="control-label ismobileview">Actual Outage</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                                    <input type="number" ng-model="val.DActualOutageTime" placeholder="Hours" class="form-control search-input" name="ActualOutage">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="AvoidPl-form col-md-12" ng-show="DrivenUnitList.length > 0">
+                    <table class="AvoidPl-set">
+                        <tr class="first-row">
+                            <td class="first-column" colspan="6">
+                                <h5 class="control-label symptom-title">Driven</h5>
+                            </td>
+                        </tr>
+                        <tr class="isdesktopview">
+                            <td class="first-column">
+                                <label class="control-label">Asset Name</label>
+
+                            </td>
+                            <td class="second-column">
+                                <label class="control-label">MTTR</label>
+
+                            </td>
+                            <td class="third-column">
+                                <label class="control-label">DT. Cost</label>
+
+                            </td>
+                            <td class="fourth-column">
+                                <label class="control-label">Description</label>
+
+                            </td>
+                            <td class="fifth-column">
+                                <label class="control-label">Repair Cost</label>
+
+                            </td>
+                            <td class="sixth-column">
+                                <label class="control-label">Actual Outage</label>
+
+                            </td>
+                        </tr>
+                        <tr ng-repeat="val in DrivenUnitList">
+                            <td class="first-column">
+                                <label class="control-label ismobileview">Asset Name</label>
+                                <input ng-model="val.IdentificationName" disabled class="form-control search-input" name="IdentificationName">
+                            </td>
+                            <td class="second-column">
+                                <label class="control-label ismobileview">MTTR</label>
+                                <input ng-model="val.MTTR" disabled class="form-control search-input" name="MTTR">
+                            </td>
+                            <td class="third-column">
+                                <label class="control-label ismobileview">DT. Cost</label>
+                                <input ng-model="val.MTBF" disabled class="form-control search-input" name="MTBF">
+                            </td>
+                            <td class="fourth-column">
+                                <label class="control-label ismobileview">Description</label>
+                                <textarea ng-model="val.Descriptions" class="form-control search-input" name="Descriptions" cols="1" rows="2"></textarea>
+                            </td>
+                            <td class="fifth-column">
+                                <label class="control-label ismobileview">Repair Cost</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon"><i class="fa fa-dollar"></i></div>
+                                    <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-model="val.DActualRepairCost" placeholder="Amount" class="form-control search-input" name="RepairCost">
+                                </div>
+                            </td>
+                            <td class="sixth-column">
+                                <label class="control-label ismobileview">Actual Outage</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon"><i class="fa fa-clock-o"></i></div>
+                                    <input type="number" min="0" onkeypress="return event.charCode >= 48 && event.charCode <= 57 || event.charCode == 46" ng-model="val.DActualOutageTime" placeholder="Hours" class="form-control search-input" name="ActualOutage">
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </form>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfavoidplmainpopopupModal.html">
+    <div class="popup-product">
+        <div class="modal-body job-list-navigate">
+            <span>Would you like to navigate to Avoided Planned Maintenance Page ? </span>
+            <button ng-click="GotoAvoidedPlMain()" class="btn btn-info" title="Yes"><i class="fa fa-save icon-filter"></i>Yes</button>
+            <button ng-click="cancel()" class="btn btn-info" title="No"><i class="fa fa-close icon-filter"></i>No</button>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfPlant.html">
+    <div class="popup-product">
+
+        <div class="modal-header">
+            <span class="model-breadcrumb">Plant - Create</span>
+
+            <div class="col-lg-12 col-md-12 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Cancel"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <form name="skfForm" id="skfForm" novalidate>
+                <div class="row">
+                    <div class="col-md-10 col-sm-10 input-field">
+                        <label class="control-label">Plant Name*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" required ng-model="Plant.PlantAreaName" name="PlantAreaName" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-10 col-sm-10 input-field">
+                        <label class="control-label">Description</label>
+                        <div>
+                            <textarea ng-disabled="readOnlyPage" class="form-control" ng-model="Plant.Descriptions" name="Descriptions"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfArea.html">
+    <div class="popup-product">
+
+        <div class="modal-header">
+            <span class="model-breadcrumb">Area - Create</span>
+
+            <div class="col-lg-12 col-md-12 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Cancel"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <form name="skfForm" id="skfForm" novalidate>
+                <div class="row">
+                    <div class="col-md-10 col-sm-10 input-field">
+                        <label class="control-label">Plant Name</label>
+                        <select ng-model="PlantAreaId" disabled class="form-control search-input" name="Plant"
+                                ng-options="value.PlantAreaId as value.PlantAreaName for (key, value) in PlantDDL"></select>
+
+                    </div>
+
+                    @*<div class="col-md-3 col-sm-6 input-field">
+                            <label class="control-label">Plant</label>
+                            <div>
+                                <input disabled class="form-control" value="{{PlantAreaName}}" name="AreaName" />
+                                <span class="text-danger"></span>
+                            </div>
+                        </div>*@
+                    <div class="col-md-10 col-sm-10 input-field">
+                        <label class="control-label">Area Name*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" required ng-model="Area.AreaName" name="AreaName" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-10 col-sm-10 input-field">
+                        <label class="control-label">Description</label>
+                        <div>
+                            <textarea ng-disabled="readOnlyPage" class="form-control" ng-model="Area.Descriptions" name="Descriptions"></textarea>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfSystem.html">
+    <div class="popup-product">
+
+        <div class="modal-header">
+            <span class="model-breadcrumb">System - Create</span>
+
+            <div class="col-lg-12 col-md-12 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Cancel"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <form name="skfForm" id="skfForm" novalidate>
+                <div class="row">
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Plant Name</label>
+                        <select ng-model="PlantAreaId" disabled class="form-control search-input"
+                                ng-options="value.PlantAreaId as value.PlantAreaName for (key, value) in PlantDDL"></select>
+
+                    </div>
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Area Name</label>
+                        <select ng-model="AreaId" disabled class="form-control search-input" name="Area"
+                                ng-options="value.AreaId as value.AreaName for (key, value) in AreaDDL"></select>
+
+                    </div>
+                    @*<div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">Area*</label>
+                        @*<select ng-model="equipment.PlantAreaId" ng-disabled="readOnlyPage" class="form-control search-input" required name="Plant"
+                                  ng-options="value.PlantAreaId as value.PlantAreaName for (key, value) in PlantDDL"></select>*@
+                    @*<ui-select ng-model="System.AreaId" theme="bootstrap" ng-disabled="readOnlyPage" style="width: 800px;">
+                                <ui-select-match placeholder="Select ...">{{$select.selected.AreaName}}</ui-select-match>
+                                <ui-select-choices repeat="system.AreaId as system in AreaDDL | propsFilter: {AreaName: $select.search} | limitTo: 50" null-option="defaultarea" loose-null>
+                                    <div ng-bind-html="system.AreaName | highlight: $select.search"></div>
+
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>*@
+                    <div class="col-md-3 col-sm-6 input-field">
+                        <label class="control-label">System Name*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" required ng-model="System.SystemName" name="AreaName" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-sm-4 input-field">
+                        <label class="control-label">Descriptions</label>
+                        <div>
+                            <textarea ng-disabled="readOnlyPage" class="form-control" ng-model="System.Descriptions" name="Descriptions"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfShaftModal.html">
+    <div class="popup-product popup-user-role">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Shaft List</span>
+            <div class="col-lg-6 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary ng-binding">{{DispName}} </h4>
+            </div>
+            <div class="col-lg-6 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-disabled="readOnly" ng-show="Type == 'IN'" ng-click="AddShaft()" title="Add"><i class="fa fa-plus icon-filter"></i><span>Add Shaft</span></a>
+                <a ng-disabled="readOnly" ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body user-siteaccess">
+            <div class="row">
+                <div class="shaft-intermediate shaft-wrapper">
+                    <div class="col-md-12 col-sm-12 input-field" ng-repeat="val in shaft | orderBy : ShaftOrder">
+                        <h3 class="accordion">
+                            <a ng-click="showAcc(val.ShaftOrder)"> {{val.ShaftName}} </a>
+                        </h3>
+                        <div class="accordion-content" ng-show="showMode{{val.ShaftOrder}}">
+                            <div class="col-md-12 col-sm-12 non-drive-end input-field" ng-repeat="i in val.DriveEnd">
+                                <h5>Drive End <span class="bearing-count" ng-repeat="j in i.Bearings">({{i.Bearings.length}})</span></h5>
+                                <div>
+                                    <div class="input-field bearing-autocomp col-lg-7 col-md-4 col-sm-12">
+                                        <label class="control-label">Bearing Designation*</label><span class="bearingcode ytc">(If Bearing Designation Code not found please type 'YTC' as code) </span>
+                                        <angucomplete-alt id="BearingId"
+                                                          placeholder="Type Bearing Designation"
+                                                          focus-in="focusautoIn(val.ShaftOrder, i.ShaftSide)"
+                                                          input-name="{{i.ShaftSide}} {{val.ShaftOrder}}"
+                                                          pause="400"
+                                                          minlength="3"
+                                                          selected-object="selectedBearingStatusFn"
+                                                          remote-url="equipment/GetListBearingByDesignation?lId={{languageId}}&uId={{val.UnitId}}&unitType={{Type}}&type=DE&queryString="
+                                                          remote-url-data-field=""
+                                                          title-field="Designation,BearingName,ManufacturerName"
+                                                          search-fields="Designation "
+                                                          description-field=""
+                                                          image-field=""
+                                                          field-required="true"
+                                                          input-class="form-control form-control-small"
+                                                          disable-input="readOnlyPage" />
+                                    </div>
+                                    <div class="table-responsive col-md-12 col-sm-12">
+                                        <table>
+                                            <tr style="background:#337ab7;color: #fff;">
+                                                <th style="width:5%">S.No</th>
+                                                <th style="width:30%">Manufacturer Name </th>
+                                                <th style="width:20%">Designation</th>
+                                                <th style="width:40%">Bearing Name</th>
+                                                <th style="width:5%">Active</th>
+                                            </tr>
+                                            <tr ng-repeat="j in i.Bearings">
+                                                <td style="width:5%">{{$index + 1}} </td>
+                                                <td style="width:30%">{{j.ManufacturerName}}</td>
+                                                <td style="width:20%">{{j.Designation}}</td>
+                                                <td style="width:40%">{{j.BearingName}}</td>
+                                                <td style="width:5%"><label class="ui-grid-cell-contents"><a ng-click="DirtyValues(i.ShaftSide, val.ShaftOrder, j)"><i class="fa fa-trash"></i></a></label></td>
+                                            </tr>
+                                            <tr ng-show="!i.Bearings.length">
+                                                <td colspan="5">No Records Found</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-6 non-drive-end input-field" ng-repeat="i in val.NonDriveEnd">
+                                <h5>Non Drive End <span class="bearing-count" ng-repeat="j in i.Bearings">({{i.Bearings.length}})</span></h5>
+                                <div>
+                                    <div class="input-field bearing-autocomp col-lg-7 col-md-4 col-sm-12">
+                                        <label class="control-label">Bearing Designation*</label><span class="bearingcode ytc">(If Bearing Designation Code not found please type 'YTC' as code) </span>
+                                        <angucomplete-alt id="BearingId"
+                                                          focus-in="focusautoIn(val.ShaftOrder, i.ShaftSide)"
+                                                          placeholder="Type Bearing Designation"
+                                                          input-name="BearingId"
+                                                          pause="400"
+                                                          minlength="3"
+                                                          selected-object="selectedBearingStatusFn"
+                                                          remote-url="equipment/GetListBearingByDesignation?lId={{languageId}}&uId={{val.UnitId}}&unitType={{Type}}&type=DE&queryString="
+                                                          remote-url-data-field=""
+                                                          title-field="Designation,BearingName,ManufacturerName"
+                                                          search-fields="Designation"
+                                                          description-field=""
+                                                          image-field=""
+                                                          field-required="true"
+                                                          input-class="form-control form-control-small"
+                                                          disable-input="readOnlyPage" />
+                                    </div>
+                                    <div class="table-responsive col-md-12 col-sm-12">
+                                        <table>
+                                            <tr style="background:#337ab7;color: #fff;">
+                                                <th style="width:5%">S.No</th>
+                                                <th style="width:30%">Manufacturer Name </th>
+                                                <th style="width:20%">Designation</th>
+                                                <th style="width:40%">Bearing Name</th>
+                                                <th style="width:5%">Active</th>
+                                            </tr>
+                                            <tr ng-repeat="j in i.Bearings">
+                                                <td style="width:5%">{{$index + 1}} </td>
+                                                <td style="width:30%">{{j.ManufacturerName}}</td>
+                                                <td style="width:20%">{{j.Designation}}</td>
+                                                <td style="width:40%">{{j.BearingName}}</td>
+                                                <td style="width:5%"><label class="ui-grid-cell-contents"><a ng-click="DirtyValues(i.ShaftSide, val.ShaftOrder, j)"><i class="fa fa-trash"></i></a></label></td>
+                                            </tr>
+                                            <tr ng-show="!i.Bearings.length">
+                                                <td colspan="5">No Records Found</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>
+<script type="text/ng-template" id="skfIntermediateShaftModal.html">
+    <div class="popup-product popup-user-role equipment-shaft-modal">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Shaft List</span>
+            <div class="col-lg-6 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary ng-binding">{{DispName}} </h4>
+            </div>
+            <div class="col-lg-6 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                <a ng-disabled="readOnly" ng-show="Type == 'IN'" ng-click="AddShaft()" title="Add"><i class="fa fa-plus icon-filter"></i><span>Add Shaft</span></a>
+                <a ng-disabled="readOnly" ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body user-siteaccess">
+            <div class="row">
+                <div class="shaft-intermediate shaft-wrapper">
+                    <div class="col-md-12 col-sm-12 input-field" ng-repeat="val in shaft | orderBy : ShaftOrder">
+                        <h3 class="accordion">
+                            <a ng-click="showAcc(val.ShaftOrder)">
+                                {{val.ShaftName}}
+                                @*<i title="Remove" style="float:right;color: #0a0a0a;" class="remove-shaft fa fa-close" ng-click="removeShaft(val)" ng-hide="val.ShaftName === 'Input Shaft'|| val.ShaftName === 'Output Shaft'">
+                                </i>*@
+                            </a>
+                        </h3>
+                        <div class="accordion-content" ng-show="showMode{{val.ShaftOrder}}">
+                            <div class="col-md-3 col-sm-6 input-field">
+                                <div class="rpm-section">
+                                    <label class="control-label">RPM*</label>
+                                    <input type="text" ng-model="val.RPM" class="form-control" name="RPM" />
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-6 non-drive-end input-field" ng-repeat="i in val.NonDriveEnd">
+                                <h5>Non Drive End <span class="bearing-count" ng-repeat="j in i.Bearings">({{i.Bearings.length}})</span></h5>
+                                <div>
+                                    <div class="input-field bearing-autocomp col-lg-7 col-md-4 col-sm-12">
+                                        <label class="control-label">Bearing Designation*</label><span class="bearingcode ytc">(If Bearing Designation Code not found please type 'YTC' as code) </span>
+                                        <angucomplete-alt id="BearingId"
+                                                          focus-in="focusautoIn(val.ShaftOrder, i.ShaftSide)"
+                                                          placeholder="Type Bearing Designation"
+                                                          input-name="BearingId"
+                                                          pause="400"
+                                                          minlength="3"
+                                                          selected-object="selectedBearingStatusFn"
+                                                          remote-url="equipment/GetListBearingByDesignation?lId={{languageId}}&uId=null&unitType={{Type}}&type=DE&queryString="
+                                                          remote-url-data-field=""
+                                                          title-field="Designation,BearingName,ManufacturerName"
+                                                          search-fields="Designation"
+                                                          description-field=""
+                                                          image-field=""
+                                                          field-required="true"
+                                                          input-class="form-control form-control-small"
+                                                          disable-input="readOnlyPage" />
+                                    </div>
+                                    <div class="table-responsive col-md-12 col-sm-12">
+                                        <table>
+                                            <tr style="background:#337ab7; color: #fff;">
+                                                <th style="width:5%">S.No</th>
+                                                <th style="width:30%">Manufacturer Name </th>
+                                                <th style="width:20%">Designation</th>
+                                                <th style="width:40%">Bearing Name</th>
+                                                <th style="width:5%">Active</th>
+                                            </tr>
+                                            <tr ng-repeat="j in i.Bearings">
+                                                <td style="width:5%">{{$index + 1}} </td>
+                                                <td style="width:30%">{{j.ManufacturerName}}</td>
+                                                <td style="width:20%">{{j.Designation}}</td>
+                                                <td style="width:40%">{{j.BearingName}}</td>
+                                                <td style="width:5%"><label class="ui-grid-cell-contents"><a ng-click="DirtyValues(i.ShaftSide, val.ShaftOrder, j)"><i class="fa fa-trash"></i></a></label></td>
+                                            </tr>
+                                            <tr ng-show="!i.Bearings.length">
+                                                <td colspan="5">No Records Found</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-sm-12 non-drive-end input-field" ng-repeat="i in val.DriveEnd">
+                                <h5>Drive End <span class="bearing-count" ng-repeat="j in i.Bearings">({{i.Bearings.length}})</span></h5>
+                                <div>
+                                    <div class="input-field bearing-autocomp col-lg-7 col-md-4 col-sm-12">
+                                        <label class="control-label">Bearing Designation*</label><span class="bearingcode ytc">(If Bearing Designation Code not found please type 'YTC' as code) </span>
+                                        <angucomplete-alt id="BearingId"
+                                                          placeholder="Type Bearing Designation"
+                                                          focus-in="focusautoIn(val.ShaftOrder, i.ShaftSide)"
+                                                          input-name="{{i.ShaftSide}} {{val.ShaftOrder}}"
+                                                          pause="400"
+                                                          minlength="3"
+                                                          selected-object="selectedBearingStatusFn"
+                                                          remote-url="equipment/GetListBearingByDesignation?lId={{languageId}}&uId=null&unitType={{Type}}&type=DE&queryString="
+                                                          remote-url-data-field=""
+                                                          title-field="Designation,BearingName,ManufacturerName"
+                                                          search-fields="Designation "
+                                                          description-field=""
+                                                          image-field=""
+                                                          field-required="true"
+                                                          input-class="form-control form-control-small"
+                                                          disable-input="readOnlyPage" />
+                                    </div>
+                                    <div class="table-responsive col-md-12 col-sm-12">
+                                        <table>
+                                            <tr style="background:#337ab7; color: #fff;">
+                                                <th style="width:5%">S.No</th>
+                                                <th style="width:30%">Manufacturer Name </th>
+                                                <th style="width:20%">Designation</th>
+                                                <th style="width:40%">Bearing Name</th>
+                                                <th style="width:5%">Active</th>
+                                            </tr>
+                                            <tr ng-repeat="j in i.Bearings">
+                                                <td style="width:5%">{{$index + 1}} </td>
+                                                <td style="width:30%">{{j.ManufacturerName}}</td>
+                                                <td style="width:20%">{{j.Designation}}</td>
+                                                <td style="width:40%">{{j.BearingName}}</td>
+                                                <td style="width:15%"><label class="ui-grid-cell-contents"><a ng-click="DirtyValues(i.ShaftSide, val.ShaftOrder, j)"><i class="fa fa-trash"></i></a></label></td>
+                                            </tr>
+                                            <tr ng-show="!i.Bearings.length">
+                                                <td colspan="5">No Records Found</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>

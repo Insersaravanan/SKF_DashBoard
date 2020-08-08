@@ -1,0 +1,479 @@
+﻿@{
+    ViewData["Title"] = "Image Plotting";
+    Layout = "~/Views/Shared/_ObserverLayout.cshtml";
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<link href="~/lib/angucomplete/antocomplete-alt.css" rel="stylesheet" />
+
+<div ng-controller="skfCtrl" class="clientsite content-wrapper image-plotting">
+    <div class="container-fluid" id="Taxonomy">
+        <div class="row heading-wrapper">
+            <div class="col-md-3 heading assetMappingHeader">
+                <h4 class="page-header text-primary">Image Plotting</h4>
+            </div>
+            <div class="col-md-9 menu-button">
+            </div>
+        </div>
+        <div>
+            <div class="row">
+                <div class="col-lg-12 col-md-12">
+                    <div class="col-md-3 tree-wrapper">
+                        <span class="tree-filter">Search: <input class="search-filter" type="text" ng-model="search"><i class="fa fa-close search" ng-click="search = ''"></i> </span>
+                        <div class="tree-hierarchy">
+                            <span ng-if="data[0].IsOClientMapped === 'True'" class="expand-icon" ng-click="expandTree()"><i ng-class="{'fa fa-plus-square': !isExpand, 'fa fa-minus-square': isExpand}"></i>{{isExpand ?"&nbsp;Collapse All" : "&nbsp;Expand All"}}</span>
+                            <span ng-if="data[0].IsOClientMapped === 'false'"><i class="fa fa-minus-square"></i> &nbsp;Collapse All</span>
+                            <ul ng-repeat="h in data | filter:search" class="tree-structure">
+                                <li>
+                                    <i class="fa" ng-if="h.PlantArea && h.IsOClientMapped == 'True'" ng-click="ToggleFilter(h)" ng-class="{'fa fa-plus-square-o': h.Toggle, 'fa fa-minus-square-o': !h.Toggle}"></i>
+                                    <span>
+                                        <i class="fa fa-user-circle-o icon-filter tree-icons"></i>&nbsp;{{h.ClientSiteName}}
+                                    </span>
+                                    <ul ng-if="h.IsOClientMapped == 'True'" ng-repeat="i in h.PlantArea| filter:search" class="child" ng-hide="h.Toggle">
+                                        <li>
+                                            <i class="fa tree-icons" ng-if="i.Equipments" ng-click="ToggleFilter(i)" ng-class="{'fa fa-plus-square-o': i.Toggle, 'fa fa-minus-square-o': !i.Toggle}"></i>
+                                            <span class="tree-asset-link" ng-class="{'selected-plotted-type':i.PlantAreaId == selectedPlotId}" ng-click="Showdata(i, i.PlantAreaId, $index)">
+                                                <i class="fa fa-map-marker icon-filter"></i>
+                                                &nbsp;{{i.PlantAreaName}}
+                                            </span>
+                                            <ul ng-repeat="j in i.Equipments| filter:search" class="child" ng-hide="i.Toggle">
+                                                <li>
+                                                    <i class="fa tree-icons" ng-if="j.Units" ng-click="ToggleFilter(j)" ng-class="{'fa fa-plus-square-o': j.Toggle, 'fa fa-minus-square-o': !j.Toggle}"></i>
+                                                    <span class="tree-asset-link" ng-class="{'selected-plotted-type':j.EquipmentId == selectedPlotId}" ng-click="Showdata(j, j.EquipmentId, $index)">
+                                                        <i class="fa fa-superpowers"></i>&nbsp;{{j.EquipmentName}}
+                                                    </span>
+                                                    <ul ng-repeat="k in j.Units| filter:search" class="child" id="unit-child" ng-hide="j.Toggle">
+                                                        <li>
+                                                            <span>
+                                                                &nbsp;
+                                                                <i class="fa tree-icons" ng-if="k.IntermediateUnit ||k.DriveUnit || k.DrivenUnit" ng-click="ToggleFilter(k)" ng-class="{'fa fa-plus-square-o': k.Toggle, 'fa fa-minus-square-o': !k.Toggle}"></i>
+                                                                <i class="fa tree-icons" ng-class="{'fa fa-cog': k.UnitType=='DR', 'fa fa-cogs': k.UnitType == 'IN','fa fa-modx': k.UnitType =='DN'}"></i>
+                                                                {{k.UnitName}} &nbsp;&nbsp;<span ng-class="{noAssetCount:k.AssetCount == 0}" class="asset-count">{{k.AssetCount}}</span>
+                                                            </span>
+                                                            <ul ng-repeat="l in k.DriveUnit| filter:search" class="child" ng-hide="k.Toggle">
+                                                                <li>
+                                                                    &nbsp;
+                                                                    <span ng-class="{'selected-plotted-type':l.UnitId == selectedPlotId}">
+                                                                        <span ng-class="{'asset-disable' :l.IsOAssetMapped =='false'}" class="tree-asset-link" ng-click="Showdata(l, l.UnitId, $index)"><i class="fa fa-wrench icon-filter"></i>&nbsp;{{l.IdentificationName}}</span>
+                                                                    </span>
+                                                                </li>
+                                                            </ul>
+                                                            <ul ng-repeat="l in k.IntermediateUnit| filter:search" class="child" ng-hide="k.Toggle">
+                                                                <li>
+                                                                    &nbsp;
+                                                                    <span ng-class="{'selected-plotted-type':l.UnitId == selectedPlotId}">
+                                                                        <span ng-class="{'asset-disable' :l.IsOAssetMapped =='false'}" class="tree-asset-link" ng-click="Showdata(l, l.UnitId, $index)"><i class="fa fa-wrench icon-filter"></i>&nbsp;{{l.IdentificationName}}</span>
+                                                                    </span>
+                                                                </li>
+                                                            </ul>
+                                                            <ul ng-repeat="l in k.DrivenUnit| filter:search" class="child" ng-hide="k.Toggle">
+                                                                <li>
+                                                                    &nbsp;
+                                                                    <span ng-class="{'selected-plotted-type':l.UnitId == selectedPlotId}">
+                                                                        <span ng-class="{'asset-disable' :l.IsOAssetMapped =='false'}" class="tree-asset-link" ng-click="Showdata(l, l.UnitId, $index)"><i class="fa fa-wrench icon-filter"></i>&nbsp;{{l.IdentificationName}}</span>
+                                                                    </span>
+                                                                </li>
+                                                            </ul>
+                                                        </li>
+                                                    </ul>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6 sensor-image" ng-show="isDetail">
+                        <div class="col-md-12 heading">
+                            <h4 class="page-header text-primary ng-binding"><span class="unit-type">{{selectedUnitType}} - </span> {{displayName}}</h4>
+                            <div ng-if="selectedUnitType ==='Plant' && !isNoimg">
+                                <span class="expand-icon" tooltip-append-to-body="true" tooltip-class="customClass" uib-tooltip="Latitude and Longitude for Plant Area" style="font-size:17px;" ng-class="{'has-geo-count' : latitude || longitude,'has-no-geo-count' : !latitude && !longitude }" ng-click="savePlantGeo()"><i class="fa fa-globe"></i></span>
+                                <span>
+                                    <strong>Latitude: </strong>{{latitude}}&nbsp;
+                                    <strong>Longitude: </strong>{{longitude}}&nbsp;
+                                </span>
+                            </div>
+                            <div class="plotting-wrapper">
+                                <div class="plotting-img" ng-hide="isNoimg">
+                                    <!--<canvas id="canvas" width="{{imgWidth}}" height="{{imgheight}}" ng-click="getPosition($event)" style="cursor:crosshair;background:url('{{PhysicalPath}}');background-position: center;background-size: {{imgWidth}}px {{imgheight}}px"></canvas>-->
+                                    <canvas id="canvas" width="{{imgWidth}}" height="{{imgheight}}" ng-click="getPosition($event)" style="cursor:crosshair;background:url('{{PhysicalPath}}');background-position: center;background-size:100% 100%"></canvas>
+                                    <span ng-repeat="i in loadtable">
+                                        <span tooltip-append-to-body="true" tooltip-class="customClass" uib-tooltip="{{i.ObserverNodeName}}" ng-if="getImg.PlotType === 'AS'" ng-hide="i.XPos === 0 && i.YPos === 0" ng-class="{'plotted-dot': i.highlight == true}" class="plot-point" style="left:{{i.YPos}}px;top:{{i.XPos}}px">
+                                            @*<a class="remove-point" ng-click="removePoint(i.PlottingId, i.ObserverNodeName)">Remove</a>*@
+                                        </span>
+                                        <span tooltip-append-to-body="true" tooltip-class="customClass" uib-tooltip="{{i.UnitName}}" ng-if="getImg.PlotType === 'EQ'" ng-class="{'plotted-dot': i.highlight === true}" class="plot-point" ng-hide="i.XPos === 0 && i.YPos === 0" style="left:{{i.YPos}}px;top:{{i.XPos}}px">
+                                            @*<a class="remove-point" ng-click="removePoint(i.PlottingId, i.UnitName)">Remove </a>*@
+                                        </span>
+                                        <span tooltip-append-to-body="true" tooltip-class="customClass" uib-tooltip="{{i.EquipmentName}}" ng-if="getImg.PlotType === 'PL'" ng-hide="i.XPos === 0 && i.YPos === 0" ng-class="{'plotted-dot': i.highlight === true}" class="plot-point" style="left:{{i.YPos}}px;top:{{i.XPos}}px">
+                                            @*<a class="remove-point" ng-click="removePoint(i.PlottingId, i.EquipmentName )">Remove</a>*@
+                                        </span>
+                                    </span>
+                                </div>
+                                <a ng-disabled="mappedCount" class="btn btn-primary delete-icon" ng-click="removeAttachment()"><i class="fa fa-trash"></i></a>
+                            </div>
+                            <div class="plotting-no-img" ng-show="isNoimg">
+                                <div class="upload-wrapper">
+                                    <div class="msg">
+                                        <input type="file" id="files" class="uploadfile" name="files[]" ng-model="attach" multiple accept="image/x-png,image/jpeg" onchange="angular.element(this).scope().uploadImageStart()" />
+                                        <span class="upload-img first-child">Add Image For {{selectedUnitType}}</span>
+                                        <span class="upload-img"> {{displayName}} @*Image 300w * 600h*@ </span>
+                                        <span class="upload-img"><i>Recommended size 300w * 600h </i></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mapped-details-wrapper" >
+                        @*<div ng-hide="!isDetail || isNoimg" class="image-size-dropdown">
+                            <label class="input-field">Image Size:</label>
+                            <select ng-disabled="mappedCount" class="form-control" ng-model="size" name="Active" ng-change="imageSizeChange(size)">
+                                <option value="SM">Small</option>
+                                <option value="MD">Medium</option>
+                                <option value="LG">Large</option>
+                                <option value="LR">Larger</option>
+                                <option value="AU">Fixed Size</option>
+                                <option value="RE">Actual Image Size</option>
+                            </select>
+                        </div>*@
+                        <div class="mapped-details" ng-show="isDetail">
+                            @*<div ng-hide="isNoimg">
+                                    <div class="col-md-12">
+                                        <label class="control-label">
+                                            <strong>Mapped Count</strong>:
+                                        </label>
+                                        <span>{{mappedCount}}</span>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="control-label">
+                                            <strong>UnMapped Count</strong>:
+                                        </label>
+                                        <span>{{unMappedCount}}</span>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="control-label">
+                                            <small> Recommended Size: </small>
+                                            <span>600w X 300h</span>
+                                        </label>
+                                    </div>
+                                </div>*@
+                            <div ng-hide="isNoimg" class="image-details">
+                                <div class="canvas-wrap">
+                                    <canvas id="mapcount" width="300" height="300"></canvas>
+                                    <span id="procent">
+                                    </span>
+                                </div>
+                                <span class="mapping-detail"><strong>&nbsp;{{mappedCount}} of {{unMappedCount+mappedCount}} Mapped</strong></span>
+                            </div>
+
+                        </div>
+                    </div>
+                    @*<input type="range" name="range" ng-model="rangeValue" min="{{min}}" max="{{max}}">
+                        Min: <input type="number" ng-model="rangeValue" ng-change="zoomimage(rangeValue)"><br>
+                        Min: <input type="number" ng-model="min"><br>
+                        Max: <input type="number" ng-model="max"><br>
+                        <input type="submit" ng-click="zoomImage(rangeValue)"><br>*@
+
+
+                    <div class="col-md-9  shaft-intermediate shaft-wrapper" ng-show="isDetail" ng-if="getImg.PlotType === 'AS'">
+                        <span class="table-filter"><strong>Search:</strong> &nbsp; <input type="text" ng-model="searchAssetTable" /><i class="fa fa-close" ng-click="searchAssetTable = ''"></i></span>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr style="background:#ccc">
+                                        <th style="width:5%">S.No</th>
+                                        <th style="width:20%">Unit Name </th>
+                                        <th style="width:40%">Observer Unit Name</th>
+                                        <th style="width:20%">Status</th>
+                                        <th style="width:15%">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="i in loadtable | filter:searchAssetTable " ng-click="highlightPoint($index)" ng-class="{selected : $index === isSelectedRow}">
+                                        <td style="width:5%">{{$index + 1}} </td>
+                                        <td style="width:20%">{{i.UnitName}}</td>
+                                        <td style="width:40%">{{i.ObserverNodeName}}</td>
+                                        <td style="width:20%">
+                                            <span class="plotted-status" ng-class="{'mapped-dot' : i.IsMapped === 'Y' && $index === isSelectedRow,'mapped-unit' :i.IsMapped === 'Y'}"></span>
+                                            {{ i.IsMapped === 'Y' ? "&nbsp;Mapped" : "&nbsp;Unmapped" }}
+                                        </td>
+                                        <td style="width:15%;cursor:pointer" ng-class="{'map-remove' :i.IsMapped === 'N'}" ng-click="removePoint(i.PlottingId, i.ObserverNodeName)"><i class="fa fa-trash"></i>&nbsp;Remove</td>
+                                    </tr>
+                                </tbody>
+                                @*<tr ng-show="!i.Sensors.length">
+                                        <td colspan="5">No Records Found</td>
+                                    </tr>*@
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-9 shaft-intermediate shaft-wrapper" ng-show="isDetail" ng-if="getImg.PlotType === 'EQ'">
+                        <span class="table-filter"><strong>Search:</strong> &nbsp; <input type="text" ng-model="searchEquipmentTable" /><i class="fa fa-close" ng-click="searchEquipmentTable = ''"></i></span>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr style="background:#ccc">
+                                        <th style="width:5%">S.No</th>
+                                        <th style="width:45%">Unit Name </th>
+                                        <th style="width:20%">Unit Type</th>
+                                        <th style="width:15%">Status</th>
+                                        <th style="width:15%">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="i in loadtable |filter:searchEquipmentTable" ng-click="highlightPoint($index)" ng-class="{selected :$index === isSelectedRow}">
+                                        <td style="width:5%">{{$index + 1}} </td>
+                                        <td style="width:45%">{{i.UnitName}}</td>
+                                        <td style="width:20%">
+                                            <span ng-switch="i.UnitType">
+                                                <span ng-switch-when="DR">
+                                                    Drive Unit
+                                                </span>
+                                                <span ng-switch-when="IN">
+                                                    Intermediate Unit
+                                                </span>
+                                                <span ng-switch-when="DN">
+                                                    Driven unit
+                                                </span>
+                                            </span>
+                                        </td>
+                                        <td style="width:15%">
+                                            @*{{i.IsMapped}}*@
+                                            <span class="plotted-status" ng-class="{'mapped-dot' : i.IsMapped === 'Y' && $index === isSelectedRow,'mapped-unit' :i.IsMapped === 'Y' }"></span>
+                                            {{ i.IsMapped === 'Y' ? "&nbsp;Mapped" : "&nbsp;Unmapped" }}
+                                        </td>
+                                        <td style="width:15%;cursor:pointer" ng-class="{'map-remove' :i.IsMapped === 'N'}" ng-click="removePoint(i.PlottingId,i.UnitName)"><i class="fa fa-trash"></i>&nbsp;Remove</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-9 shaft-intermediate shaft-wrapper" ng-show="isDetail" ng-if="getImg.PlotType === 'PL'">
+                        <span class="table-filter"><strong>Search:</strong> &nbsp;<input type="text" ng-model="searchPlantTable"><i class="fa fa-close" ng-click="searchPlantTable = ''"></i></span>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr style="background:#ccc">
+                                        <th style="width:5%">S.No</th>
+                                        <th style="width:60%">Equipment Name </th>
+                                        <th style="width:25%">Status</th>
+                                        <th style="width:15%">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="i in loadtable | filter:searchPlantTable" ng-click="highlightPoint($index)" ng-class="{selected : $index === isSelectedRow}">
+                                        <td style="width:5%">{{$index + 1}} </td>
+                                        <td style="width:60%">{{i.EquipmentName}}</td>
+                                        <td style="width:25%">
+                                            @*{{i.IsMapped}}*@
+                                            <span class="plotted-status" ng-class="{'mapped-dot' : i.IsMapped === 'Y' && $index === isSelectedRow,'mapped-unit' :i.IsMapped === 'Y' }"></span>
+                                            {{ i.IsMapped === 'Y' ? "&nbsp;Mapped" : "&nbsp;Unmapped" }}
+                                        </td>
+                                        <td style="width:15%;cursor:pointer" ng-class="{'map-remove' :i.IsMapped === 'N'}" ng-click="removePoint(i.PlottingId,i.EquipmentName)"><i class="fa fa-trash">&nbsp;</i>Remove</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-md-9" ng-hide="isDetail">
+                        <div class="col-md-12 heading">
+                            <h4 class="no-record text-primary ng-binding"><i class="fa fa-exclamation-triangle no-record-icon"></i>No records selected</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    @section Scripts {
+        <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+        <script src="~/lib/angucomplete/angucomplete-alt.min.js"></script>
+        <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+        <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+        <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+        <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+        <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+        <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+        <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+
+        <environment include="Development">
+            <script src="~/js/imageplotting/index.js" asp-append-version="true"></script>
+        </environment>
+        <environment exclude="Development">
+            <script src="~/js/imageplotting/index.min.js" asp-append-version="true"></script>
+        </environment>
+    }
+
+    <script type="text/ng-template" id="skfPlotModal.html">
+        <div class="popup-product table">
+            <div class="modal-header">
+                <span class="model-breadcrumb">Plot Point</span>
+                <div class="col-lg-5 col-md-5 col-sm-12 heading">
+                    <h4 class="page-header text-primary"><strong>{{unitType}}</strong> - {{displayName}}</h4>
+                </div>
+                <div class="col-lg-7 col-md-7 col-sm-12 create-button  menu-button">
+                    <span class="Pipe"></span>
+                    <a ng-click="save()" ng-disabled="readOnlyPage" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                    <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+                </div>
+            </div>
+            <div class="row popwid">
+                <form name="userForm" novalidate>
+                    <div class="col-md-12">
+                        <div class="col-md-9 col-sm-6 input-field" ng-if="PlotType === 'AS'">
+                            <label class="control-label">Sensor*</label>
+                            <ui-select autofocus="true" ng-model="plot.UnitSensorId" theme="bootstrap" style="width: 800px;" title="Choose a Sensor">
+                                <ui-select-match placeholder="Select...">{{$select.selected.ObserverNodeName}}</ui-select-match>
+                                <ui-select-choices repeat="value.UnitSensorId as value in data | propsFilter: {ObserverNodeName: $select.search} | limitTo: 50">
+                                    <div ng-bind-html="value.ObserverNodeName | highlight: $select.search"></div>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                        <div class="col-md-9 col-sm-6 input-field" ng-if="PlotType === 'EQ'">
+                            <label class="control-label">Asset List*</label>
+
+                            <ui-select autofocus="true" ng-model="Selected" theme="bootstrap" ng-disabled="readOnlyPage" style="width: 800px;" title="Choose a Asset" on-select="onAssetchange($select.selected)" required>
+                                <ui-select-match placeholder="Select ...">
+                                    {{$select.selected.UnitName}}
+                                </ui-select-match>
+                                <ui-select-choices repeat="value.UnitId as value in data | propsFilter: {UnitName: $select.search} | limitTo: 100">
+                                    <div ng-bind-html="value.UnitName | highlight: $select.search"></div>
+                                </ui-select-choices>
+                            </ui-select>
+                        </div>
+                        <div class="col-md-12 col-sm-6" ng-if="PlotType === 'PL'">
+                            <div class="col-md-8 col-sm-6 input-field">
+                                <label class="control-label">Equipment List*</label>
+                                <ui-select autofocus="true" ng-model="plot.EquipmentId" theme="bootstrap" style="width: 800px;" title="Choose a Equipment">
+                                    <ui-select-match placeholder="Select...">{{$select.selected.EquipmentName}}</ui-select-match>
+                                    <ui-select-choices repeat="value.EquipmentId as value in data | propsFilter: {EquipmentName: $select.search} | limitTo: 50">
+                                        <div ng-bind-html="value.EquipmentName | highlight: $select.search"></div>
+                                    </ui-select-choices>
+                                </ui-select>
+                                </div>
+                            </div>
+                            </div>
+                </form>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="skfRemoveAttachmentModal.html">
+        <div class="popup-product image-plot-remove-attachment">
+            <div class="modal-header">
+                <div class="heading">
+                    <h4 class="text-primary">&nbsp;&nbsp;<strong>{{unitType}}</strong> - {{displayName}}</h4>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="alert-removeattach" style="text-align:center">
+                    <span>
+                        <i class="fa fa-exclamation-triangle"></i>&nbsp;
+                        Are you sure you want to Remove the Image of {{displayName}}?&nbsp;&nbsp;
+                    </span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span class="buttons create filter-button">
+                    <button class="btn btn-info" ng-click="deleteImage()" title="Yes"><i class="fa fa-save icon-filter"></i><span>Yes</span></button>
+                    <button class="btn btn-info" ng-click="cancel()" title="No"><i class="fa fa-close icon-filter"></i><span>No</span></button>
+                </span>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="skfRemovePointModal.html">
+        <div class="popup-product image-remove-plot">
+            <div class="modal-header">
+                <div>
+                    <h4 class="text-primary">&nbsp;&nbsp;<strong>{{unitType}}:</strong> {{displayName}} - {{NodeName}}</h4>
+                </div>
+            </div>
+            <div class="modal-body">
+                <div class="alert-removeattach" style="text-align:center">
+                    <span>
+                        <i class="fa fa-exclamation-triangle"></i>&nbsp;
+                        Are you sure you want to remove the plotted point of node {{NodeName}}?&nbsp;&nbsp;
+                    </span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span class="buttons create filter-button">
+                    <button class="btn btn-info" ng-click="deleteImage()" title="Yes"><i class="fa fa-save icon-filter"></i><span>Yes</span></button>
+                    <button class="btn btn-info" ng-click="cancel()" title="No"><i class="fa fa-close icon-filter"></i><span>No</span></button>
+                </span>
+            </div>
+        </div>
+    </script>
+
+    <script type="text/ng-template" id="skfPlantGeoLocModal.html">
+        <div class="popup-product">
+            <div class="modal-header image-plotting-geo">
+                <div class="col-lg-5 col-md-5 col-sm-12 heading">
+                    <h4 class="page-header text-primary"><strong>Plant: &nbsp;</strong>{{PlantName}}</h4>
+                </div>
+                <div class="col-lg-7 col-md-7 col-sm-12 create-button  menu-button">
+                    <span class="Pipe"></span>
+                    <a ng-click="save()" ng-disabled="readOnlyPage" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                    <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+                </div>
+            </div>
+            <div class="row popwid">
+                <form name="userForm" novalidate>
+                    <div class="col-md-12" style="margin-top:10px; margin-bottom:10px">
+                        <div class="col-md-4 col-sm-6">
+                            <label class="control-label">Latitude</label>
+                            <input type="number" class="form-control lat-input" ng-model="latitude" name="Longitude" />
+                        </div>
+                        <div class="col-md-4 col-sm-6">
+                            <label class="control-label">Longitude</label>
+                            <input type="number" class="form-control lat-input" ng-model="longitude" name="Longitude" />
+                        </div>
+                        </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+            </div>
+</script>
+
+    @*<script type="text/ng-template" id="skfAttachmentModal.html">
+            <div class="popup-product">
+                <div class="modal-header">
+                    <span class="model-breadcrumb">Attachments</span>
+                    <div class="col-lg-5 col-md-5 col-sm-12 heading">
+                        <h4 class="page-header text-primary">{{displayName}}</h4>
+                    </div>
+                    <div class="col-lg-7 col-md-7 col-sm-12 create-button  menu-button">
+                        <input type="file" id="files" class="uploadfile" name="files[]" ng-model="attach" multiple accept="image/x-png,image/jpeg" onchange="angular.element(this).scope().uploadImageStart()" />
+                        <a title="Close" ng-click="cancel()"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+                    </div>
+                </div>
+
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-6 attachment-link">
+                                <h4 class="attach-label">Attachments :</h4>
+                                <div ng-repeat="file in attachment" class="attched-images">
+                                    <a ng-click="showAttach(file.attachId, $index)" class="attached-imgnames" ng-class="{active : {{$index}} === docindex}">
+                                        {{file.FileName}}
+                                    </a>
+                                    <div class="close-button"><a ng-click="removeAttachment(file.attachId, file.type)"><i class="fa fa-trash"></i></a></div>
+                                </div>
+                                <span ng-show="noAttachment">No attachments Found</span>
+                            </div>
+                            <div class="col-md-6">
+                                <span class="file-upload" ng-class="attached-files" ng-disabled="readOnlyPage">
+                                    <span ng-repeat="file in files" value="{{file.files}}">{{file.files}}</span>
+                                </span>
+                                <div class="preview-img">
+                                    <h4>Preview Image: <span class="text-primary" ng-show="FileName.length > 0">{{FileName}}</span></h4>
+                                    <img src="../images/preview-icon.png" ng-show="previewImg" class="img-preview" />
+                                    <img src="{{attImage}}" ng-show="attImage.length > 0" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </script>*@

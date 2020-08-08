@@ -1,0 +1,184 @@
+﻿@{
+    ViewData["Title"] = "SMSConfiguration";
+    Layout = "~/Views/Shared/_ObserverLayout.cshtml";
+}
+<link href="~/lib/angular/ui-grid/ui-grid.min.css" rel="stylesheet" />
+<div ng-controller="skfCtrl" class="sector content-wrapper">
+    <div class="container-fluid" id="country">
+        <div class="row heading-wrapper">
+            <div class="col-md-3 heading">
+                <h4 class="page-header text-primary">{{isEdit?"Edit SMS Configuration ":isSearch?"Search Job ":isView?"View SMS Configuration ":isCreate?"Create SMS Configuration":"Job"}}</h4>
+            </div>
+            <div class="col-md-9 menu-button">
+                <a ng-disabled="isCreate" ng-click="isCreate || createToggle()" title="Create"><i class="fa fa-plus icon-filter"></i>Create</a>
+                @*<a ng-disabled="isSearch" ng-click="isSearch || searchToggle()" title="Search"><i class="fa fa-search-plus icon-filter"></i><span>Search</span></a>*@
+                <span class="Pipe"></span>
+                <a ng-disabled="!isMachines || readOnlyPage || userForm.$invalid || isSearch" ng-click="readOnlyPage || userForm.$invalid || isSearch || !isMachines ||save()" ng-show="isCreate || isSearch" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-disabled="!isMachines || readOnlyPage || userForm.$invalid" ng-click="readOnlyPage || userForm.$invalid || !isMachines || update()" ng-show="isEdit" title="Update"><i class="fa fa-save icon-filter"></i><span>Update</span></a>
+                <a ng-disabled="isEdit || isView" ng-click="isEdit || clearOut()" title="Clear"><i class="fa fa-eraser icon-filter"></i><span>Clear</span></a>
+            </div>
+        </div>
+
+        <form name="userForm" novalidate>
+            <div lass="row create-form" ng-show="isEdit || isCreate || isView">
+                <div class="col-md-12">
+                    <div class="col-md-3 col-sm-5 input-field" ng-class="{ 'has-error' : userForm.AlarmSMSNotificationID.$invalid }">
+                        <label class="control-label">Mobile Number*</label>
+                        <div>
+                            <input ng-disabled="readOnlyPage" class="form-control" required ng-model="SMSconfiguration.AlarmSMSNotificationID" name="JobName" />
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    @*<div class="col-md-2 col-sm-5 input-field">
+            <label class="control-label link">
+                <a ng-click="SelectPlant()" ng-disabled="SMSconfiguration.AlarmSMSNotificationID.length == null" tooltip-append-to-body="true" uib-tooltip="Select Equipment" tooltip-class="customClass" class="mouse-pointer">
+                    Select Equipment(s)* <i class="fa fa-info"></i>
+                </a> <span class="selected-equipment"> {{EqCount != undefined ? EqCount : 0 }} {{EqCount > 1 ? 'Equipments Added' : 'Equipment Added'}}</span>
+            </label>
+        </div>*@
+
+                    @*<div class="col-md-2 col-sm-4 input-field" ng-class="{ 'has-error' : userForm.alarmInterval.$invalid && !userForm.alarmInterval.$pristine }">
+            <label class="control-label">Alarm Interval (In Days)*</label>
+            <div>
+                <input class="form-control" id="alarmInterval" required ng-model="SMSconfiguration.alarmInterval" name="alarmInterval" />
+                <span class="text-danger"></span>
+            </div>
+        </div>*@
+
+                    @*<div class="col-md-3  col-sm-4 input-field" Id="MobNoList" ng-class="{ 'has-error' : userForm.MobNoList.$invalid && !userForm.MobNoList.$pristine }">
+            <label class="control-label">More Mobile No.(Seperate Mobile using Comma (,))</label>
+            <div>
+                <textarea ng-model="MobNoList" placeholder="Mobile Number List" class="form-control search-input big" name="MobNoList" cols="1" rows="2"></textarea>
+                <span class="text-danger"></span>
+            </div>
+        </div>*@
+                    @*<div class="col-md-3 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.minutesInterval.$invalid && !userForm.minutesInterval.$pristine }">
+            <label class="control-label">Minutes Interval*</label>
+            <div>
+                <input class="form-control" id="minutesInterval" required ng-model="minutesInterval" name="minutesInterval" />
+                <span class="text-danger"></span>
+            </div>
+        </div>*@
+                    @*<div class="col-md-3 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.AlarmStatus.$invalid && !userForm.AlarmStatus.$pristine }">
+            <label class="control-label">Alarm Status*</label>
+            <span class="alarm-radio-btn">
+                <input type="radio" class="alarm-status" name="AlarmStatus" ng-model="AlarmStatus" value="Y"> ON
+                <input type="radio" class="alarm-status" name="AlarmStatus" ng-model="AlarmStatus" value="N"> OFF
+                <span class="text-danger"></span>
+            </span>
+        </div>*@
+                    @*<div class="col-md-1 col-sm-6 input-field" ng-show="isEdit">
+            <label class="control-label">Alarm Status</label>
+            <div>
+                <select ng-disabled="readOnlyPage" class="form-control" ng-model="AlarmEmailNotification.Active" name="Active">
+                    <option value="Y">Active</option>
+                    <option value="N">Inactive</option>
+                </select>
+            </div>
+        </div>*@
+                    @*<div class="col-md-3 col-sm-6 input-field" Id="emailList" ng-class="{ 'has-error' : userForm.emailList.$invalid && !userForm.emailList.$pristine }">
+            <label class="control-label">Email List*</label>
+            <div>
+                <textarea ng-model="emailList" placeholder="Email List" class="form-control search-input big" name="emailList" cols="1" rows="2"></textarea>
+                <span class="text-danger"></span>
+                <span class="note">Please seperate email using semicolon*</span>
+            </div>
+        </div>*@
+                    <div class="col-md-10 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.SMSconfiguration.$invalid && !userForm.SMSconfiguration.$pristine }">
+                        <label class="control-label">Message*</label>
+                        <div>
+                            <textarea ng-model="SMSconfiguration.AdditionalSMSID" placeholder="Add body Content" class="form-control email-body search-input big" name="AdditionalSMSID" cols="6" rows="6"></textarea>
+                            <span class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-sm-6 input-field" ng-class="{ 'has-error' : userForm.SMSconfiguration.$invalid && !userForm.SMSconfiguration.$pristine }">
+                        <button class="btn btn-primary" ng-click="send()">Send</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="table-responsive SMSconfiguration-grid">
+            <div class="grid data">
+                <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-pinning ui-grid-cellnav ui-grid-resize-columns ui-grid-exporter></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+@section Scripts {
+    @*<environment include="Development">
+        <script src="~/js/SMSconfiguration/"></script>
+
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/SMSconfiguration/" asp-append-version="true"></script>
+    </environment>*@
+
+    <script src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+    <script src="~/lib/angular/ui-grid/import/xlsx.full.min.js"></script>
+    <script src="~/lib/angular/ui-grid/import/ods.js"></script>
+    <environment include="Development">
+        <script src="~/js/import/index.js" asp-append-version="true"></script>
+        <script src="~/js/SMSconfiguration/index.js" asp-append-version="true"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/import/index.min.js" asp-append-version="true"></script>
+        @*<script src="~/js/schedule/index.min.js" asp-append-version="true"></script>*@
+    </environment>
+
+
+}
+
+<script type="text/ng-template" id="skfPlantModal.html">
+    <div class="popup-product">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Equipment List</span>
+            <div class="col-lg-6 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary ng-binding">{{ScName}} </h4>
+            </div>
+            <div class="col-lg-6 col-md-4 col-sm-12 create-button  menu-button">
+
+                <span class="Pipe"></span>
+                <a ng-disabled="isView" ng-click="save()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive">
+                <div class="grid data">
+                    <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-edit ui-grid-cellnav ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>
+
+
+<script type="text/ng-template" id="skfGenerateJobModal.html">
+    <div class="popup-product">
+        @*<div class="modal-header">
+                <span class="model-breadcrumb">Generate Job</span>
+                <div class="col-lg-6 col-md-8 col-sm-12 heading">
+                    <h4 class="page-header text-primary ng-binding">{{ScName}} </h4>
+                </div>
+            </div>*@
+        <div class="modal-body job-list-navigate">
+            <span>Mobile No. Configured Successfully! Would you like to navigate to Test SMS Notification ?</span>
+            <button ng-click="Gotojoblist()" class="btn btn-info" title="Yes"><i class="fa fa-save icon-filter"></i>Yes</button>
+            <button ng-click="cancel()" class="btn btn-info" title="No"><i class="fa fa-close icon-filter"></i>No</button>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>

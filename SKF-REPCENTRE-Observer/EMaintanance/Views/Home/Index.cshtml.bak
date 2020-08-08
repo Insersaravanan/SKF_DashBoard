@@ -1,0 +1,532 @@
+﻿@{
+    ViewData["Title"] = "Dashboard - Viewer";
+    Layout = "~/Views/Shared/_ObserverLayout.cshtml";
+}
+<div ng-controller="skfCtrl" id="mainController" class="observer-dashboard">
+    <div class="container-fluid fullScreen-details" ng-cloak id="fullScreen" ng-class="{'dashbord-theme' : dashbordThemeColor ? true: false}">
+        <div class="row">
+            <div class="upper-section">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 filter-settings first-section menu-section">
+                    <div class="col-md-3 col-sm-6 col-xs-6 input-field country-dropdown ">
+                        <ui-select ng-model="Dropdown.CountryId" theme="bootstrap" on-select="loadDashboardFilter(Dropdown.CountryId, 'CL')">
+                            <ui-select-match placeholder="Select Country...">
+                                {{$select.selected.ListName}}
+                            </ui-select-match>
+                            <ui-select-choices repeat="country.ListId as country in CountryDDL | propsFilter: {ListName: $select.search}">
+                                <div ng-bind-html="country.ListName | highlight: $select.search"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                    <div class="col-md-5 col-sm-6 col-xs-6 input-field client-dropdown">
+                        <ui-select ng-model="Dropdown.ClientSiteId" theme="bootstrap" ng-disabled="readOnlyPage" on-select="loadDashboardFilter(Dropdown.ClientSiteId, 'PL')">
+                            <ui-select-match placeholder="Select Client...">
+                                {{$select.selected.ListName}}
+                            </ui-select-match>
+                            <ui-select-choices repeat="client.ListId as client in ClientDDL | propsFilter: {ListName: $select.search}">
+                                <div ng-bind-html="client.ListName | highlight: $select.search"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                    <div class="col-md-3 col-sm-6 col-xs-6 input-field plant-dropdown">
+                        <ui-select ng-model="Dropdown.PlantAreaId" theme="bootstrap">
+                            <ui-select-match placeholder="Select Plant...">
+                                {{$select.selected.ListName}}
+                            </ui-select-match>
+                            <ui-select-choices repeat="plant.ListId as plant in PlantDDL | propsFilter: {ListName: $select.search}">
+                                <div ng-bind-html="plant.ListName | highlight: $select.search"></div>
+                            </ui-select-choices>
+                        </ui-select>
+                    </div>
+                    <div class="col-md-1 col-sm-2 col-xs-6 input-field">
+                        <span class="dropdown-filter" ng-click="loadFilterData(CountryId,ClientSiteId,PlantAreaId)">
+                            <i class="fa fa-search"></i>
+                            @*<button type="button" uib-tooltip="Go" class="btn btn-primary" >Search</button>*@
+                            @*<i uib-tooltip="Go" class="fa fa-search" ng-click="loadFilterData(CountryId,ClientSiteId,PlantAreaId)"></i>*@
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="col-lg-5 col-md-5 col-sm-6 col-xs-9 unit-types second-section menu-section">
+                    <span class="plant" ng-click="goTo('home')" ng-hide="!Showmenu" ng-class="{'highlight-dash': homeType }">Home</span>&nbsp;
+                    <span class="plant" ng-click="goTo('CL')" ng-hide="!Showmenu" ng-class="{'highlight-dash': S_dashboard.Type === 'PL' && !homeType}">Client</span>&nbsp;
+                    <span ng-click="goTo('PL')" ng-hide="!Showmenu" ng-disabled="S_dashboard.Type  === 'CL'" ng-class="{ 'highlight-dash': S_dashboard.Type === 'EQ' && !homeType,'disable-unit': S_dashboard.Type ==='PL'}">Plant</span>
+                    <span class="assets" ng-click="goTo('EQ')" ng-hide="!Showmenu" ng-disabled="S_dashboard.Type  === 'EQ' || S_dashboard.Type === 'PL'" ng-class="{'highlight-dash': S_dashboard.Type  === 'AS' && !homeType,'disable-unit': S_dashboard.Type  ==='PL' || S_dashboard.Type === 'EQ'}">Equipment</span>
+                    <span class="sensor" ng-hide="!Showmenu" ng-disabled="S_dashboard.Type === 'PL'|| S_dashboard.Type === 'CL' || S_dashboard.Type === 'EQ'" ng-class="{'highlight-dash': S_dashboard.Type  === 'SR' && !homeType,'disable-unit': S_dashboard.Type !== 'PL' || S_dashboard.Type !== 'EQ' || S_dashboard.Type !== 'AS'}">Asset</span>
+                </div>
+
+                <div class="col-lg-1 col-md-5 col-sm-3 col-xs-3 third-section menu-section">
+                    <span class="notification-icon">
+                        <a class="" uib-tooltip="FeedBack" ng-click="notificationEvent()"><i class="fa fa-comment-o"></i></a>
+                    </span>
+                    <span class="refresh-icon">
+                        &nbsp;&nbsp;<a class="refresh" uib-tooltip="Refresh" ng-click="reload()"><i class="fa fa-refresh"></i></a>
+                    </span>
+                    <span class="full-screen">
+                        <a>
+                            <i ng-class="{'fa fa-expand': !fullScreenDetails, 'fa fa-compress': fullScreenDetails}" ng-click="fullScreen()"></i>
+                        </a>
+                    </span>
+
+                    @*<span class="search-icon">
+                            <span class="dropdown-filter">
+                                <i ng-class="{'fa fa-search': !settingsDetails, 'fa fa-search-plus': settingsDetails}" ng-click="settingsMenu()"></i>
+                                <i uib-tooltip="Close" ng-if="settingsDetails" class="fa fa-times" ng-click="closeDetailsSearch()"></i>
+                            </span>
+                        </span>*@
+                    @*<div class="flex">
+                                  <div class="toggle">
+                                      <div class="switchToggle" ng-click="setBackgroudColor()">
+                                          <input data-toggle="Backgroud Theme Color" type="checkbox" id="switch">
+                                          <label for="switch">Toggle</label>
+                                          <span class="tooltiptext">Background Theme</span>
+                                      </div>
+                                  </div>
+                        </div>*@
+                </div>
+            </div>
+        </div>
+        <div class="chart-container">
+            <div class="row map-img-section">
+                <div class="col-lg-6 first-part">
+                    <div ng-hide="S_dashboard.Type !== 'PL'" class="plot-section" ng-class="{'loading': isloading === true}">
+                        <div class="map-chart">
+                            <div id="mapdiv"></div>
+                        </div>
+                    </div>
+                    <div ng-hide="S_dashboard.Type === 'PL'" ng-class="{'loading': isloading === true}">
+                        <h5 class="text-primary dashboard-typename"><span class="clname"><strong>Client Name - </strong>{{ClName}}</span> <span class="disname"> <strong>{{displayType}}</strong> - {{displayName}}</span></h5>
+                        <div class="plot-section image-section">
+                            <!--<img src="{{PhysicalPath}}" width="{{imgWidth}}" height="{{imgheight}}" />-->
+                            <img src="{{PhysicalPath}}" style="width:100%;height:100%" />
+                            <span ng-repeat="i in loadTable">
+                                <span ng-click="loadSensorDetail('g', i.UnitSensorId)" tooltip-append-to-body="true" tooltip-class="customClass" uib-tooltip="{{i.ObserverNodeName}}" ng-if="S_dashboard.Type  === 'SR'" ng-hide="i.XPos === 0 && i.YPos === 0" ng-class="{'plotted-dot': i.highlight == true}" class="plot-dash-point" style="left:{{i.YPos}}px;top:{{i.XPos}}px;background:{{i.HealthColor}};border:1px solid #bbbbb0;box-shadow: 0 0 4px 4px {{i.HealthColor}};">
+                                </span>
+                                <span ng-click="loadImgDetail(i.UnitId, i.UnitType)" tooltip-append-to-body="true" tooltip-class="customClass" uib-tooltip="{{i.UnitName}}" ng-if="S_dashboard.Type === 'AS'" ng-class="{'plotted-dot': i.highlight === true}" class="plot-dash-point" ng-hide="i.XPos === 0 && i.YPos === 0" style="left:{{i.YPos}}px;top:{{i.XPos}}px;background:{{i.HealthColor}};border:1px solid #bbbbb0;box-shadow: 0 0 4px 4px {{i.HealthColor}};">
+                                </span>
+                                <span ng-click="loadImgDetail(i.EquipmentId, null)" tooltip-append-to-body="true" tooltip-class="customClass" uib-tooltip="{{i.EquipmentName}}" ng-if="S_dashboard.Type  === 'EQ'" ng-hide="i.XPos === 0 && i.YPos === 0" ng-class="{'plotted-dot': i.highlight === true}" class="plot-dash-point" style="left:{{i.YPos}}px;top:{{i.XPos}}px;background:{{i.HealthColor}};border:1px solid #bbbbb0;box-shadow: 0 0 4px 4px {{i.HealthColor}};">
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="lodingImg" ng-class="{'loading': isloading === false}">
+                        <img src="~/images/loading.gif" />
+                    </div>
+                </div>
+                <div class="col-lg-6 second-part">
+                    <span ng-if="S_dashboard.Type  === 'EQ'" class="report-icon" ng-click="reportSection()">EMaintenance Reports</span>
+                    <div class="second-chart" ng-show="!AssetGrid" id="second-chart">
+                        
+
+                            <h4 style="color:#2980b9;text-align:center;">
+                                Live Health Statistics</>
+
+                            </h4>
+                              <a href="javascript:void(0)" ng-click="fullScreenChart('second-chart')" style="position: absolute; top: 10px;right: 10px;">
+                                <i  ng-class="{'fa fa-expand': !fullScreenDetails, 'fa fa-compress': fullScreenDetails}" class="fa fa-expand" aria-hidden="true"></i>
+                            </a>
+
+                        
+                        
+                        <div id="slice-chart">
+                        </div>
+                    </div>
+                    <div class="second-chart gauge-section" ng-show="AssetGrid">
+                        <div tooltip-append-to-body="true" uib-tooltip="Mulit Trend" class="multitrend-icon" ng-click="multiSensorTracking(GaugeData)">
+                            <i class="fa fa-area-chart  icon-space-before"></i>
+                        </div>
+                        <div ng-repeat="val in GaugeData" style="position:relative" class="col-lg-4 col-md-4 gauga-list">
+                            <ng-gauge size="{{val.size}}" type="{{val.type}}" thick="{{val.thick}}"
+                                      min="val.min" max="val.max" value="val.value"
+                                      cap="{{val.cap}}" label="" append=""
+                                      foreground-color="{{val.foregroundColor}}" background-color="{{val.backgroundColor}}">
+                            </ng-gauge>
+                            <div class="gaugaUnit">
+                                {{val.unit}}
+                                <i tooltip-append-to-body="true" uib-tooltip="Trend" class="fa fa-area-chart  icon-space-before" style="cursor:pointer;color:{{val.foregroundColor}}" ng-click="SensorTracking(val)"></i>
+                            </div>
+                            <div class="gaugaName">
+                                {{val.label}}
+                                <h6 class="reading-time" style="font-size:10px;">{{val.ReadingTime}}</h6>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row add-section">
+                <div class="col-lg-4 chart-4 health-chart">
+                    <div ng-class="{'isHealthChart': !isPlantClientchart }">
+                        <div id="chartdiv4" class="additonal-chart"></div>
+                    </div>
+                    <div ng-class="{'isHistoryChart': isPlantClientchart}">
+                        <div id="chartdiv7" class="additonal-chart"></div>
+                    </div>
+                </div>
+                <div class="col-lg-4 chart-5 health-chart">
+                    <div id="chartdiv5" class="additonal-chart"></div>
+                </div>
+                <div class="col-lg-4 chart-6 health-chart">
+                    <div id="chartdiv6" class="additonal-chart"></div>
+                </div>
+            </div>
+            <div class="toogle-icon">
+                <span class="toogle-section">
+                    @*<span ng-if="S_dashboard.Type  === 'PL' && showAdmininfo" tooltip-append-to-body="true" uib-tooltip="Customer Statistics" ng-class="{'highlight-icon': isclientChart}" class="toggle-label" ng-click="clientChartSection()"><i class="fa fa-pie-chart"></i></span>&nbsp;&nbsp;*@
+                    <span tooltip-append-to-body="true" ng-if="showAdmininfo" uib-tooltip="Hierarchy" ng-class="{'highlight-icon': isSankeyChart}" class="toggle-label" ng-click="sankeySection()"><i class="fa fa-random"></i></span>&nbsp;&nbsp;
+                    <span tooltip-append-to-body="true" uib-tooltip="Data" ng-class="{'highlight-icon': isGrid}" class="toggle-label " ng-click="gridSection()"><i class="fa fa-th"></i></span>&nbsp;&nbsp;
+                    <span tooltip-append-to-body="true" uib-tooltip="Priority" ng-class="{'highlight-icon': isTagChart}" class="toggle-label" ng-click="tagChartSection()"><i class="fa fa-tags"></i></span>&nbsp;&nbsp;
+                    @*<span ng-if="S_dashboard.Type  === 'EQ'" tooltip-append-to-body="true" uib-tooltip="Emaintenance Reports" ng-class="{'highlight-icon': isReportSection}" class="toggle-label" ng-click="reportSection()"><i class="fa fa-file-excel-o"></i></span>*@
+                </span>
+            </div>
+            <div class="toggle-section">
+                @*<div class="row add-section sector-chart" ng-if="isclientChart && showAdmininfo">
+                        <div class="col-lg-4 chart-5 health-chart">
+                            <div id="chartdiv8" class="client-chart"></div>
+                        </div>
+                        <div class="col-lg-8 chart-5 health-chart">
+                            <div id="chartdiv9" class="client-chart"></div>
+                        </div>
+                    </div>*@
+                <div class="table-responsive" ng-if="isGrid && !AssetGrid">
+                    <div class="grid data" style="text-transform:none;">
+                        <div id="uiGrid" ui-grid="gridOpts" class="grid" ui-grid-cellnav ui-grid-edit ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                    </div>
+                </div>
+                <div class="table-responsive" ng-if="isGrid && AssetGrid">
+                    <div class="grid data" style="text-transform:none;">
+                        <div id="uiGrid" ui-grid="gridOpts1" class="grid" ui-grid-cellnav ui-grid-edit ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                    </div>
+                </div>
+                @*<div class="table-responsive" ng-if="isReportSection">
+                        <div class="grid data" style="text-transform:none;">
+                            <div id="uiGrid" ui-grid="gridOpts2" class="grid" ui-grid-cellnav ui-grid-edit ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                        </div>
+                    </div>*@
+                <div ng-class="{'isSankeyChart' : !isSankeyChart}">
+                    <div class="row add-section">
+                        <div class="col-lg-4 chart-4 health-chart">
+                            <div id="piechart1" class="additonal-chart"></div>
+                        </div>
+                        <div class="col-lg-4 chart-5 health-chart">
+                            <div id="piechart2" class="additonal-chart"></div>
+                        </div>
+                        <div class="col-lg-4 chart-6 health-chart">
+                            <div id="piechart3" class="additonal-chart"></div>
+                        </div>
+                    </div>
+                    @*<div id="chartdiv3" class="sankey-diagram" style="height:{{sankeyheight}}"></div>*@
+
+                </div>
+                <div ng-class="{'isTagChart' : !isTagChart }">
+                    <div id="tagchart"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/ng-template" id="skfSensorTrackingModal.html">
+    <div class="popup-product observer-dashboard-pop">
+        <div class="modal-header">
+            <span class="model-breadcrumb">
+                Trend
+                <span class="trend-close">
+                    <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+                </span>
+            </span>
+            @*<div class="col-lg-8 col-md-8 col-sm-12 heading">
+                    <h4 class="page-header text-primary">&nbsp;&nbsp;<strong class="unit-type">Sensor</strong> - {{SensorName}}</h4>
+                </div>*@
+            @*<div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                    <span class="Pipe"></span>
+                    <a ng-click="saveMapping()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                </div>*@
+        </div>
+        <div class="modal-body">
+            @*<div id="rangechart" class="model-rangechart"></div>*@
+            <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>
+
+
+<script type="text/ng-template" id="observerMessage.html">
+    <div class="popup-product observer-dashboard-pop">
+        <div class="modal-header">
+            <span class="model-breadcrumb">FeedBack</span>
+        </div>
+        <form data-toggle="validator" role="form" name="myForm">
+            <div class="modal-body">
+                <div id="rangechart">
+                    <span class="message">Subject*</span>
+                    <input type="text" placeholder="Enter the subject" id="subject" ng-model="feedback.subject" required />
+                    <span class="message">Message*</span>
+                    <textarea rows="4" placeholder="Enter the message" cols="50" id="message" ng-model="feedback.message" required></textarea>
+                </div>
+                <div class="captcha">
+                    <span class="recaptcha-title">{{mainCaptcha}}</span>
+                    <span class="recaptcha-refresh"><i uib-tooltip="Refresh" class="fa fa-refresh" id="refresh" value="Refresh" ng-click="Captcha()"></i></span>
+                    <span class="recaptcha-input"><input type="text" id="txtInput" placeholder="Enter the Captcha here" ng-model="OCaptcha" /></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="create-button  menu-button">
+                    <a ng-click="send()" id="btSubmit" ng-disabled="myForm.$invalid" title="Save"><i class="fa fa-save icon-filter"></i><span>Send</span></a>
+                    <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+                </div>
+            </div>
+        </form>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfEquipmentLiveModal.html">
+    <div class="popup-product observer-dashboard-pop">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Live Health Statistics</span>
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary" style="color:{{titleColor}}">&nbsp;&nbsp;<strong class="unit-type">{{title}}</strong></h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                @*<a ng-click="saveMapping()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>*@
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive">
+                <div class="grid data" style="text-transform:none;">
+                    <div id="uiGrid" ui-grid="gridOpts2" class="grid" ui-grid-cellnav ui-grid-edit ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+<script type="text/ng-template" id="skfListPriorityModal.html">
+    <div class="popup-product observer-dashboard-pop">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Equipment Priority Statistics</span>
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary">&nbsp;&nbsp;<strong class="unit-type">{{PriorityTitle}}</strong></h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                @*<a ng-click="saveMapping()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>*@
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive priority-grid">
+                <div class="grid data" style="text-transform:none;">
+                    <div id="uiGrid" ui-grid="gridOpts3" class="grid" ui-grid-cellnav ui-grid-edit ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfFilterPieChartModal1.html">
+    <div class="popup-product observer-dashboard-pop">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Asset Class</span>
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary">&nbsp;&nbsp;<strong class="unit-type">{{AssetName}}</strong></h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                @*<a ng-click="saveMapping()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>*@
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive priority-grid">
+                <div class="grid data" style="text-transform:none;">
+                    <div id="uiGrid" ui-grid="gridOpts3" class="grid" ui-grid-cellnav ui-grid-edit ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfFilterPieChartModal2.html">
+    <div class="popup-product observer-dashboard-pop">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Customers By Segment</span>
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary">&nbsp;&nbsp;<strong class="unit-type">{{SectorName}}</strong></h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                @*<a ng-click="saveMapping()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>*@
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive priority-grid">
+                <div class="grid data" style="text-transform:none;">
+                    <div id="uiGrid" ui-grid="gridOpts3" class="grid" ui-grid-cellnav ui-grid-edit ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfFilterPieChartModal3.html">
+    <div class="popup-product observer-dashboard-pop">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Failure Cause By Segment</span>
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary">&nbsp;&nbsp;<strong class="unit-type">{{SectorName}}</strong></h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                @*<a ng-click="saveMapping()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>*@
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive priority-grid">
+                <div class="grid data" style="text-transform:none;">
+                    <div id="uiGrid" ui-grid="gridOpts3" class="grid" ui-grid-cellnav ui-grid-edit ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfListHealthModal.html">
+    <div class="popup-product observer-dashboard-pop">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Equipment Health Statistics</span>
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary" style="color:{{HealthColor}}">&nbsp;&nbsp;<strong class="unit-type">{{HealthTitle}}</strong></h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                @*<a ng-click="saveMapping()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>*@
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive priority-grid">
+                <div class="grid data" style="text-transform:none;">
+                    <div id="uiGrid" ui-grid="gridOpts3" class="grid" ui-grid-cellnav ui-grid-edit ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfMultiTrendingModal.html">
+    <div class="popup-product observer-dashboard-pop">
+        <div class="modal-header">
+            <span class="model-breadcrumb">
+                Multi Trend
+                <span class="trend-close">
+                    <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+                </span>
+            </span>
+            @*<div class="col-lg-8 col-md-8 col-sm-12 heading">
+                    <h4 class="page-header text-primary">&nbsp;&nbsp;<strong class="unit-type">Sensor</strong> - {{SensorName}}</h4>
+                </div>*@
+            @*<div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                    <span class="Pipe"></span>
+                    <a ng-click="saveMapping()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>
+                </div>*@
+        </div>
+        @*<div class="modal-body multitrend-container plot-section">*@
+        <div class="modal-body">
+            @*<div ng-repeat="sensor in SensorDDL">*@
+            @*<div id="rangechart" class="model-rangechart"></div>*@
+            <div id="Object" class="multi-trend" style="min-width: 410px; height: 400px; margin: 0 auto">
+                @*</div>*@
+            </div>
+        </div>
+        <div class="modal-footer">
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfEMaintReportModal.html">
+    <div class="popup-product observer-dashboard-pop">
+        <div class="modal-header">
+            <span class="model-breadcrumb">Emaintenance Reports</span>
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary">&nbsp;&nbsp;<strong>Plant</strong> {{PlantTitle}}</h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                <span class="Pipe"></span>
+                @*<a ng-click="saveMapping()" title="Save"><i class="fa fa-save icon-filter"></i><span>Save</span></a>*@
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive">
+                <div class="grid data" style="text-transform:none;">
+                    <div id="uiGrid" ui-grid="gridOpts2" class="grid" ui-grid-cellnav ui-grid-edit ui-grid-pinning ui-grid-resize-columns ui-grid-exporter></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+
+<script type="text/ng-template" id="skfViewDetail.html">
+    <div class="popup-product observer-dashboard-pop">
+        <div class="modal-header">
+            <span class="model-breadcrumb">{{detailTitle}}</span>
+            <div class="col-lg-8 col-md-8 col-sm-12 heading">
+                <h4 class="page-header text-primary">{{detailTitle}}</h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 create-button  menu-button">
+                <a ng-click="cancel()" title="Close"><i class="fa fa-close icon-filter"></i><span>Close</span></a>
+            </div>
+        </div>
+        <div class="modal-body">
+            <p>{{tooltipText}}</p>
+        </div>
+    </div>
+</script>
+
+@section Scripts {
+    <script defer src="~/lib/angular/ui-grid/ui-grid.min.js"></script>
+    <script defer src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script defer src="~/lib/angular/ui-grid/export/csv.js"></script>
+    <script defer src="~/lib/angular/ui-grid/export/pdfmake.js"></script>
+    <script defer src="~/lib/angular/ui-grid/export/vfs_fonts.js"></script>
+    <script defer src="~/lib/angular/ui-grid/export/lodash.min.js"></script>
+    <script defer src="~/lib/angular/ui-grid/export/jszip.min.js"></script>
+    <script defer src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+    <script defer src="~/lib/angular/ui-grid/export/excel-builder.dist.js"></script>
+    <script defer src="~/lib/angular/ui-grid/import/xlsx.full.min.js"></script>
+    <script defer src="~/lib/angular/ui-grid/import/ods.js"></script>
+    <script defer src="~/lib/angularGuage/angularGauge.min.js"></script>
+    <script defer src="https://www.amcharts.com/lib/4/core.js"></script>
+    <script defer src="https://www.amcharts.com/lib/4/charts.js"></script>
+    <script defer src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+    <script defer src="https://www.amcharts.com/lib/4/maps.js"></script>
+    <script defer src="https://www.amcharts.com/lib/4/geodata/worldLow.js"></script>
+    <script defer src="https://www.amcharts.com/lib/4/geodata/worldIndiaLow.js"></script>
+    <script defer src="https://www.amcharts.com/lib/4/plugins/wordCloud.js"></script>
+    <script defer src="https://www.amcharts.com/lib/4/themes/material.js"></script>
+    <script defer src="https://www.amcharts.com/lib/4/themes/animated.js"></script>
+
+    @*Highchart*@
+    @*<script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://code.highcharts.com/modules/series-label.js"></script>
+        <script src="https://code.highcharts.com/modules/exporting.js"></script>
+        <script src="https://code.highcharts.com/modules/export-data.js"></script>*@
+
+    @*Stock Highchart*@
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+
+
+    <environment include="Development">
+        <script src="~/js/Home/index.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/js/Home/index.min.js" asp-append-version="true"></script>
+    </environment>
+}
